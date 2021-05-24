@@ -2,11 +2,11 @@ import grpc
 import argparse
 
 # import the generated classes
-import protos.eclat_pb2
-import protos.eclat_pb2_grpc
+import eclat_pb2
+import eclat_pb2_grpc
 
 
-def run(script):
+def run(scriptfile):
     # open a gRPC channel
     channel = grpc.insecure_channel('localhost:50051')
 
@@ -14,7 +14,9 @@ def run(script):
     stub = eclat_pb2_grpc.EclatStub(channel)
 
     # create a valid request message
-    req = eclat_pb2.EclatRunRequest(script=script)
+    with open(scriptfile, 'r') as f:
+        script = f.read()
+        req = eclat_pb2.EclatRunRequest(script=script)
 
     # make the call
     response = stub.Run(req)

@@ -3,30 +3,37 @@ from concurrent import futures
 import time
 
 # import the generated classes
-from protos import eclat_pb2
-from protos import eclat_pb2_grpc
+import eclat_pb2
+import eclat_pb2_grpc
 
 
-import engine
+from engine import EclatEngine
+
+engine = EclatEngine()
 
 
 class EclatServicer(eclat_pb2_grpc.EclatServicer):
+    def __init__(self, eclatd):
+        self.engine = engine
 
     def Run(self, request, context):
         print(request.script)
         response = eclat_pb2.EclatRunResponse()
-        response.status = "OK" if engine.run(request.script) else "FAIL"
-        response.message = "test ret message for message " + request.script
+        ret = self.engine.run(request.script)
+        if ret:
+            response.status = "OK"
+            response.message = "test ret message for message " + request.script
+        else:
+            response.status = "FAIL"
         return response
 
 
 # create a gRPC server
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
 
-# use the generated function `add_CalculatorServicer_to_server`
-# to add the defined class to the created server
+
 eclat_pb2_grpc.add_EclatServicer_to_server(
-    EclatServicer(), server)
+    EclatServicer(engine), server)
 
 # listen on port 50051
 print('Starting server. Listening on port 50051.')
