@@ -171,14 +171,15 @@ class Program(BaseBox):
         # output = "#include <hike_vm.h>\n" + funzioni + variabili_globali + output
         output = funzioni + output
         # ----------------------------------------- #
-        print("'eclat_output.c' was generated.")
-        f = open("eclat_output.c", "w")
-        f.write(output)
-        f.close()
+        return output
+        #print("'eclat_output.c' was generated.")
+        #f = open("eclat_output.c", "w")
+        # f.write(output)
+        # f.close()
         #print("\nVARIABILI: ")
         # for var in env.variables:
         #    print(var, env.variables[var])
-        return result
+        #return result
 
     def get_statements(self):
         return self.statements

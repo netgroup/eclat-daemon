@@ -2,6 +2,13 @@ from rply import ParserGenerator
 from parser.ast import *
 
 
+def getEnvironment():
+    class Environment(object):
+        def __init__(self):
+            self.variables = {}
+    return Environment()
+
+
 def getParser(syntax_tokens):
     package_name = "package_name"  # TBD
     pg = ParserGenerator(syntax_tokens,
