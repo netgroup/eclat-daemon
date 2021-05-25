@@ -22,9 +22,3 @@ class EclatEngine:
 
         print(f"Running {script}")
         return True
-
-
-pg = Parser(package_name=package_name)
-pg.parse()
-parser = pg.get_parser()
-parser.parse(tokens).exec(Environment())

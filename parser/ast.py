@@ -6,11 +6,16 @@ import csv
 import warnings
 
 
-class Path():
-    import_path = "eCLAT_Code/Code/Lib/Import/"
-    registry_path = 'eCLAT_Code/Code/Lib/regisrty.csv'
-    hike_program_path = "eCLAT_Code/Code/Lib/eclat_program_list.csv"
-    token_path = "eCLAT_Code/Code/Lib/token.csv"
+HIKE_PROGRAMS_LIST = "data/hyke_programs_ids.csv"
+HIKE_PROGRAMS = "data/hyke_programs/"
+HIKE_REGISTRY = "data/registry.csv"
+
+
+# class Path():
+#import_path = "eCLAT_Code/Code/Lib/Import/"
+# registry_path = 'eCLAT_Code/Code/Lib/regisrty.csv' # spostare in RAM
+#hike_program_path = "eCLAT_Code/Code/Lib/eclat_program_list.csv"
+#token_path = "eCLAT_Code/Code/Lib/token.csv"
 
 # --------------------------------------- #
 #           CLASSE DI APPOGGIO            #
@@ -118,8 +123,8 @@ class Program(BaseBox):
         count = 74
         name_space = self.package_name
         dict_registry = {}
-        if os.path.exists(Path.registry_path):
-            with open(Path.registry_path, mode='r') as csv_file:
+        if os.path.exists(HIKE_REGISTRY):
+            with open(HIKE_REGISTRY, mode='r') as csv_file:
                 read = csv.reader(csv_file, delimiter=';')
                 for row in read:
                     dict_registry[int(row[0])] = row[1:]
@@ -150,7 +155,7 @@ class Program(BaseBox):
         # i valori aggiornati e riempio il dict     #
         # "chain_registry" che mi serivirà per      #
         # repire gli ID delle chain.                #
-        with open(Path.registry_path, 'w', newline='') as csv_file:
+        with open(HIKE_REGISTRY, 'w', newline='') as csv_file:
             writer = csv.writer(csv_file, delimiter=';')
             for row in dict_registry:
                 if len(dict_registry[row]) > 1:
@@ -524,7 +529,7 @@ class FromImport(BaseBox):
                     # Per ogni programma hike importato leggo i #
                     # valori dal file eclat_program_list.csv e  #
                     # li salvo IN UN DICT PER COMODITA'.        #
-                    with open(Path.hike_program_path, mode='r') as csv_file:
+                    with open(HIKE_PROGRAMS_LIST, mode='r') as csv_file:
                         string = csv.reader(csv_file, delimiter=';')
                         for row in string:
                             if statement == row[0]:
@@ -581,7 +586,7 @@ class Import(BaseBox):
                 # Per ogni programma hike importato leggo i #
                 # valori dal file eclat_program_list.csv e  #
                 # li salvo IN UN DICT PER COMODITA'.        #
-                with open(Path.hike_program_path, mode='r') as csv_file:
+                with open(HIKE_PROGRAMS_LIST, mode='r') as csv_file:
                     string = csv.reader(csv_file, delimiter=';')
                     for row in string:
                         if path_array[1] == row[0]:
