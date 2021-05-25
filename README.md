@@ -35,5 +35,7 @@ python eclat.py --run nomescript.eclat
 
 ## Unit test
 
+```shell
 python -m unittest test.test_grpc
 python -m unittest test.test_parser
+```
