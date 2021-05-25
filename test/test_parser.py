@@ -1,4 +1,5 @@
 import unittest
+from engine import EclatEngine
 
 
 class TestParser(unittest.TestCase):
@@ -8,5 +9,5 @@ class TestParser(unittest.TestCase):
         scriptfile = "testscript1.eclat"
         with open(scriptfile, 'r') as f:
             script = f.read()
-
-            self.assertEqual(ee.run(script), True)
+        ret = ee.run(script)
+        self.assertEqual(ret, True)

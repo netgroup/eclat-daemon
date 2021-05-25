@@ -1,4 +1,32 @@
-def indent_script(input_script):
+import re
+
+
+def lexer_preprocessor(source):
+    """
+    Pre-process the script to feed the lexer
+    """
+
+    def remove_comment(line):
+        """
+        Remove comments from a line
+        """
+        comments = r'(#.*)(?:\n|\Z)'
+        comment = re.search(comments, line)
+        while comment is not None:
+            start, end = comment.span(1)
+            assert start >= 0 and end >= 0
+            # rimuovi la stringa che matcha con il commento
+            line = line[0:start] + line[end:]
+            comment = re.search(comments, line)
+        return line
+
+    def indentation(s, tabsize=4):
+        """
+        Return the indentation value
+        """
+        sx = s.expandtabs(tabsize)
+        return 0 if sx.isspace() else len(sx) - len(sx.lstrip())
+
     block = False
     indent_space = 4
     indent_stack = [0]
@@ -49,4 +77,4 @@ def indent_script(input_script):
     # Inserisco gli eventuali dedent rimasti      #
     for dedent in range(len(indent_stack)-1):
         text += " _dedent "
-    text
+    return text

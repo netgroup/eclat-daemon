@@ -5,9 +5,9 @@ import csv
 
 def getLexer():
     """
-    Return a Lexer objects and a token list
+    Return the Lexer and a token list
     """
-    TOKEN_MAP_FILE = "syntax/python9-tokens.csv"
+    TOKEN_MAP_FILE = "parser/syntax/python9-tokens.csv"
     lg = LexerGenerator()
     tokens = []
     with open(TOKEN_MAP_FILE, mode='r') as csv_file:

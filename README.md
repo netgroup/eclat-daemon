@@ -35,8 +35,5 @@ python eclat.py --run nomescript.eclat
 
 ## Unit test
 
-python -m unittest test_run.py
-
-virtualenv venv
-cd venv
-source activate bin/activate
+python -m unittest test.test_grpc
+python -m unittest test.test_parser

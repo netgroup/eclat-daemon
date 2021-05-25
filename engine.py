@@ -1,17 +1,20 @@
 from parser.parser import getParser
 from parser.lexer import getLexer
-from parser.utils import indent_script
+from parser.utils import lexer_preprocessor
 
 
 class EclatEngine:
     def __init__(self):
-        self.lexer = getLexer()
-        self.parser = getParser()  # pg.build()
+        self.lexer, syntax_tokens = getLexer()
+        self.parser = getParser(syntax_tokens)  # pg.build()
 
     def run(self, script):
         # 1 parsing script
-        indented_script = indent_script(script)
-        tokens = self.lexer.lex(indented_script)
+        preprocessed_script = lexer_preprocessor(script)
+        tokens = self.lexer.lex(preprocessed_script)
+
+        print(list(tokens))
+
         program = self.parser.parse(tokens)
 
         # 2 script execution
@@ -19,3 +22,9 @@ class EclatEngine:
 
         print(f"Running {script}")
         return True
+
+
+pg = Parser(package_name=package_name)
+pg.parse()
+parser = pg.get_parser()
+parser.parse(tokens).exec(Environment())
