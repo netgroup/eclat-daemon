@@ -13,7 +13,7 @@ class EclatEngine:
         preprocessed_script = lexer_preprocessor(script)
         tokens = self.lexer.lex(preprocessed_script)
 
-        print(list(tokens))
+        #print(list(tokens))
 
         program = self.parser.parse(tokens)
 
