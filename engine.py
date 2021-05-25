@@ -31,10 +31,11 @@ class EclatEngine:
         Compile the Hyke program
         """
         hyke_program = self.translate_to_c(script)
+        # se serve scrivere output su file
         # f = open("eclat_output.c", "w")
         # f.write(output)
         # f.close()
 
-        # TBD make
-        # TBD load
+        # TODO make
+        # TODO load
         return True
