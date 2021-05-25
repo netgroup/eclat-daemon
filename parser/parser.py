@@ -31,14 +31,14 @@ def getParser(syntax_tokens):
 
     @pg.production('program : statement_full')
     def program_statement(p):
-        return Program(p[0], self.package_name)
+        return Program(p[0], package_name)
 
     @pg.production('program : statement_full program')
     def program_statement_program(p):
         if type(p[1]) is Program:
             program = p[1]
         else:
-            program = Program(p[1], self.package_name)
+            program = Program(p[1], package_name)
         program.add_statement(p[0])
         return p[1]
 

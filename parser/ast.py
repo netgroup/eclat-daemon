@@ -8,7 +8,7 @@ import warnings
 
 HIKE_PROGRAMS_LIST = "data/hyke_programs_ids.csv"
 HIKE_PROGRAMS = "data/hyke_programs/"
-HIKE_REGISTRY = "data/registry.csv"
+HIKE_REGISTRY = "parser/data/registry.csv"
 
 
 # class Path():
