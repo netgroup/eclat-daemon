@@ -1,0 +1,464 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "Runtime Structure Scheme",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "classifier": [
+                {
+                    "name": "loader_name_1",
+                    "installed": false
+                },
+                {
+                    "name": "loader_name_2",
+                    "installed": true
+                },
+                {
+                    "name": "loader_name_3",
+                    "installed": false
+                }
+            ],
+            "id_prog": [
+                {
+                    "name": "allow",
+                    "id": 10
+                },
+                {
+                    "name": "drop",
+                    "id": 11
+                },
+                {
+                    "name": "mon",
+                    "id": 12
+                }
+            ],
+            "hike_prog": [
+                {
+                    "name": "allow",
+                    "installed": true
+                },
+                {
+                    "name": "drop",
+                    "installed": true
+                },
+                {
+                    "name": "mon",
+                    "installed": false
+                }
+            ],
+            "chain": [
+                {
+                    "name": "chain_name_1",
+                    "package": "package_name_1",
+                    "installed": false,
+                    "hike_prog_list": [
+                        "drop",
+                        "allow"
+                    ]
+                }
+            ],
+            "maps": [
+                {
+                    "name": "map_name_1",
+                    "installed": true,
+                    "hike_prog": "allow"
+                }
+            ]
+        }
+    ],
+    "required": [
+        "classifier",
+        "id_prog",
+        "hike_prog",
+        "chain",
+        "maps"
+    ],
+    "properties": {
+        "classifier": {
+            "$id": "#/properties/classifier",
+            "type": "array",
+            "title": "The classifier schema",
+            "description": "List of downloaded Classifiers",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "name": "loader_name_1",
+                        "installed": false
+                    },
+                    {
+                        "name": "loader_name_2",
+                        "installed": true
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/classifier/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/classifier/items/anyOf/0",
+                        "type": "object",
+                        "title": "Classifier Object",
+                        "description": "Each Classifier is uniquely defined by its name, and only one Classifier can be installed at a time",
+                        "default": {},
+                        "examples": [
+                            {
+                                "name": "loader_name_1",
+                                "installed": false
+                            }
+                        ],
+                        "required": [
+                            "name",
+                            "installed"
+                        ],
+                        "properties": {
+                            "name": {
+                                "$id": "#/properties/classifier/items/anyOf/0/properties/name",
+                                "type": "string",
+                                "title": "Classifier name",
+                                "description": "The unique name of the Classifier",
+                                "default": "",
+                                "examples": [
+                                    "loader_name_1"
+                                ]
+                            },
+                            "installed": {
+                                "$id": "#/properties/classifier/items/anyOf/0/properties/installed",
+                                "type": "boolean",
+                                "title": "Installed",
+                                "description": "True if the Classifier has been installed, False otherwise.",
+                                "default": false,
+                                "examples": [
+                                    false
+                                ]
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        },
+        "id_prog": {
+            "$id": "#/properties/id_prog",
+            "type": "array",
+            "title": "id_prog map",
+            "description": "Static map that associates an ID to programs",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "name": "allow",
+                        "id": 10
+                    },
+                    {
+                        "name": "drop",
+                        "id": 11
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/id_prog/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/id_prog/items/anyOf/0",
+                        "type": "object",
+                        "title": "ID-Prog Object",
+                        "description": "Each element of the map associates a unique id to the program name",
+                        "default": {},
+                        "examples": [
+                            {
+                                "name": "allow",
+                                "id": 10
+                            }
+                        ],
+                        "required": [
+                            "name",
+                            "id"
+                        ],
+                        "properties": {
+                            "name": {
+                                "$id": "#/properties/id_prog/items/anyOf/0/properties/name",
+                                "type": "string",
+                                "title": "Prog Name",
+                                "description": "The program name",
+                                "default": "",
+                                "examples": [
+                                    "allow"
+                                ]
+                            },
+                            "id": {
+                                "$id": "#/properties/id_prog/items/anyOf/0/properties/id",
+                                "type": "integer",
+                                "title": "Prog ID",
+                                "description": "The program ID",
+                                "default": 0,
+                                "examples": [
+                                    10
+                                ]
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        },
+        "hike_prog": {
+            "$id": "#/properties/hike_prog",
+            "type": "array",
+            "title": "The hike_prog schema",
+            "description": "List of downloaded Program",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "name": "allow",
+                        "installed": true
+                    },
+                    {
+                        "name": "drop",
+                        "installed": true
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/hike_prog/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/hike_prog/items/anyOf/0",
+                        "type": "object",
+                        "title": "Program Object",
+                        "description": "Each program has a unique name and may or may not have been installed",
+                        "default": {},
+                        "examples": [
+                            {
+                                "name": "allow",
+                                "installed": true
+                            }
+                        ],
+                        "required": [
+                            "name",
+                            "installed"
+                        ],
+                        "properties": {
+                            "name": {
+                                "$id": "#/properties/hike_prog/items/anyOf/0/properties/name",
+                                "type": "string",
+                                "title": "The name schema",
+                                "description": "Program unique name",
+                                "default": "",
+                                "examples": [
+                                    "allow"
+                                ]
+                            },
+                            "installed": {
+                                "$id": "#/properties/hike_prog/items/anyOf/0/properties/installed",
+                                "type": "boolean",
+                                "title": "The installed schema",
+                                "description": "True if the Program has been installed, False otherwise.",
+                                "default": false,
+                                "examples": [
+                                    true
+                                ]
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        },
+        "chain": {
+            "$id": "#/properties/chain",
+            "type": "array",
+            "title": "The chain schema",
+            "description": "List of downloaded Chain",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "name": "chain_name_1",
+                        "package": "package_name_1",
+                        "installed": false,
+                        "hike_prog_list": [
+                            "drop",
+                            "allow"
+                        ]
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/chain/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/chain/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "The name of the chains must be unique within the same package.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "name": "chain_name_1",
+                                "package": "package_name_1",
+                                "installed": false,
+                                "hike_prog_list": [
+                                    "drop",
+                                    "allow"
+                                ]
+                            }
+                        ],
+                        "required": [
+                            "name",
+                            "package",
+                            "installed",
+                            "hike_prog_list"
+                        ],
+                        "properties": {
+                            "name": {
+                                "$id": "#/properties/chain/items/anyOf/0/properties/name",
+                                "type": "string",
+                                "title": "Chain Name",
+                                "description": "Chain unique name",
+                                "default": "",
+                                "examples": [
+                                    "chain_name_1"
+                                ]
+                            },
+                            "package": {
+                                "$id": "#/properties/chain/items/anyOf/0/properties/package",
+                                "type": "string",
+                                "title": "Chain Package",
+                                "description": "Chain Package Name",
+                                "default": "",
+                                "examples": [
+                                    "package_name_1"
+                                ]
+                            },
+                            "installed": {
+                                "$id": "#/properties/chain/items/anyOf/0/properties/installed",
+                                "type": "boolean",
+                                "title": "Installed",
+                                "description": "True if the Chain has been installed, False otherwise.",
+                                "default": false,
+                                "examples": [
+                                    false
+                                ]
+                            },
+                            "hike_prog_list": {
+                                "$id": "#/properties/chain/items/anyOf/0/properties/hike_prog_list",
+                                "type": "array",
+                                "title": "The hike_prog_list schema",
+                                "description": "List of the unique names of the programs used in the chain.",
+                                "default": [],
+                                "examples": [
+                                    [
+                                        "drop",
+                                        "allow"
+                                    ]
+                                ],
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/chain/items/anyOf/0/properties/hike_prog_list/items",
+                                    "anyOf": [
+                                        {
+                                            "$id": "#/properties/chain/items/anyOf/0/properties/hike_prog_list/items/anyOf/0",
+                                            "type": "string",
+                                            "title": "The first anyOf schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": "",
+                                            "examples": [
+                                                "drop",
+                                                "allow"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        },
+        "maps": {
+            "$id": "#/properties/maps",
+            "type": "array",
+            "title": "The maps schema",
+            "description": "List of downloaded Maps.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "name": "map_name_1",
+                        "installed": true,
+                        "hike_prog": "allow"
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/maps/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/maps/items/anyOf/0",
+                        "type": "object",
+                        "title": "Map Object",
+                        "description": "Each map has a unique name and associated programs",
+                        "default": {},
+                        "examples": [
+                            {
+                                "name": "map_name_1",
+                                "installed": true,
+                                "hike_prog": "allow"
+                            }
+                        ],
+                        "required": [
+                            "name",
+                            "installed",
+                            "hike_prog"
+                        ],
+                        "properties": {
+                            "name": {
+                                "$id": "#/properties/maps/items/anyOf/0/properties/name",
+                                "type": "string",
+                                "title": "Map Name",
+                                "description": "The name of the Map",
+                                "default": "",
+                                "examples": [
+                                    "map_name_1"
+                                ]
+                            },
+                            "installed": {
+                                "$id": "#/properties/maps/items/anyOf/0/properties/installed",
+                                "type": "boolean",
+                                "title": "Installed",
+                                "description": "True if the Map has been installed, False otherwise.",
+                                "default": false,
+                                "examples": [
+                                    true
+                                ]
+                            },
+                            "hike_prog": {
+                                "$id": "#/properties/maps/items/anyOf/0/properties/hike_prog",
+                                "type": "string",
+                                "title": "The hike_prog schema",
+                                "description": "List of the unique names of the programs associated with the chain.",
+                                "default": "",
+                                "examples": [
+                                    "allow"
+                                ]
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": true
+}

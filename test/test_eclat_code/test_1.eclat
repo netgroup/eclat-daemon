@@ -1,0 +1,4 @@
+from hike import drop
+
+def mychain0():
+    drop()

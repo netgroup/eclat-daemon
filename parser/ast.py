@@ -3,12 +3,28 @@ from integer import Integer
 import importlib
 import os.path
 import csv
+import sys
 import warnings
 
 
-HIKE_PROGRAMS_LIST = "data/hyke_programs_ids.csv"
-HIKE_PROGRAMS = "data/hyke_programs/"
-HIKE_REGISTRY = "parser/data/registry.csv"
+HIKE_DATA_LIST = "/opt/eclat-daemon/runtime/hike_programs_ids.csv"
+HIKE_DATA = "/opt/eclat-daemon/runtime/buildin_eclat_function/"
+HIKE_PROGRAM = "/opt/eclat-daemon/runtime/hike_program/"
+HIKE_REGISTRY = "/opt/eclat-daemon/runtime/registry.csv"
+HEADER_LIST_LIB = """
+#include <stddef.h>
+#include <linux/in.h>
+#include <linux/if_ether.h>
+#include <linux/if_packet.h>
+#include <linux/ipv6.h>
+#include <linux/seg6.h>
+#include <linux/errno.h>
+
+#define HIKE_DEBUG 1
+#include "hike_vm.h"
+
+"""
+
 
 
 # class Path():
@@ -21,8 +37,6 @@ HIKE_REGISTRY = "parser/data/registry.csv"
 #           CLASSE DI APPOGGIO            #
 #     PER SCRIVERE LE DICHIARAZIONI       #
 # --------------------------------------- #
-
-
 class Appoggio():
     import_module = {}
     # Variabile di appoggio in cui viene memorizzato il nome
@@ -165,17 +179,13 @@ class Program(BaseBox):
                     writer.writerow([row])
         # ----------------------------------------- #
         # Importo i #define di default e            #
-        # incollo (in ordine):                      #
+        # incollo (in ordine):    
+        # - lista librerie                          #
         # - le funzioni (chain) dichiarate          #
         # - il codice .c calcolato                  #
-        # output = "#include <hike_vm.h>\n" + funzioni + variabili_globali + output
-        output = funzioni + output
+        output = HEADER_LIST_LIB + funzioni + output
         # ----------------------------------------- #
         return output
-        #print("'eclat_output.c' was generated.")
-        #f = open("eclat_output.c", "w")
-        # f.write(output)
-        # f.close()
         #print("\nVARIABILI: ")
         # for var in env.variables:
         #    print(var, env.variables[var])
@@ -502,46 +512,41 @@ class FromImport(BaseBox):
         result = ''
         if self.to_co == "hike":
             for statement in self.args.get_statements():
-                path = Path.import_path + "hike_program"
-                if os.path.exists(path):
-                    if os.path.exists(path + "/" + str(statement) + ".c"):
-                        result += '\n#define ' + Appoggio.hike_program[statement][0] + " " \
-                            + Appoggio.hike_program[statement][1] + '\n'
-                        result += "#include \"" + path + \
-                            "/" + str(statement) + ".c\"\n"
-                    elif os.path.exists(path + "/" + str(statement) + ".py"):
-                        # ----------------------------------------- #
-                        # Per packet nel .c non devo scrivere nulla #
-                        pass
-                    else:
-                        raise Exception(
-                            str(self.to_co + "/" + str(statement)) + ".c not found.")
-                else:
-                    raise Exception(str(self.to_co) + " not found.")
+                result += '\n#define ' + Appoggio.hike_program[statement][0] + " " \
+                    + Appoggio.hike_program[statement][1] + '\n'
         return result
 
     def prima_passata(self, env):
-        path = Path.import_path + self.to_co
-        if os.path.exists(path + ".py"):
+        # Controllo il modulo
+        if self.to_co == "net":
+            path = HIKE_DATA
             for statement in self.args.get_statements():
-                # Importo le funzioni        #
-                if self.to_co == "hike":
+                currentDirectory = os.getcwd()
+                os.chdir(path)
+                try:    
+                    Appoggio.import_module[str(statement)] = __import__("net", str(statement))
+                except:
+                    raise ModuleNotFoundError()
+            return ""
+        elif self.to_co == "hike":
+            path = HIKE_PROGRAM + "/hike/"
+            for statement in self.args.get_statements():
+                if os.path.exists(path + statement + ".bpf.c"):
                     # ----------------------------------------- #
                     # Per ogni programma hike importato leggo i #
                     # valori dal file eclat_program_list.csv e  #
                     # li salvo IN UN DICT PER COMODITA'.        #
-                    with open(HIKE_PROGRAMS_LIST, mode='r') as csv_file:
+                    with open(HIKE_DATA_LIST, mode='r') as csv_file:
                         string = csv.reader(csv_file, delimiter=';')
                         for row in string:
                             if statement == row[0]:
-                                Appoggio.hike_program[row[0]] = [
-                                    row[1], row[2]]
-                path = path.replace("/", ".")
-                Appoggio.import_module[str(statement)] = importlib.import_module(
-                    path, str(statement))
+                                Appoggio.hike_program[row[0]] = [row[1], row[2]]
+                else:
+                    raise Exception(str(statement + ".bpf.c not found."))
+            return ""
         else:
-            raise Exception(str(self.to_co + ".py not found."))
-        return ""
+            raise Exception(str(self.to_co + " not found."))
+        
 
 
 #################################################
@@ -560,13 +565,13 @@ class Import(BaseBox):
         for statement in self.args.get_statements():
             path_array = str(statement).split(".")
             if path_array[0] == "hike":
-                path = Path.import_path + "hike_program"
+                path = HIKE_DATA+ "hike_program"
                 if os.path.exists(path):
                     module = "/".join(path_array[1:])
                     if os.path.exists(path + "/" + module + ".c"):
                         result += '\n#define ' + Appoggio.hike_program[module][0] + " " \
                             + Appoggio.hike_program[module][1] + '\n'
-                        result += "#include \"" + path + "/" + module + ".c\"\n"
+                        #result += "#include \"" + path + "/" + module + ".c\"\n"
                     elif os.path.exists(path + "/" + module + ".py"):
                         # ----------------------------------------- #
                         # Per packet nel .c non devo scrivere nulla #
@@ -578,7 +583,7 @@ class Import(BaseBox):
         return result
 
     def prima_passata(self, env):
-        path = Path.import_path
+        path = HIKE_DATA
         for statement in self.args.get_statements():
             path_array = str(statement).split(".")
             num = 0
@@ -587,7 +592,7 @@ class Import(BaseBox):
                 # Per ogni programma hike importato leggo i #
                 # valori dal file eclat_program_list.csv e  #
                 # li salvo IN UN DICT PER COMODITA'.        #
-                with open(HIKE_PROGRAMS_LIST, mode='r') as csv_file:
+                with open(HIKE_DATA_LIST, mode='r') as csv_file:
                     string = csv.reader(csv_file, delimiter=';')
                     for row in string:
                         if path_array[1] == row[0]:

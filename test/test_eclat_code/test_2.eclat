@@ -1,0 +1,27 @@
+from hike import drop, allow
+from net import Packet
+
+
+def mychain0():
+    eth_type = Packet.readU16(12)
+
+    if eth_type == 0x86dd :
+        drop(eth_type)
+        return 
+    ttl = 64                    #espande in un S64
+    if eth_type == 0x800 : 
+        Packet.writeU8(ttl,22)  
+    allow(eth_type)
+
+def mychain1():
+    eth_type = Packet.readU16(12)
+    if eth_type == 0x86dd :
+        ttl = Packet.readU8(21)
+        if ttl == 64:
+            Packet.writeU8(17,21) 
+    
+    if eth_type == 0x800 :
+        drop(eth_type)
+        return
+    allow(eth_type)
+    return
