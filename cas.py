@@ -1,17 +1,100 @@
 """
 Command Abstraction System
 """
+from typing import Coroutine
+import settings
 
 # References: 
 # - https://manpages.ubuntu.com/manpages/focal/man8/bpftool-prog.8.html
 # - https://man.archlinux.org/man/bpftool.8.en
 
+
+
+def init_system():
+    """
+    assert(esiste /sys/fs/bpf/ e /sys/fs/tracefs) 
+    mount bpf e tracefs
+    mkdir /sys/fs/bpf/progs
+    mkdir /sys/fs/bpf/maps
+    """
+    mount_bpf(settings.BPF_FS_PATH)
+
+    mount_tracefs(settings.TRACE_FS_PATH)
+
+    os.system(f"mkdir {settings.BPF_FS_PROGS_PATH}")
+    os.system(f"mkdir {settings.BPF_FS_MAPS_PATH}")
+
+
+def mount_bpf(mount_point):
+    """
+    mount -t bpf bpf /sys/fs/bpf/
+    """
+    # Everything that is private to the bash process that will be launch
+    # mount the bpf filesystem.
+    # Note: childs of the launching (parent) bash can access this instance
+    # of the bpf filesystem. If you need to get access to the bpf filesystem
+    # (where maps are available), you need to use nsenter with -m and -t
+    # that points to the pid of the parent process (launching bash).
+    cmd = f"mount -t bpf bpf {mount_point}"
+    os.system(cmd)
+
+def mount_tracefs(path, bpf_tracefs):
+    """
+    mount -t tracefs nodev /sys/kernel/tracing
+    """
+    cmd = f"mount -t tracefs nodev {mount_point}"
+    os.system(cmd)
+
+
+def make_hike_chain(makefile, source, hike_dir):
+    """
+    Run makefile to create an HIKe chain.
+    $ make -f path-to/hike_vm/external/Makefile -j24 chain CHAIN=chain.hike.c HIKE_DIR=path-to/hike_vm/src/
+    """
+    build_dir = settings.BUILD_DIR
+    cmd = f"make -f {makefile} chain CHAIN={source} HIKE_DIR={hike_dir} BUILD={build_dir}"
+    os.system(cmd)
+
+
+def make_ebpf_hike_program(makefile, source, hike_dir):
+    """
+    Run makefile to create an eBPF/HIKe program.
+    $ make -f path-to/hike_vm/external/Makefile -j24 prog PROG=prog.bpf.c HIKE_DIR=path-to/hike_vm/src/
+    """
+    build_dir = settings.BUILD_DIR
+    cmd = f"make -f {makefile} prog PROG={source} HIKE_DIR={hike_dir} BUILD={build_dir}"
+    os.system(cmd)
+
+
+def hikecc(path_eclat_output, path_chain=settings.MAP_PATH):
+    """
+    # The HIKECC takes as 1) the HIKe Chains object file; 2) the eBPF map
+    # that contains all the HIKe Chains; 3) the path of the load script
+    # that is going to be generated.
+    ${HIKECC} data/binaries/minimal_chain.hike.o			\
+            /sys/fs/bpf/maps/hike_chain_map 			\
+            data/binaries/minimal_chain.hike.load.sh
+
+    # Load HIKe Chains calling the loader script we just built :-o
+    /bin/bash data/binaries/minimal_chain.hike.load.sh
+    """
+    loader_file = path_eclat_output[:-1] + "load.sh"
+    hikecc_file = settings.HIKE_CC
+    cmd = f"/bin/bash {hikecc_file} {path_eclat_output} " \
+            + f"{path_chain} {loader_file}"
+    os.system(cmd)
+    cmd = "/bin/bash {loader_file}"
+    os.system(cmd)
+
+
+
+
+
+
+
+
 # bpftool prog { load | loadall } OBJ PATH [type TYPE] 
 ## [map {idx IDX |  name  NAME}  MAP] [dev NAME] [pinmaps MAP_DIR]
-from typing import Coroutine
-import settings
-
-
 def prog_load_all(load_loadall, prog_obj, prog_path, 
                     type=None, map_idx=None, map_name=None, 
                         map_map=None, dev_name=None, pinmaps_map_dir=None):
@@ -100,85 +183,3 @@ def map_update(map_map, key_data=None, value=None, update_flags=None):
         print("ERRORE")
         
     return command
-
-
-
-
-
-def init_system():
-    """
-    assert(esiste /sys/fs/bpf/ e /sys/fs/tracefs) 
-    mount bpf e tracefs
-    mkdir /sys/fs/bpf/progs
-    mkdir /sys/fs/bpf/maps
-    """
-    #TODO 
-    pass
-    # os.system(mount("/sys/fs/bpf/", "bpf"))
-    # os.system(mount("/sys/kernel/tracing", "tracefs"))
-
-    # os.system(mkdir("/sys/fs/bpf/progs"))
-    # os.system(mkdir("/sys/fs/bpf/maps"))
-
-
-def mount_bpf(mount_point):
-    """
-    mount -t bpf bpf /sys/fs/bpf/
-    """
-    # Everything that is private to the bash process that will be launch
-    # mount the bpf filesystem.
-    # Note: childs of the launching (parent) bash can access this instance
-    # of the bpf filesystem. If you need to get access to the bpf filesystem
-    # (where maps are available), you need to use nsenter with -m and -t
-    # that points to the pid of the parent process (launching bash).
-    cmd = f"mount -t bpf bpf {mount_point}"
-    os.system(cmd)
-
-def mount_tracefs(path, bpf_tracefs):
-    """
-    mount -t tracefs nodev /sys/kernel/tracing
-    """
-    cmd = f"mount -t tracefs nodev {mount_point}"
-    os.system(cmd)
-
-
-def make_hike_chain(makefile, source, hike_dir):
-    """
-    Run makefile to create an HIKe chain.
-    $ make -f path-to/hike_vm/external/Makefile -j24 chain CHAIN=chain.hike.c HIKE_DIR=path-to/hike_vm/src/
-    """
-    build_dir = settings.BUILD_DIR
-    cmd = f"make -f {makefile} chain CHAIN={source} HIKE_DIR={hike_dir} BUILD={build_dir}"
-    os.system(cmd)
-
-
-def make_ebpf_hike_program(makefile, source, hike_dir):
-    """
-    Run makefile to create an eBPF/HIKe program.
-    $ make -f path-to/hike_vm/external/Makefile -j24 prog PROG=prog.bpf.c HIKE_DIR=path-to/hike_vm/src/
-    """
-    build_dir = settings.BUILD_DIR
-    cmd = f"make -f {makefile} prog PROG={source} HIKE_DIR={hike_dir} BUILD={build_dir}"
-    os.system(cmd)
-
-
-def hikecc(path_eclat_output, path_chain=settings.MAP_PATH):
-    """
-    # The HIKECC takes as 1) the HIKe Chains object file; 2) the eBPF map
-    # that contains all the HIKe Chains; 3) the path of the load script
-    # that is going to be generated.
-    ${HIKECC} data/binaries/minimal_chain.hike.o			\
-            /sys/fs/bpf/maps/hike_chain_map 			\
-            data/binaries/minimal_chain.hike.load.sh
-
-    # Load HIKe Chains calling the loader script we just built :-o
-    /bin/bash data/binaries/minimal_chain.hike.load.sh
-    """
-    loader_file = path_eclat_output[:-1] + "load.sh"
-    hikecc_file = settings.HIKE_CC
-    cmd = f"/bin/bash {hikecc_file} {path_eclat_output} " \
-            + f"{path_chain} {loader_file}"
-    os.system(cmd)
-    cmd = "/bin/bash {loader_file}"
-    os.system(cmd)
-
