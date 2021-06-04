@@ -1,9 +1,8 @@
 from parser.parser import getParser, getEnvironment
 from parser.lexer import getLexer
 from parser.utils import lexer_preprocessor
-
-from Interface_i1.interface_i1 import *
-
+import settings
+import cas
 import os
 
 class EclatEngine:
@@ -29,9 +28,40 @@ class EclatEngine:
 
         return code
 
+    def make_hike_chain(self, hike_source, dest_folder=settings.MAKE_FOLDER):
+        """
+        Make an hike chain.
+        Call makefile on a hike C program, to create the object file.
+        This object file can be loaded after in memory.
+
+        The function returns the file path containing the compiled hike chain.
+        """
+        # 1. dump hike_source into a file
+        hike_source_file = os.path.join(os.path.dirname(__file__), "output/eclat_output.hike.c")
+        f = open(hike_source, "w")
+        f.write(hike_source)
+        f.close()
+        # 2. call Makefile on top of that 
+        makefile = os.path.join(os.path.dirname(__file__), settings.EXTERNAL_MAKEFILE_PATH)
+        hike_dir = os.path.join(os.path.dirname(__file__), settings.HIKE_SOURCE_PATH)
+
+        cas.make_hike_chain(makefile, hike_source_file, hike_dir)
+
+        compiled_file = hike_source_file
+        hike_source_file[-1] = "o"
+        return hike_source_file
+
+
+    def load_hike_chain(self, hike_compiled_file):
+        """
+        Load the compiled file into the memory
+        """
+        cas.hikecc(hike_compiled_file)
+
     def run(self, script):
         """
-        Compile the Hyke program
+        Translate an ECLAT script into an HIKe Chain.
+        Compile the chain and load it to memory.
         """
         # Ogni volta che viene eseguita la traduzione viene
         # riscritto/aggiornato il file "registry.csv" che si trova 
@@ -45,35 +75,10 @@ class EclatEngine:
         #       dello stesso modulo genera un errore visto che devono
         #       essere univoche. 
 
-        hyke_program = self.translate_to_c(script)
+        hike_source = self.translate_to_c(script)
+
+        hike_compiled_file = self.make_hike_chain(hike_source)
+
+        self.load_hike_chain(hike_compiled_file)
         
-        # se serve scrivere output su file
-        f = open("/opt/eclat-daemon/runtime/output/eclat_output.hike.c", "w")
-        f.write(hyke_program)
-        f.close()
-
-        
-        # MOUNT
-        # os.system(mount("/sys/fs/bpf/", "bpf"))
-        # os.system(mount("/sys/kernel/tracing", "tracefs"))
-
-        # os.system(mkdir("/sys/fs/bpf/progs"))
-        # os.system(mkdir("/sys/fs/bpf/maps"))
-
-        # TODO make
-        MAKEFILE_PATH = "/opt/hike_v3/external/Makefile"
-        HIKE_DIR_PATH = "/opt/hike_v3/src/"
-
-        # Il build viene generato in "output"
-        os.chdir('/opt/eclat-daemon/runtime/output')
-        os.system(make(MAKEFILE_PATH, "chain", "eclat_output", HIKE_DIR_PATH))
-
-        # TODO load
-        OBJ_PATH = HIKE_DIR_PATH + "/build/eclat_output.hike.o"
-        MAP_PATH = "/sys/fs/bpf/maps/hike_chain_map"
-        OUTPUT_PATH = "/opt/eclat-daemon/runtime/output"
-
-        os.system(hikecc(OBJ_PATH, MAP_PATH, OUTPUT_PATH))
-
-
         return True

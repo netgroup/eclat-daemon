@@ -7,12 +7,11 @@ import sys
 import warnings
 
 
-HIKE_DATA_LIST = "/opt/eclat-daemon/runtime/hike_programs_ids.csv"
-HIKE_DATA = "/opt/eclat-daemon/runtime/buildin_eclat_function/"
-HIKE_PROGRAM = "/opt/eclat-daemon/runtime/hike_program/"
-HIKE_REGISTRY = "/opt/eclat-daemon/runtime/registry.csv"
-HEADER_LIST_LIB = """
-#include <stddef.h>
+HIKE_DATA_LIST = "runtime/hike_programs_ids.csv"
+HIKE_DATA = "runtime/buildin_eclat_function/"
+HIKE_PROGRAM = "runtime/hike_program/"
+HIKE_REGISTRY = "runtime/registry.csv"
+HEADER_LIST_LIB = """#include <stddef.h>
 #include <linux/in.h>
 #include <linux/if_ether.h>
 #include <linux/if_packet.h>
