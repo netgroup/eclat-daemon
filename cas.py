@@ -3,6 +3,7 @@ Command Abstraction System
 """
 from typing import Coroutine
 import settings
+import os
 
 # References: 
 # - https://manpages.ubuntu.com/manpages/focal/man8/bpftool-prog.8.html
@@ -38,7 +39,7 @@ def mount_bpf(mount_point):
     cmd = f"mount -t bpf bpf {mount_point}"
     os.system(cmd)
 
-def mount_tracefs(path, bpf_tracefs):
+def mount_tracefs(mount_point):
     """
     mount -t tracefs nodev /sys/kernel/tracing
     """
@@ -52,8 +53,20 @@ def make_hike_chain(makefile, source, hike_dir):
     $ make -f path-to/hike_vm/external/Makefile -j24 chain CHAIN=chain.hike.c HIKE_DIR=path-to/hike_vm/src/
     """
     build_dir = settings.BUILD_DIR
-    cmd = f"make -f {makefile} chain CHAIN={source} HIKE_DIR={hike_dir} BUILD={build_dir}"
+    # We just need the name of the object file
+    source = source.split("/")[-1]
+
+    # BUILD indicates the path where the compiled file is put and NOT the path of the input file
+    # do we need to change folder ???
+    currentDirectory = os.getcwd()
+    os.chdir(build_dir)
+
+    #cmd = f"make -f {makefile} chain CHAIN={source} HIKE_DIR={hike_dir} BUILD={build_dir}"
+    cmd = f"make -f {makefile} chain CHAIN={source} HIKE_DIR={hike_dir}"
     os.system(cmd)
+
+    # reset directory
+    os.chdir(currentDirectory)
 
 
 def make_ebpf_hike_program(makefile, source, hike_dir):
@@ -78,12 +91,15 @@ def hikecc(path_eclat_output, path_chain=settings.MAP_PATH):
     # Load HIKe Chains calling the loader script we just built :-o
     /bin/bash data/binaries/minimal_chain.hike.load.sh
     """
+    # We just need the name of the object file
+    path_eclat_output = path_eclat_output.split("/")[-1]
+
     loader_file = path_eclat_output[:-1] + "load.sh"
     hikecc_file = settings.HIKE_CC
-    cmd = f"/bin/bash {hikecc_file} {path_eclat_output} " \
-            + f"{path_chain} {loader_file}"
+    cmd = f"/bin/bash {hikecc_file} {settings.LOAD_DIR + path_eclat_output} " \
+            + f"{path_chain} {settings.LOAD_DIR + loader_file}"
     os.system(cmd)
-    cmd = "/bin/bash {loader_file}"
+    cmd = f"/bin/bash {settings.LOAD_DIR +  loader_file}"
     os.system(cmd)
 
 
