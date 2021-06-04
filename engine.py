@@ -28,7 +28,9 @@ class EclatEngine:
 
         return code
 
-    def make_hike_chain(self, hike_source, dest_folder=settings.MAKE_FOLDER):
+    # dest_folder is unsed and MAKE_FOLDER MAKE_FOLDER doesn't exist
+    #def make_hike_chain(self, hike_source, dest_folder=settings.MAKE_FOLDER):
+    def make_hike_chain(self, hike_source):
         """
         Make an hike chain.
         Call makefile on a hike C program, to create the object file.
@@ -37,10 +39,11 @@ class EclatEngine:
         The function returns the file path containing the compiled hike chain.
         """
         # 1. dump hike_source into a file
-        hike_source_file = os.path.join(os.path.dirname(__file__), "output/eclat_output.hike.c")
-        f = open(hike_source, "w")
+        hike_source_file = os.path.join(os.path.dirname(__file__), "runtime/output/eclat_output.hike.c")
+        f = open(hike_source_file, "w")
         f.write(hike_source)
         f.close()
+
         # 2. call Makefile on top of that 
         makefile = os.path.join(os.path.dirname(__file__), settings.EXTERNAL_MAKEFILE_PATH)
         hike_dir = os.path.join(os.path.dirname(__file__), settings.HIKE_SOURCE_PATH)
@@ -48,8 +51,9 @@ class EclatEngine:
         cas.make_hike_chain(makefile, hike_source_file, hike_dir)
 
         compiled_file = hike_source_file
-        hike_source_file[-1] = "o"
-        return hike_source_file
+        #hike_source_file[-1] = "o"     ERROR TypeError: 'str' object does not support item assignment
+        compiled_file = compiled_file[:-1] + "o"
+        return compiled_file
 
 
     def load_hike_chain(self, hike_compiled_file):
