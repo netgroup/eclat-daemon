@@ -1,16 +1,16 @@
 from rply.token import BaseBox
 from integer import Integer
+import settings
 import importlib
 import os.path
 import csv
 import sys
 import warnings
 
-
-HIKE_DATA_LIST = "runtime/hike_programs_ids.csv"
-HIKE_DATA = "runtime/buildin_eclat_function/"
-HIKE_PROGRAM = "runtime/hike_program/"
-HIKE_REGISTRY = "runtime/registry.csv"
+HIKE_DATA_LIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), settings.HIKE_DATA_LIST)
+ECLAT_DATA= os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), settings.ECLAT_DATA)
+HIKE_PROGRAM = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), settings.HIKE_PROGRAM)
+HIKE_REGISTRY = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), settings.HIKE_REGISTRY)
 HEADER_LIST_LIB = """#include <stddef.h>
 #include <linux/in.h>
 #include <linux/if_ether.h>
@@ -21,7 +21,6 @@ HEADER_LIST_LIB = """#include <stddef.h>
 
 #define HIKE_DEBUG 1
 #include "hike_vm.h"
-
 """
 
 
@@ -136,17 +135,17 @@ class Program(BaseBox):
         count = 74
         name_space = self.package_name
         dict_registry = {}
-        if os.path.exists(HIKE_REGISTRY):
-            with open(HIKE_REGISTRY, mode='r') as csv_file:
-                read = csv.reader(csv_file, delimiter=';')
-                for row in read:
-                    dict_registry[int(row[0])] = row[1:]
-                    if len(row) > 1:
-                        if row[1] == name_space:
-                            if row[2] in Appoggio.variabili_locali:
-                                raise Exception("Function '" + row[2] +
-                                                "' in NameSpace '" + name_space+"' already exist. Change file or chain name.")
-                        count = int(row[0])
+        # if os.path.exists(HIKE_REGISTRY):
+        #     with open(HIKE_REGISTRY, mode='r') as csv_file:
+        #         read = csv.reader(csv_file, delimiter=';')
+        #         for row in read:
+        #             dict_registry[int(row[0])] = row[1:]
+        #             if len(row) > 1:
+        #                 if row[1] == name_space:
+        #                     if row[2] in Appoggio.variabili_locali:
+        #                         raise Exception("Function '" + row[2] +
+        #                                         "' in NameSpace '" + name_space+"' already exist. Change file or chain name.")
+        #                 count = int(row[0])
         count += 1
         # ----------------------------------------- #
         # Aggiorno il "dict_regisrty" e scrivo le   #
@@ -168,14 +167,14 @@ class Program(BaseBox):
         # i valori aggiornati e riempio il dict     #
         # "chain_registry" che mi serivirà per      #
         # repire gli ID delle chain.                #
-        with open(HIKE_REGISTRY, 'w', newline='') as csv_file:
-            writer = csv.writer(csv_file, delimiter=';')
-            for row in dict_registry:
-                if len(dict_registry[row]) > 1:
-                    writer.writerow(
-                        [row, dict_registry[row][0], dict_registry[row][1]])
-                else:
-                    writer.writerow([row])
+        # with open(HIKE_REGISTRY, 'w', newline='') as csv_file:
+        #     writer = csv.writer(csv_file, delimiter=';')
+        #     for row in dict_registry:
+        #         if len(dict_registry[row]) > 1:
+        #             writer.writerow(
+        #                 [row, dict_registry[row][0], dict_registry[row][1]])
+        #         else:
+        #             writer.writerow([row])
         # ----------------------------------------- #
         # Importo i #define di default e            #
         # incollo (in ordine):    
@@ -518,7 +517,7 @@ class FromImport(BaseBox):
     def prima_passata(self, env):
         # Controllo il modulo
         if self.to_co == "net":
-            path = HIKE_DATA
+            path = ECLAT_DATA
             for statement in self.args.get_statements():
                 currentDirectory = os.getcwd()
                 os.chdir(path)
@@ -526,9 +525,10 @@ class FromImport(BaseBox):
                     Appoggio.import_module[str(statement)] = __import__("net", str(statement))
                 except:
                     raise ModuleNotFoundError()
+                os.chdir(currentDirectory)
             return ""
         elif self.to_co == "hike":
-            path = HIKE_PROGRAM + "/hike/"
+            path = HIKE_PROGRAM + "hike/"
             for statement in self.args.get_statements():
                 if os.path.exists(path + statement + ".bpf.c"):
                     # ----------------------------------------- #
@@ -564,7 +564,7 @@ class Import(BaseBox):
         for statement in self.args.get_statements():
             path_array = str(statement).split(".")
             if path_array[0] == "hike":
-                path = HIKE_DATA+ "hike_program"
+                path = ECLAT_DATA+ "hike_program"
                 if os.path.exists(path):
                     module = "/".join(path_array[1:])
                     if os.path.exists(path + "/" + module + ".c"):
@@ -582,7 +582,7 @@ class Import(BaseBox):
         return result
 
     def prima_passata(self, env):
-        path = HIKE_DATA
+        path = ECLAT_DATA
         for statement in self.args.get_statements():
             path_array = str(statement).split(".")
             num = 0
