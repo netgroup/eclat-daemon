@@ -3,6 +3,7 @@ Command Abstraction System
 """
 from typing import Coroutine
 import settings
+import subprocess
 import os
 
 # References: 
@@ -23,7 +24,25 @@ def init_system():
     mount_tracefs(settings.TRACE_FS_PATH)
 
     os.system(f"mkdir {settings.BPF_FS_PROGS_PATH}")
+    
     os.system(f"mkdir {settings.BPF_FS_MAPS_PATH}")
+
+    # To get the output of the shell command
+    # out = subprocess.Popen(['mkdir', settings.BPF_FS_PROGS_PATH, ], 
+    #        stdout=subprocess.PIPE, 
+    #        stderr=subprocess.STDOUT)
+    # stdout,stderr = out.communicate()
+
+
+
+    # TODO Load of Classifier here ???
+
+    # Load all the classifiers
+	# bpftool prog loadall classifier.o /sys/fs/bpf/progs/init type xdp \
+	#	pinmaps /sys/fs/bpf/maps/init
+
+    # how do we decide which classifier to load?
+    # bpftool_prog_load_loadall()
 
 
 def mount_bpf(mount_point):
@@ -57,6 +76,8 @@ def make_hike_chain(makefile, source, hike_dir):
     source = source.split("/")[-1]
 
     # BUILD indicates the path where the compiled file is put and NOT the path of the input file
+    # In external MakeFile, $(shell pwd) is executed to get the path:
+    ## export OUTPUT := $(abspath $(shell pwd)/$(BUILD))
     # do we need to change folder ???
     currentDirectory = os.getcwd()
     os.chdir(build_dir)
@@ -107,39 +128,46 @@ def hikecc(path_eclat_output, path_chain=settings.MAP_PATH):
 
 
 
-
+# bpftool prog { load | loadall } OBJ PATH [type TYPE] 
+## [map {idx IDX |  name  NAME}  MAP] [dev NAME] [pinmaps MAP_DIR]
+def bpftool_prog_loadall(prog_obj, prog_path, type=None, map_idx=None, map_name=None, 
+                        map_map=None, dev_name=None, pinmaps_map_dir=None):
+    command = "bpftool prog loadall" + prog_obj + " " + prog_path + " "
+    command += bpftool_prog_load_loadall(type, map_idx, map_name, map_map, dev_name, pinmaps_map_dir)
+    os.system(command)
 
 # bpftool prog { load | loadall } OBJ PATH [type TYPE] 
 ## [map {idx IDX |  name  NAME}  MAP] [dev NAME] [pinmaps MAP_DIR]
-def prog_load_all(load_loadall, prog_obj, prog_path, 
-                    type=None, map_idx=None, map_name=None, 
+def bpftool_prog_load(prog_obj, prog_path, type=None, map_idx=None, map_name=None, 
                         map_map=None, dev_name=None, pinmaps_map_dir=None):
-    # load_loadall = "load" or "loadall" 
-    command = "bpftool prog " + load_loadall + prog_obj + " " + prog_path + " "
-    # Fixed Path???: command += ... +"/sys/fs/bpf/progs" + ...
-    if type != None:
+    command = "bpftool prog load" + prog_obj + " " + prog_path + " "
+    command += bpftool_prog_load_loadall(type, map_idx, map_name, map_map, dev_name, pinmaps_map_dir)
+    os.system(command)
+
+def bpftool_prog_load_loadall(type=None, map_idx=None, map_name=None, 
+                        map_map=None, dev_name=None, pinmaps_map_dir=None):
+    command = ""
+    if type:
         command += "type" + type + " "
 
-    if map_idx != None:
+    if map_idx:
         command += "map idx" + map_idx + " " + map_map
-    elif map_name != None:
+    elif map_name:
         command += "map name" + map_name + " " + map_map
 
-    if dev_name != None:
+    if dev_name:
         command += "dev" + dev_name + " "
 
-    if pinmaps_map_dir != None:
+    if pinmaps_map_dir:
         command += "pinmaps" + pinmaps_map_dir
-    
     return command
-
 
 
 # bpftool net attach ATTACH_TYPE PROG dev NAME [ overwrite ]
 # bpftool net detach ATTACH_TYPE dev NAME
 ##### PROG := {id PROG_ID | pinned FILE | tag PROG_TAG}
 ##### ATTACH_TYPE := {xdp | xdpgeneric | xdpdrv | xdpoffload}
-def net_attach(attach_type, dev_name, prog=None, flag_overwrite=None):
+def bpftool_net_attach(attach_type, dev_name, prog=None, flag_overwrite=None):
     command = ""
     if attach_type in ["xdp", "xdpgeneric", "xdpdrv", "xdpoffload"]:
         command += "bpftool net attach" + attach_type + " " 
@@ -159,7 +187,7 @@ def net_attach(attach_type, dev_name, prog=None, flag_overwrite=None):
     if flag_overwrite != None:
         command += flag_overwrite
 
-    return command
+    os.system(command)
 
 
 
@@ -168,7 +196,7 @@ def net_attach(attach_type, dev_name, prog=None, flag_overwrite=None):
 ##### DATA := {[hex] BYTES}
 ##### VALUE := {DATA | MAP | PROG}
 ##### UPDATE_FLAGS := {any | exist | noexist}
-def map_update(map_map, key_data=None, value=None, update_flags=None):
+def bpftool_map_update(map_map, key_data=None, value=None, update_flags=None):
     command = ""
     if map_map.split(" ")[0] in ["id", "pinned", "tag"]:
         command = "bpftool map update" + map_map + " "
@@ -198,4 +226,4 @@ def map_update(map_map, key_data=None, value=None, update_flags=None):
         #Placeholder
         print("ERRORE")
         
-    return command
+    os.system(command)
