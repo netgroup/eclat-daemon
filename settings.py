@@ -3,7 +3,6 @@ HIKE_SOURCE_PATH = "hike_v3/src/"
 HIKE_CC = "hike_v3/hike-tools/hikecc.sh"
 BUILD_DIR = "runtime/output/"
 LOAD_DIR = "runtime/output/build/"
-MAP_PATH = "/sys/fs/bpf/maps/hike_chain_map"
 
 BPF_FS_PATH = "/sys/fs/bpf/"
 TRACE_FS_PATH = "/sys/kernel/tracing"
