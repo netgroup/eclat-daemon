@@ -4,6 +4,7 @@ from parser.utils import lexer_preprocessor
 import settings
 import cas
 import os
+import timeit
 
 class EclatEngine:
     def __init__(self):
@@ -43,16 +44,17 @@ class EclatEngine:
         f = open(hike_source_file, "w")
         f.write(hike_source)
         f.close()
-
+    
         # 2. call Makefile on top of that 
         makefile = os.path.join(os.path.dirname(__file__), settings.EXTERNAL_MAKEFILE_PATH)
         hike_dir = os.path.join(os.path.dirname(__file__), settings.HIKE_SOURCE_PATH)
-
+        
         cas.make_hike_chain(makefile, hike_source_file, hike_dir)
-
+        
         compiled_file = hike_source_file
         #hike_source_file[-1] = "o"     ERROR TypeError: 'str' object does not support item assignment
         compiled_file = compiled_file[:-1] + "o"
+
         return compiled_file
 
 
@@ -61,6 +63,7 @@ class EclatEngine:
         Load the compiled file into the memory
         """
         cas.hikecc(hike_compiled_file)
+
 
     def run(self, script):
         """
@@ -83,6 +86,7 @@ class EclatEngine:
 
         hike_compiled_file = self.make_hike_chain(hike_source)
 
-        self.load_hike_chain(hike_compiled_file)
+        # self.load_hike_chain(hike_compiled_file)
+
         
         return True
