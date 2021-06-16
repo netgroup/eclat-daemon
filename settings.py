@@ -9,6 +9,9 @@ TRACE_FS_PATH = "/sys/kernel/tracing"
 BPF_FS_PROGS_PATH = BPF_FS_PATH + "progs"
 BPF_FS_MAPS_PATH = BPF_FS_PATH + "maps"
 
+# LEXER
+TOKEN_MAP_FILE = "parser/syntax/python9-tokens.csv"
+
 # AST
 HIKE_DATA_LIST = "runtime/hike_programs_ids.csv"
 ECLAT_DATA = "runtime/buildin_eclat_function/"
