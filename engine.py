@@ -29,8 +29,8 @@ class EclatEngine:
 
         return code
 
-    # dest_folder is unsed and MAKE_FOLDER MAKE_FOLDER doesn't exist
-    #def make_hike_chain(self, hike_source, dest_folder=settings.MAKE_FOLDER):
+    # def make_hike_chain(self, hike_source, dest_folder=settings.MAKE_FOLDER):
+    # dest_folder is unsed and MAKE_FOLDER doesn't exist
     def make_hike_chain(self, hike_source):
         """
         Make an hike chain.
@@ -52,7 +52,8 @@ class EclatEngine:
         cas.make_hike_chain(makefile, hike_source_file, hike_dir)
         
         compiled_file = hike_source_file
-        #hike_source_file[-1] = "o"     ERROR TypeError: 'str' object does not support item assignment
+        # ERROR TypeError: 'str' object does not support item assignment
+        # hike_source_file[-1] = "o"     
         compiled_file = compiled_file[:-1] + "o"
 
         return compiled_file
@@ -70,21 +71,10 @@ class EclatEngine:
         Translate an ECLAT script into an HIKe Chain.
         Compile the chain and load it to memory.
         """
-        # Ogni volta che viene eseguita la traduzione viene
-        # riscritto/aggiornato il file "registry.csv" che si trova 
-        # all'interno della cartella "runtime". In questo file 
-        # vengono memorizzate tutte le chain "caricate" tramite eCLAT, 
-        # con associato: 
-        # - ID progressivo delle chain;
-        # - il nome del modulo;
-        # - nome della chain.
-        # NOTA: Se presenti due chain con lo stesso nome all'interno
-        #       dello stesso modulo genera un errore visto che devono
-        #       essere univoche. 
 
         hike_source = self.translate_to_c(script)
 
-        hike_compiled_file = self.make_hike_chain(hike_source)
+        # hike_compiled_file = self.make_hike_chain(hike_source)
 
         # self.load_hike_chain(hike_compiled_file)
 
