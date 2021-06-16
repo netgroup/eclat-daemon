@@ -33,8 +33,6 @@ def init_system():
     #        stderr=subprocess.STDOUT)
     # stdout,stderr = out.communicate()
 
-
-
     # TODO Load of Classifier here ???
 
     # Load all the classifiers
@@ -132,7 +130,7 @@ def hikecc(path_eclat_output, map_name):
     /bin/bash data/binaries/minimal_chain.hike.load.sh
     """
     # We just need the name of the object file
-    map_name = settings.BPF_FS_MAPS_PATH + "/" + map_name
+    map_name = settings.BPF_FS_MAPS_PATH + "/init/" + map_name
     path_eclat_output = path_eclat_output.split("/")[-1]
 
     loader_file = path_eclat_output[:-1] + "load.sh"
