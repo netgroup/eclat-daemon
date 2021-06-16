@@ -7,10 +7,13 @@ import csv
 import sys
 import warnings
 
+# Get Absolute Path
 HIKE_DATA_LIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), settings.HIKE_DATA_LIST)
 ECLAT_DATA= os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), settings.ECLAT_DATA)
 HIKE_PROGRAM = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), settings.HIKE_PROGRAM)
 HIKE_REGISTRY = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), settings.HIKE_REGISTRY)
+
+# Hike default library
 HEADER_LIST_LIB = """#include <stddef.h>
 #include <linux/in.h>
 #include <linux/if_ether.h>
@@ -23,13 +26,6 @@ HEADER_LIST_LIB = """#include <stddef.h>
 #include "hike_vm.h"
 """
 
-
-
-# class Path():
-#import_path = "eCLAT_Code/Code/Lib/Import/"
-# registry_path = 'eCLAT_Code/Code/Lib/regisrty.csv' # spostare in RAM
-#hike_program_path = "eCLAT_Code/Code/Lib/eclat_program_list.csv"
-#token_path = "eCLAT_Code/Code/Lib/token.csv"
 
 # --------------------------------------- #
 #           CLASSE DI APPOGGIO            #
@@ -93,8 +89,6 @@ class Appoggio():
 #           FUNZIONE PROVVISORIA          #
 # Trova il programma nei file se presente #
 # --------------------------------------- #
-
-
 def find_Program(statement):
     if statement in Appoggio.hike_program:
         return str(Appoggio.hike_program[statement][0]) \
@@ -126,14 +120,14 @@ class Program(BaseBox):
         for statement in self.statements:
             result = statement.exec(env)
             prima_passata += statement.prima_passata(env)
+
         # ----------------------------------------- #
         # Controllo se le funzioni dichiarate sono  #
         # già esistenti, in basse al NameSpace      #
         # fornito, allo stesso tempo metto i valori #
         # in un dict "dict_registry".               #
-        funzioni = ""
+        # Numero incrementale di numerazione univoca delle chain
         count = 74
-        name_space = self.package_name
         dict_registry = {}
         # if os.path.exists(HIKE_REGISTRY):
         #     with open(HIKE_REGISTRY, mode='r') as csv_file:
@@ -141,27 +135,31 @@ class Program(BaseBox):
         #         for row in read:
         #             dict_registry[int(row[0])] = row[1:]
         #             if len(row) > 1:
-        #                 if row[1] == name_space:
+        #                 if row[1] == self.package_name:
         #                     if row[2] in Appoggio.variabili_locali:
         #                         raise Exception("Function '" + row[2] +
-        #                                         "' in NameSpace '" + name_space+"' already exist. Change file or chain name.")
+        #                                         "' in NameSpace '" + self.package_name+"' already exist. Change file or chain name.")
         #                 count = int(row[0])
-        count += 1
+        # count += 1
+        funzioni = ""
+        
         # ----------------------------------------- #
         # Aggiorno il "dict_regisrty" e scrivo le   #
         # chain da aggiungere al file .c            #
         for fun in Appoggio.variabili_locali:
-            dict_registry[count] = [name_space, fun]
+            dict_registry[count] = [self.package_name, fun]
             if len(dict_registry[count]) > 1:
                 Appoggio.chain_registry[fun] = count
             funzioni += "#define " + "HIKE_CHAIN_" + str(count) \
                         + "_ID" + " " + str(count) + "\n"
             count += 1
+
         # ----------------------------------------- #
         # CONVERTO IN C, Il risultato è in 'output' #
         output = ""
         for statement in self.statements:
             output += statement.to_c(env)
+
         # ----------------------------------------- #
         # Riscrivo il file regisrty.csv con i       #
         # i valori aggiornati e riempio il dict     #
@@ -175,6 +173,7 @@ class Program(BaseBox):
         #                 [row, dict_registry[row][0], dict_registry[row][1]])
         #         else:
         #             writer.writerow([row])
+
         # ----------------------------------------- #
         # Importo i #define di default e            #
         # incollo (in ordine):    
@@ -182,12 +181,9 @@ class Program(BaseBox):
         # - le funzioni (chain) dichiarate          #
         # - il codice .c calcolato                  #
         output = HEADER_LIST_LIB + funzioni + output
-        # ----------------------------------------- #
+
         return output
-        #print("\nVARIABILI: ")
-        # for var in env.variables:
-        #    print(var, env.variables[var])
-        #return result
+
 
     def get_statements(self):
         return self.statements
