@@ -1,16 +1,16 @@
 from rply import LexerGenerator
 import re
 import csv
+import settings
 
 
 def getLexer():
     """
     Return the Lexer and a token list
     """
-    TOKEN_MAP_FILE = "parser/syntax/python9-tokens.csv"
     lg = LexerGenerator()
     tokens = []
-    with open(TOKEN_MAP_FILE, mode='r') as csv_file:
+    with open(settings.TOKEN_MAP_FILE, mode='r') as csv_file:
         str = csv.reader(csv_file, delimiter=';')
         for row in str:
             lg.add(row[0], eval(row[1]))
