@@ -94,8 +94,11 @@ read -r -d '' sut_env <<-EOF
 	mount -t bpf bpf /sys/fs/bpf/
 	mount -t tracefs nodev /sys/kernel/tracing
 
-	mkdir /sys/fs/bpf/progs
-	mkdir /sys/fs/bpf/maps
+	mkdir -p /sys/fs/bpf/progs/init
+	mkdir -p /sys/fs/bpf/progs/net
+
+	mkdir -p /sys/fs/bpf/maps/init
+	mkdir -p /sys/fs/bpf/maps/net
 
 	# It allows to load maps with many entries without failing
 	ulimit -l unlimited
