@@ -1,0 +1,785 @@
+{
+    "types": [{
+            "id": 1,
+            "kind": "PTR",
+            "name": "(anon)",
+            "type_id": 2
+        },{
+            "id": 2,
+            "kind": "STRUCT",
+            "name": "xdp_md",
+            "size": 20,
+            "vlen": 5,
+            "members": [{
+                    "name": "data",
+                    "type_id": 3,
+                    "bits_offset": 0
+                },{
+                    "name": "data_end",
+                    "type_id": 3,
+                    "bits_offset": 32
+                },{
+                    "name": "data_meta",
+                    "type_id": 3,
+                    "bits_offset": 64
+                },{
+                    "name": "ingress_ifindex",
+                    "type_id": 3,
+                    "bits_offset": 96
+                },{
+                    "name": "rx_queue_index",
+                    "type_id": 3,
+                    "bits_offset": 128
+                }
+            ]
+        },{
+            "id": 3,
+            "kind": "TYPEDEF",
+            "name": "__u32",
+            "type_id": 4
+        },{
+            "id": 4,
+            "kind": "INT",
+            "name": "unsigned int",
+            "size": 4,
+            "bits_offset": 0,
+            "nr_bits": 32,
+            "encoding": "(none)"
+        },{
+            "id": 5,
+            "kind": "FUNC_PROTO",
+            "name": "(anon)",
+            "ret_type_id": 6,
+            "vlen": 1,
+            "params": [{
+                    "name": "ctx",
+                    "type_id": 1
+                }
+            ]
+        },{
+            "id": 6,
+            "kind": "INT",
+            "name": "int",
+            "size": 4,
+            "bits_offset": 0,
+            "nr_bits": 32,
+            "encoding": "SIGNED"
+        },{
+            "id": 7,
+            "kind": "FUNC",
+            "name": "__xdp_hike_loader",
+            "type_id": 5,
+            "linkage": "global"
+        },{
+            "id": 8,
+            "kind": "FUNC_PROTO",
+            "name": "(anon)",
+            "ret_type_id": 6,
+            "vlen": 1,
+            "params": [{
+                    "name": "ctx",
+                    "type_id": 1
+                }
+            ]
+        },{
+            "id": 9,
+            "kind": "FUNC",
+            "name": "xdp_pass_prog",
+            "type_id": 8,
+            "linkage": "global"
+        },{
+            "id": 10,
+            "kind": "FUNC_PROTO",
+            "name": "(anon)",
+            "ret_type_id": 6,
+            "vlen": 1,
+            "params": [{
+                    "name": "ctx",
+                    "type_id": 1
+                }
+            ]
+        },{
+            "id": 11,
+            "kind": "FUNC",
+            "name": "__hvxdp_count_packet",
+            "type_id": 10,
+            "linkage": "global"
+        },{
+            "id": 12,
+            "kind": "PTR",
+            "name": "(anon)",
+            "type_id": 0
+        },{
+            "id": 13,
+            "kind": "PTR",
+            "name": "(anon)",
+            "type_id": 14
+        },{
+            "id": 14,
+            "kind": "STRUCT",
+            "name": "hike_chain_data",
+            "size": 4112,
+            "vlen": 4,
+            "members": [{
+                    "name": "active_chain",
+                    "type_id": 15,
+                    "bits_offset": 0
+                },{
+                    "name": "__pad0",
+                    "type_id": 17,
+                    "bits_offset": 16
+                },{
+                    "name": "__pad1",
+                    "type_id": 19,
+                    "bits_offset": 64
+                },{
+                    "name": "chains",
+                    "type_id": 38,
+                    "bits_offset": 128
+                }
+            ]
+        },{
+            "id": 15,
+            "kind": "TYPEDEF",
+            "name": "__u16",
+            "type_id": 16
+        },{
+            "id": 16,
+            "kind": "INT",
+            "name": "unsigned short",
+            "size": 2,
+            "bits_offset": 0,
+            "nr_bits": 16,
+            "encoding": "(none)"
+        },{
+            "id": 17,
+            "kind": "ARRAY",
+            "name": "(anon)",
+            "type_id": 15,
+            "index_type_id": 18,
+            "nr_elems": 3
+        },{
+            "id": 18,
+            "kind": "INT",
+            "name": "__ARRAY_SIZE_TYPE__",
+            "size": 4,
+            "bits_offset": 0,
+            "nr_bits": 32,
+            "encoding": "(none)"
+        },{
+            "id": 19,
+            "kind": "TYPEDEF",
+            "name": "__u64",
+            "type_id": 20
+        },{
+            "id": 20,
+            "kind": "INT",
+            "name": "long long unsigned int",
+            "size": 8,
+            "bits_offset": 0,
+            "nr_bits": 64,
+            "encoding": "(none)"
+        },{
+            "id": 21,
+            "kind": "STRUCT",
+            "name": "hike_chain",
+            "size": 512,
+            "vlen": 5,
+            "members": [{
+                    "name": "chain_id",
+                    "type_id": 22,
+                    "bits_offset": 0
+                },{
+                    "name": "ninsn",
+                    "type_id": 15,
+                    "bits_offset": 32
+                },{
+                    "name": "upc",
+                    "type_id": 15,
+                    "bits_offset": 48
+                },{
+                    "name": "regmem",
+                    "type_id": 23,
+                    "bits_offset": 64
+                },{
+                    "name": "insns",
+                    "type_id": 37,
+                    "bits_offset": 2048
+                }
+            ]
+        },{
+            "id": 22,
+            "kind": "TYPEDEF",
+            "name": "__s32",
+            "type_id": 6
+        },{
+            "id": 23,
+            "kind": "STRUCT",
+            "name": "hike_chain_regmem",
+            "size": 248,
+            "vlen": 3,
+            "members": [{
+                    "name": "(anon)",
+                    "type_id": 24,
+                    "bits_offset": 0
+                },{
+                    "name": "__pad",
+                    "type_id": 27,
+                    "bits_offset": 704
+                },{
+                    "name": "stack",
+                    "type_id": 30,
+                    "bits_offset": 960
+                }
+            ]
+        },{
+            "id": 24,
+            "kind": "UNION",
+            "name": "(anon)",
+            "size": 88,
+            "vlen": 2,
+            "members": [{
+                    "name": "(anon)",
+                    "type_id": 25,
+                    "bits_offset": 0
+                },{
+                    "name": "reg_n",
+                    "type_id": 26,
+                    "bits_offset": 0
+                }
+            ]
+        },{
+            "id": 25,
+            "kind": "STRUCT",
+            "name": "(anon)",
+            "size": 88,
+            "vlen": 11,
+            "members": [{
+                    "name": "reg_0",
+                    "type_id": 19,
+                    "bits_offset": 0
+                },{
+                    "name": "reg_1",
+                    "type_id": 19,
+                    "bits_offset": 64
+                },{
+                    "name": "reg_2",
+                    "type_id": 19,
+                    "bits_offset": 128
+                },{
+                    "name": "reg_3",
+                    "type_id": 19,
+                    "bits_offset": 192
+                },{
+                    "name": "reg_4",
+                    "type_id": 19,
+                    "bits_offset": 256
+                },{
+                    "name": "reg_5",
+                    "type_id": 19,
+                    "bits_offset": 320
+                },{
+                    "name": "reg_6",
+                    "type_id": 19,
+                    "bits_offset": 384
+                },{
+                    "name": "reg_7",
+                    "type_id": 19,
+                    "bits_offset": 448
+                },{
+                    "name": "reg_8",
+                    "type_id": 19,
+                    "bits_offset": 512
+                },{
+                    "name": "reg_9",
+                    "type_id": 19,
+                    "bits_offset": 576
+                },{
+                    "name": "reg_10",
+                    "type_id": 19,
+                    "bits_offset": 640
+                }
+            ]
+        },{
+            "id": 26,
+            "kind": "ARRAY",
+            "name": "(anon)",
+            "type_id": 19,
+            "index_type_id": 18,
+            "nr_elems": 11
+        },{
+            "id": 27,
+            "kind": "ARRAY",
+            "name": "(anon)",
+            "type_id": 19,
+            "index_type_id": 18,
+            "nr_elems": 4
+        },{
+            "id": 28,
+            "kind": "TYPEDEF",
+            "name": "__u8",
+            "type_id": 29
+        },{
+            "id": 29,
+            "kind": "INT",
+            "name": "unsigned char",
+            "size": 1,
+            "bits_offset": 0,
+            "nr_bits": 8,
+            "encoding": "(none)"
+        },{
+            "id": 30,
+            "kind": "ARRAY",
+            "name": "(anon)",
+            "type_id": 28,
+            "index_type_id": 18,
+            "nr_elems": 128
+        },{
+            "id": 31,
+            "kind": "STRUCT",
+            "name": "hike_insn",
+            "size": 8,
+            "vlen": 2,
+            "members": [{
+                    "name": "u",
+                    "type_id": 32,
+                    "bits_offset": 0
+                },{
+                    "name": "imm",
+                    "type_id": 22,
+                    "bits_offset": 32
+                }
+            ]
+        },{
+            "id": 32,
+            "kind": "UNION",
+            "name": "(anon)",
+            "size": 4,
+            "vlen": 2,
+            "members": [{
+                    "name": "c",
+                    "type_id": 33,
+                    "bits_offset": 0
+                },{
+                    "name": "ec",
+                    "type_id": 36,
+                    "bits_offset": 0
+                }
+            ]
+        },{
+            "id": 33,
+            "kind": "STRUCT",
+            "name": "hike_insn_core",
+            "size": 4,
+            "vlen": 4,
+            "members": [{
+                    "name": "code",
+                    "type_id": 28,
+                    "bits_offset": 0
+                },{
+                    "name": "dst_reg",
+                    "type_id": 28,
+                    "bits_offset": 8,
+                    "bitfield_size": 4
+                },{
+                    "name": "src_reg",
+                    "type_id": 28,
+                    "bits_offset": 12,
+                    "bitfield_size": 4
+                },{
+                    "name": "off",
+                    "type_id": 34,
+                    "bits_offset": 16
+                }
+            ]
+        },{
+            "id": 34,
+            "kind": "TYPEDEF",
+            "name": "__s16",
+            "type_id": 35
+        },{
+            "id": 35,
+            "kind": "INT",
+            "name": "short",
+            "size": 2,
+            "bits_offset": 0,
+            "nr_bits": 16,
+            "encoding": "SIGNED"
+        },{
+            "id": 36,
+            "kind": "STRUCT",
+            "name": "hike_insn_ext_core",
+            "size": 4,
+            "vlen": 2,
+            "members": [{
+                    "name": "code",
+                    "type_id": 3,
+                    "bits_offset": 0,
+                    "bitfield_size": 8
+                },{
+                    "name": "off",
+                    "type_id": 3,
+                    "bits_offset": 8,
+                    "bitfield_size": 24
+                }
+            ]
+        },{
+            "id": 37,
+            "kind": "ARRAY",
+            "name": "(anon)",
+            "type_id": 31,
+            "index_type_id": 18,
+            "nr_elems": 32
+        },{
+            "id": 38,
+            "kind": "ARRAY",
+            "name": "(anon)",
+            "type_id": 21,
+            "index_type_id": 18,
+            "nr_elems": 8
+        },{
+            "id": 39,
+            "kind": "PTR",
+            "name": "(anon)",
+            "type_id": 40
+        },{
+            "id": 40,
+            "kind": "STRUCT",
+            "name": "hike_chain_done_insn_bottom",
+            "size": 12,
+            "vlen": 3,
+            "members": [{
+                    "name": "opcode",
+                    "type_id": 28,
+                    "bits_offset": 0
+                },{
+                    "name": "prog_id",
+                    "type_id": 3,
+                    "bits_offset": 32
+                },{
+                    "name": "arg",
+                    "type_id": 3,
+                    "bits_offset": 64
+                }
+            ]
+        },{
+            "id": 41,
+            "kind": "FUNC_PROTO",
+            "name": "(anon)",
+            "ret_type_id": 6,
+            "vlen": 3,
+            "params": [{
+                    "name": "ctx",
+                    "type_id": 12
+                },{
+                    "name": "chain_data",
+                    "type_id": 13
+                },{
+                    "name": "out",
+                    "type_id": 39
+                }
+            ]
+        },{
+            "id": 42,
+            "kind": "FUNC",
+            "name": "__hike_chain_do_exec_one_insn_top",
+            "type_id": 41,
+            "linkage": "static"
+        },{
+            "id": 43,
+            "kind": "STRUCT",
+            "name": "bpf_map_def",
+            "size": 20,
+            "vlen": 5,
+            "members": [{
+                    "name": "type",
+                    "type_id": 4,
+                    "bits_offset": 0
+                },{
+                    "name": "key_size",
+                    "type_id": 4,
+                    "bits_offset": 32
+                },{
+                    "name": "value_size",
+                    "type_id": 4,
+                    "bits_offset": 64
+                },{
+                    "name": "max_entries",
+                    "type_id": 4,
+                    "bits_offset": 96
+                },{
+                    "name": "map_flags",
+                    "type_id": 4,
+                    "bits_offset": 128
+                }
+            ]
+        },{
+            "id": 44,
+            "kind": "VAR",
+            "name": "gen_jmp_table",
+            "type_id": 43,
+            "linkage": "global-alloc"
+        },{
+            "id": 45,
+            "kind": "STRUCT",
+            "name": "____btf_map_gen_jmp_table",
+            "size": 8,
+            "vlen": 2,
+            "members": [{
+                    "name": "key",
+                    "type_id": 3,
+                    "bits_offset": 0
+                },{
+                    "name": "value",
+                    "type_id": 3,
+                    "bits_offset": 32
+                }
+            ]
+        },{
+            "id": 46,
+            "kind": "VAR",
+            "name": "____btf_map_gen_jmp_table",
+            "type_id": 45,
+            "linkage": "global-alloc"
+        },{
+            "id": 47,
+            "kind": "VAR",
+            "name": "pcpu_hike_chain_data_map",
+            "type_id": 43,
+            "linkage": "global-alloc"
+        },{
+            "id": 48,
+            "kind": "STRUCT",
+            "name": "____btf_map_pcpu_hike_chain_data_map",
+            "size": 4120,
+            "vlen": 2,
+            "members": [{
+                    "name": "key",
+                    "type_id": 3,
+                    "bits_offset": 0
+                },{
+                    "name": "value",
+                    "type_id": 14,
+                    "bits_offset": 64
+                }
+            ]
+        },{
+            "id": 49,
+            "kind": "VAR",
+            "name": "____btf_map_pcpu_hike_chain_data_map",
+            "type_id": 48,
+            "linkage": "global-alloc"
+        },{
+            "id": 50,
+            "kind": "VAR",
+            "name": "hike_chain_map",
+            "type_id": 43,
+            "linkage": "global-alloc"
+        },{
+            "id": 51,
+            "kind": "STRUCT",
+            "name": "____btf_map_hike_chain_map",
+            "size": 520,
+            "vlen": 2,
+            "members": [{
+                    "name": "key",
+                    "type_id": 3,
+                    "bits_offset": 0
+                },{
+                    "name": "value",
+                    "type_id": 21,
+                    "bits_offset": 64
+                }
+            ]
+        },{
+            "id": 52,
+            "kind": "VAR",
+            "name": "____btf_map_hike_chain_map",
+            "type_id": 51,
+            "linkage": "global-alloc"
+        },{
+            "id": 53,
+            "kind": "VAR",
+            "name": "map_count_packet",
+            "type_id": 43,
+            "linkage": "global-alloc"
+        },{
+            "id": 54,
+            "kind": "STRUCT",
+            "name": "____btf_map_map_count_packet",
+            "size": 8,
+            "vlen": 2,
+            "members": [{
+                    "name": "key",
+                    "type_id": 3,
+                    "bits_offset": 0
+                },{
+                    "name": "value",
+                    "type_id": 3,
+                    "bits_offset": 32
+                }
+            ]
+        },{
+            "id": 55,
+            "kind": "VAR",
+            "name": "____btf_map_map_count_packet",
+            "type_id": 54,
+            "linkage": "global-alloc"
+        },{
+            "id": 56,
+            "kind": "STRUCT",
+            "name": "___hike_map_export____hvxdp_count_packet__map_count_packet",
+            "size": 16,
+            "vlen": 2,
+            "members": [{
+                    "name": "__hvxdp_count_packet",
+                    "type_id": 57,
+                    "bits_offset": 0
+                },{
+                    "name": "map_count_packet",
+                    "type_id": 54,
+                    "bits_offset": 64
+                }
+            ]
+        },{
+            "id": 57,
+            "kind": "PTR",
+            "name": "(anon)",
+            "type_id": 58
+        },{
+            "id": 58,
+            "kind": "FUNC_PROTO",
+            "name": "(anon)",
+            "ret_type_id": 6,
+            "vlen": 1,
+            "params": [{
+                    "name": "(anon)",
+                    "type_id": 1
+                }
+            ]
+        },{
+            "id": 59,
+            "kind": "VAR",
+            "name": "___hike_map_export____hvxdp_count_packet__map_count_packet",
+            "type_id": 56,
+            "linkage": "global-alloc"
+        },{
+            "id": 60,
+            "kind": "INT",
+            "name": "char",
+            "size": 1,
+            "bits_offset": 0,
+            "nr_bits": 8,
+            "encoding": "SIGNED"
+        },{
+            "id": 61,
+            "kind": "ARRAY",
+            "name": "(anon)",
+            "type_id": 60,
+            "index_type_id": 18,
+            "nr_elems": 13
+        },{
+            "id": 62,
+            "kind": "VAR",
+            "name": "LICENSE",
+            "type_id": 61,
+            "linkage": "global-alloc"
+        },{
+            "id": 63,
+            "kind": "DATASEC",
+            "name": ".btf.maps.gen_jmp_table",
+            "size": 0,
+            "vlen": 1,
+            "vars": [{
+                    "type_id": 46,
+                    "offset": 0,
+                    "size": 8
+                }
+            ]
+        },{
+            "id": 64,
+            "kind": "DATASEC",
+            "name": ".btf.maps.hike_chain_map",
+            "size": 0,
+            "vlen": 1,
+            "vars": [{
+                    "type_id": 52,
+                    "offset": 0,
+                    "size": 520
+                }
+            ]
+        },{
+            "id": 65,
+            "kind": "DATASEC",
+            "name": ".btf.maps.map_count_packet",
+            "size": 0,
+            "vlen": 1,
+            "vars": [{
+                    "type_id": 55,
+                    "offset": 0,
+                    "size": 8
+                }
+            ]
+        },{
+            "id": 66,
+            "kind": "DATASEC",
+            "name": ".btf.maps.pcpu_hike_chain_data_map",
+            "size": 0,
+            "vlen": 1,
+            "vars": [{
+                    "type_id": 49,
+                    "offset": 0,
+                    "size": 4120
+                }
+            ]
+        },{
+            "id": 67,
+            "kind": "DATASEC",
+            "name": ".hike.maps.export",
+            "size": 0,
+            "vlen": 1,
+            "vars": [{
+                    "type_id": 59,
+                    "offset": 0,
+                    "size": 16
+                }
+            ]
+        },{
+            "id": 68,
+            "kind": "DATASEC",
+            "name": "license",
+            "size": 0,
+            "vlen": 1,
+            "vars": [{
+                    "type_id": 62,
+                    "offset": 0,
+                    "size": 13
+                }
+            ]
+        },{
+            "id": 69,
+            "kind": "DATASEC",
+            "name": "maps",
+            "size": 0,
+            "vlen": 4,
+            "vars": [{
+                    "type_id": 44,
+                    "offset": 0,
+                    "size": 20
+                },{
+                    "type_id": 47,
+                    "offset": 0,
+                    "size": 20
+                },{
+                    "type_id": 50,
+                    "offset": 0,
+                    "size": 20
+                },{
+                    "type_id": 53,
+                    "offset": 0,
+                    "size": 20
+                }
+            ]
+        }
+    ]
+}
