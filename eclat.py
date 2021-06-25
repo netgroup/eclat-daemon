@@ -21,7 +21,7 @@ def run(scriptfile):
     # make the call
     response = stub.Run(req)
 
-    # et voilà
+    # et voila
     print(response.status)
     print(response.message)
     return response
