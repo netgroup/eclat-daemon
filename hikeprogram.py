@@ -37,6 +37,7 @@ class HikeProgram:
             file_name = f"{self.package}.tar.gz"
             file_path = f"{settings.PROGRAMS_DIR}/{self.package}/{file_name}.ebpf.c"
             cal.make_ebpf_hike_program(file_path)
+            self.is_compiled = True
 
     def clean(self):
         pass
