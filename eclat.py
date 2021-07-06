@@ -1,3 +1,6 @@
+"""
+Eclat CLI
+"""
 import grpc
 import argparse
 

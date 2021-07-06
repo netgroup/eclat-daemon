@@ -21,6 +21,7 @@ $ python -m pip install --upgrade pip
 
 ```shell
 git clone https://github.com/netgroup/eclat-daemon.git
+git submodule update --init --recursive
 cd eclat-daemon
 pip install -r requirements.txt
 python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. eclat.proto

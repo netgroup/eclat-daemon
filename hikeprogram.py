@@ -1,18 +1,42 @@
+import settings
+import os
+import cal
+
+
 class HikeProgram:
     program_id = None
 
-    def __init__(self, program_name, package, configuration):
+    def __init__(self, program_name, package):
         self.program_name = program_name
         self.package = package
-        self.configuration = configuration
-        pass
+        self.is_compiled = False
 
-    def download(self):
-        # pip install --install-option="--prefix=$PREFIX_PATH" package_name
-        pass
+    def pull(self):
+        """
+        [Temporary] download a package in the appropriate directory 
+        """
+        # TODO: handle dependencies. Package manager?
+        import requests
+        import tarfile
+
+        # if there is not a folder, download the package
+        if not os.path.isdir(f"{settings.PROGRAMS_DIR}/{self.package}"):
+            file_name = f"{self.package}.tar.gz"
+            url = f"{settings.REPOSITORY_URL}/{file_name}"
+            r = requests.get(url, allow_redirects=True)
+            file_path = f"{settings.PROGRAMS_DIR}/{file_name}"
+            open(file_path, 'wb').write(r.content)
+
+            tar = tarfile.open(file_path, "r:gz")
+            # this should create the /package_name/ folder
+            tar.extractall()
+            tar.close()
 
     def compile(self):
-        pass
+        if not self.is_compiled:
+            file_name = f"{self.package}.tar.gz"
+            file_path = f"{settings.PROGRAMS_DIR}/{self.package}/{file_name}.ebpf.c"
+            cal.make_ebpf_hike_program(file_path)
 
     def clean(self):
         pass
