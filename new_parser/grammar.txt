@@ -1,0 +1,115 @@
+main: program 
+program: statement | statement program 
+statement: import_stmt | config_stmt | chain_stmt
+
+
+import_stmt: FROM dotted_name IMPORT module_list
+                | IMPORT module_list 
+
+module_list     : dotted_name
+                | dotted_name , module_list
+
+dotted_name:     dotted_name '.' NAME 
+    | NAME
+
+
+config.loader
+
+def chain
+
+
+-----------------------------------------------
+main            : program
+
+program         : statement_full 
+                | statement_full program
+
+block           : INDENT blocks DEDENT
+
+blocks          : statement_full
+                | statement_full blocks
+
+statement_full  : statement NEWLINE 
+                | statement $end
+                | statement
+
+statement       : expression
+                | FROM module_path IMPORT module_list
+                | IMPORT module_list 
+                | IDENTIFIER : type = expression
+                | IDENTIFIER : type
+                | IDENTIFIER = expression
+                | DEF IDENTIFIER ( arglist ) : NEWLINE block 
+                | DEF IDENTIFIER ( ) : NEWLINE block
+
+module_list     : module_path
+                | module_path , module_list
+
+module_path     : IDENTIFIER
+                | IDENTIFIER . module_path
+
+type            : U8 | U16 | U32 | U64 | S8 | S16 | S32 | S64
+
+arglist         : IDENTIFIER 
+                | IDENTIFIER , arglist
+                | IDENTIFIER : type
+                | IDENTIFIER : type  , arglist
+                
+                
+expression      : IF expression : NEWLINE block elif_stmt
+                | IF expression : NEWLINE block else_stmt
+                | IF expression : NEWLINE block
+                | IF expression : statement NEWLINE elif_stmt
+                | IF expression : statement NEWLINE else_stmt
+                | IF expression : statement_full
+                | WHILE expression : NEWLINE block
+                | RETURN
+                | RETURN expression
+                | const
+                | IDENTIFIER
+                | IDENTIFIER ( )
+                | IDENTIFIER . IDENTIFIER ( )
+                | IDENTIFIER ( expressionlist )
+                | IDENTIFIER . IDENTIFIER ( expressionlist )
+                | ( expression )
+                | NOT expression
+                |  ~ expression
+                | expression PLUS expression 
+                | expression MINUS expression
+                | expression MUL expression
+                | expression DIV expression
+                | expression != expression
+                | expression == expression
+                | expression >= expression
+                | expression <= expression
+                | expression > expression
+                | expression < expression
+                | expression AND expression
+                | expression OR expression
+                | expression & expression
+                | expression PIPE expression
+                | expression ^ expression 
+                | expression >> expression
+                | expression << expression
+
+elif_stmt       : ELIF expression : NEWLINE block elif_stmt
+                | ELIF expression : NEWLINE block else_stmt
+                | ELIF expression : NEWLINE block
+                | ELIF expression : statement NEWLINE elif_stmt
+                | ELIF expression : statement NEWLINE else_stmt
+                | ELIF expression : statement_full
+
+else_stmt       : ELSE : statement_full
+                | ELSE : NEWLINE block
+                
+const           : FLOAT
+                | BOOLEAN
+                |  INTEGER
+                | HEX
+                | STRING
+                
+
+expressionlist  : expression
+                | expression ,
+                | expression , expressionlist
+

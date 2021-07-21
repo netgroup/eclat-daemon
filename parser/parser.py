@@ -1,3 +1,19 @@
+"""Parser module
+
+parse(eclat_script) -> Program
+
+Program.exec() -> {
+    programs: [LIST OF NAMES], 
+    chains: {chain_name: c_code},
+    loader: {name: ‘xdd’, ‘configuration: {...}’}
+}
+
+
+:raises Exception: [description]
+:return: [description]
+:rtype: [type]
+"""
+
 from rply import ParserGenerator
 from parser.ast import *
 
