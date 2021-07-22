@@ -1,10 +1,21 @@
 from sly import Lexer, Parser
+import re
 
 
 class IndentedLexer(Lexer):
+    tokens = {}
+
     def preprocess(self, text):
+        """
+        Preprocess the file to:
+        - convert tab in spaces
+        - insert _INDENT and _DEDENT markers to ease the parsing phase
+        """
         # convert tab in spaces
         text = text.replace('\t', '    ')
+        # remove comments
+        text = re.sub(re.compile("#.*?\n"), "", text)
+        lines = text.split('\n')
         # put INDENT and DEDENT
         INDENT = "_INDENT"
         DEDENT = "_DEDENT"
@@ -16,6 +27,7 @@ class IndentedLexer(Lexer):
             # remove spaces at the end and skip white lines
             line = line.rstrip()
             if not line:
+                #output += '\n'
                 continue
 
             initial_spaces = len(line) - len(line.lstrip(' '))
@@ -36,41 +48,90 @@ class IndentedLexer(Lexer):
         # fill the remaining intendation
         while (len(indentations) > 1):
             indentation = indentations.pop()
-            output += "DEDENT\n"
-
+            output += DEDENT + '\n'
+        # print(output)
         return output
 
     def tokenize(self, text):
         return super().tokenize(self.preprocess(text))
 
 
-class CalcLexer(Lexer):
-    tokens = {ID, FROM, IMPORT}
+class EclatLexer(IndentedLexer):
+    tokens = {
+        DEF,
+        IF,
+        FROM,
+        IMPORT,
+        PASS,
+        NAME,
+        NUMBER,  # Python decimals
+        # STRING,  # single quoted strings only; syntax of raw strings
+        LPAR,
+        RPAR,
+        COLON,
+        EQ,
+        ASSIGN,
+        LT,
+        GT,
+        PLUS,
+        MINUS,
+        MULT,
+        DIV,
+        RETURN,
+        NEWLINE,
+        COMMA,
+        INDENT,
+        DEDENT
+    }
     ignore = ' \t'
-    literals = {'=', '+', '-', '*', '/', '(', ')', '.'}
 
     # Tokens
-    ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
-    ID['from'] = FROM
-    ID['import'] = IMPORT
-    ID['pass'] = PASS
-
-    NEWLINE = r'\n'
+    DEF = r'def'
+    IF = r'if'
+    FROM = r'from'
+    IMPORT = r'import'
+    PASS = r'pass'
+    LPAR = r'\('
+    RPAR = r'\)'
+    RETURN = r'return'
+    INDENT = r'_INDENT'
+    DEDENT = r'_DEDENT'
+    COLON = r':'
+    EQ = r'=='
+    ASSIGN = r'='
+    LT = r'<'
+    GT = r'>'
+    PLUS = r'\+'
+    MINUS = r'-'
+    MULT = r'\*'
+    DIV = r'/'
     COMMA = r','
+    NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
     ignore_comment = r'[ ]*\043[^\n]*'
+
+    @_(r'0x[0-9a-fA-F]+', r'\d+')
+    def NUMBER(self, t):
+        if t.value.startswith('0x'):
+            t.value = int(t.value[2:], 16)
+        else:
+            t.value = int(t.value)
+        return t
+
+    # Line number tracking
+    # @_(r'\n\s+')
+    # def ignore_newline(self, t):
+    #    self.lineno += t.value.count('\n')
+
+    @_(r'\n')
+    def NEWLINE(self, t):
+        self.lineno += 1
+        #t.value = 'NEWLINE'
+        return t
 
     def error(self, t):
         print("Illegal character '%s'" % t.value[0])
         self.index += 1
-
-    @_(r' [ ]+')
-    def WS(self, t):
-        return t
-
-    @_(r' ')  # ignore single space
-    def SS(self, t):
-        pass
 
 
 class EclatParser(Parser):
@@ -84,40 +145,49 @@ class EclatParser(Parser):
         self.imports = []
         self.chains = {}
 
-    @_('top_statements', '')
+    @_('top_statements')
     def program(self, p):
         pass
 
-    @_('top_statement top_statements')
+    @_('top_statement top_statements',
+       'top_statement')
     def top_statements(self, p):
         pass
 
-    @_('top_statement')
-    def top_statements(self, p):
-        pass
-
-    @_('import_stmt', 'void_stmt')
+    @_('import_stmt NEWLINE', 'chain_stmt NEWLINE')
     def top_statement(self, p):
         pass
 
-    @_('FROM ID IMPORT module_list NEWLINE')
+    @_('DEF NAME LPAR arglist RPAR COLON NEWLINE block')
+    def chain_stmt(self, p):
+        pass
+
+    @_('INDENT statements DEDENT')
+    def block(self, p):
+        pass
+
+    @_('statement statements', 'statement')
+    def statements(self, p):
+        pass
+
+    @_('PASS NEWLINE')
+    def statement(self, p):
+        pass
+
+    @_('', 'NAME')
+    def arglist(self, p):
+        pass
+
+    @_('FROM NAME IMPORT module_list')
     def import_stmt(self, p):
         # print(p)
         pass
 
-    @_('ID COMMA module_list')
+    @_('NAME COMMA module_list',
+       'NAME')
     def module_list(self, p):
-        self.imports.append(p.ID)
+        self.imports.append(p.NAME)
         return p
-
-    @_('ID')
-    def module_list(self, p):
-        self.imports.append(p.ID)
-        return p
-
-    @_('NEWLINE')
-    def void_stmt(self, p):
-        pass
 
 
 if __name__ == '__main__':
@@ -129,6 +199,8 @@ if __name__ == '__main__':
 from gino import mario
 from pablo import andrea, stefano
 from kilo import etto , grammo
+
+from package1 import p1
 
 def chain():
   # commento
