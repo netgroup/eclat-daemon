@@ -1,16 +1,15 @@
-main: program 
-program: statement | statement program 
-statement: import_stmt | config_stmt | chain_stmt
+program: top_statements
 
+top_statements : top_statement top_statements | top_statement
 
-import_stmt: FROM dotted_name IMPORT module_list
-                | IMPORT module_list 
+top_statement: import_stmt | config_stmt | chain_stmt
 
-module_list     : dotted_name
-                | dotted_name , module_list
+import_stmt: FROM package_name IMPORT module_list 
 
-dotted_name:     dotted_name '.' NAME 
-    | NAME
+module_list     : module_name
+                | module_name , module_list
+
+package_name:   NAME
 
 
 config.loader
@@ -33,14 +32,22 @@ statement_full  : statement NEWLINE
                 | statement $end
                 | statement
 
-statement       : expression
-                | FROM module_path IMPORT module_list
+statement       : FROM module_path IMPORT module_list
                 | IMPORT module_list 
                 | IDENTIFIER : type = expression
                 | IDENTIFIER : type
                 | IDENTIFIER = expression
                 | DEF IDENTIFIER ( arglist ) : NEWLINE block 
                 | DEF IDENTIFIER ( ) : NEWLINE block
+                | IF expression : NEWLINE block elif_stmt
+                | IF expression : NEWLINE block else_stmt
+                | IF expression : NEWLINE block
+                | IF expression : statement NEWLINE elif_stmt
+                | IF expression : statement NEWLINE else_stmt
+                | IF expression : statement_full
+                | WHILE expression : NEWLINE block
+                | RETURN
+                | RETURN expression
 
 module_list     : module_path
                 | module_path , module_list
@@ -56,16 +63,7 @@ arglist         : IDENTIFIER
                 | IDENTIFIER : type  , arglist
                 
                 
-expression      : IF expression : NEWLINE block elif_stmt
-                | IF expression : NEWLINE block else_stmt
-                | IF expression : NEWLINE block
-                | IF expression : statement NEWLINE elif_stmt
-                | IF expression : statement NEWLINE else_stmt
-                | IF expression : statement_full
-                | WHILE expression : NEWLINE block
-                | RETURN
-                | RETURN expression
-                | const
+expression      : const
                 | IDENTIFIER
                 | IDENTIFIER ( )
                 | IDENTIFIER . IDENTIFIER ( )

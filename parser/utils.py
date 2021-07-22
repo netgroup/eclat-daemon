@@ -53,7 +53,7 @@ def lexer_preprocessor(source):
             # "chiudendo" un blocco, perciò controllo che #
             # sia in modulo 4
             if indent_number != indent_stack[-1]:
-                if not block and indent_number < indent_stack[-1] and indent_number % indent_space == 0:
+                if not list and indent_number < indent_stack[-1] and indent_number % indent_space == 0:
                     while indent_stack[-1] != indent_number:
                         indent_stack.pop()
                         dedent += " _dedent "
