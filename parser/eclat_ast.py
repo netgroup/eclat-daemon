@@ -23,6 +23,16 @@ class Statement():
     pass
 
 
+class FunctionCall():
+    def __init__(self, lvalue, rvalue, ltype=None):
+        self.lvalue = lvalue
+        self.rvalue = rvalue
+        self.ltype = ltype
+
+    def to_c(self):
+        pass
+
+
 class Assigment(Statement):
     def __init__(self, lvalue, rvalue, ltype=None):
         self.lvalue = lvalue
