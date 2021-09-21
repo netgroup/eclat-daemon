@@ -87,9 +87,11 @@ class EclatLexer(IndentedLexer):
         RPAR,
         COLON,
         EQ,
-        ASSIGN,
+        LTE,
+        GTE,
         LT,
         GT,
+        ASSIGN,
         PLUS,
         MINUS,
         MULT,
@@ -115,9 +117,11 @@ class EclatLexer(IndentedLexer):
     DEDENT = r'_DEDENT'
     COLON = r':'
     EQ = r'=='
-    ASSIGN = r'='
+    LTE = r'<='
+    GTE = r'>='
     LT = r'<'
     GT = r'>'
+    ASSIGN = r'='
     PLUS = r'\+'
     MINUS = r'-'
     MULT = r'\*'
