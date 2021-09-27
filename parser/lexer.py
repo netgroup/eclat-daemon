@@ -67,6 +67,7 @@ class EclatLexer(IndentedLexer):
         ELIF,
         IF,
         ELSE,
+        WHILE,
         FROM,
         IMPORT,
         PASS,
@@ -117,6 +118,7 @@ class EclatLexer(IndentedLexer):
     ELIF = r'elif'
     IF = r'if'
     ELSE = r'else'
+    WHILE = r'while'
     FROM = r'from'
     IMPORT = r'import'
     PASS = r'pass'

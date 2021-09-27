@@ -11,25 +11,25 @@ class EclatParser(Parser):
     precedence = (
         ('left', 'COLON'),
         ('left', 'ASSIGN'),
-        #('left', ['[', ']', ',']),
+        # ('left', ['[', ']', ',']),
         ('left', 'IF', 'ELIF', 'NEWLINE', 'END'),
         # ('left', ['IF', 'ELSE', 'END',
         #          'NEWLINE', 'WHILE', ]),
-        #('left', 'AND', 'OR', ),
-        #('left', 'NOT', ),
+        # ('left', 'AND', 'OR', ),
+        # ('left', 'NOT', ),
         ('left', 'EQ', 'NEQ', 'GTE', 'GT', 'LT', 'LTE', ),
-        #('left', ['PIPE', ]),
-        #('left', ['^', ]),
-        #('left', ['&', ]),
-        #('left', ['>>', '<<', ]),
+        # ('left', ['PIPE', ]),
+        # ('left', ['^', ]),
+        # ('left', ['&', ]),
+        # ('left', ['>>', '<<', ]),
         ('left', 'PLUS', 'MINUS', ),
         ('left', 'MULT', 'DIV', ),
 
         # REFERENCE
-        #('left', 'PLUS', 'MINUS'),
-        #('left', 'LTE', 'GTE', 'GT', 'LT',),
-        #('left', 'EQ'),
-        #('left', 'ASSIGN'),
+        # ('left', 'PLUS', 'MINUS'),
+        # ('left', 'LTE', 'GTE', 'GT', 'LT',),
+        # ('left', 'EQ'),
+        # ('left', 'ASSIGN'),
     )
 
     def __init__(self):
@@ -98,16 +98,29 @@ class EclatParser(Parser):
     def statement(self, p):
         return Statement(p.expression)
 
-    @_('ELIF expression COLON NEWLINE block',)
+    @_('ELSE COLON NEWLINE block',)
+    def else_statement(self, p):
+        return Else(p.block)
+
+    @_('ELIF expression COLON NEWLINE block NEWLINE elif_statement',
+       'ELIF expression COLON NEWLINE block NEWLINE else_statement',
+       'ELIF expression COLON NEWLINE block NEWLINE')
     def elif_statement(self, p):
-        return Elif(p.expression, p.block)
+        elif_part = getattr(p, 'elif_statement', None)
+        else_part = getattr(p, 'else_statement', None)
+        return Elif(p.expression, p.block, elif_part, else_part)
 
     @_('IF expression COLON NEWLINE block NEWLINE elif_statement',
+        'IF expression COLON NEWLINE block NEWLINE else_statement',
        'IF expression COLON NEWLINE block NEWLINE')
     def statement(self, p):
         elif_part = getattr(p, 'elif_statement', None)
         else_part = getattr(p, 'else_statement', None)
         return If(p.expression, p.block, elif_part, else_part)
+
+    @_('WHILE expression COLON NEWLINE block')
+    def statement(self, p):
+        return While(p.expression, p.block)
 
     # expressions
     @_('NAME LPAR arglist RPAR')
@@ -130,6 +143,12 @@ class EclatParser(Parser):
     def expression(self, p):
         return BinaryExpression(p.expression0, p[1], p.expression1)
 
+    @_('LPAR expression RPAR')
+    def expression(self, p):
+        exp = p.expression
+        exp.set_brackets()
+        return exp
+
     @ _('NAME')
     def argument(self, p):
         self.argument_list.append(Argument(p.NAME))
@@ -146,19 +165,19 @@ class EclatParser(Parser):
     def argument(self, p):
         self.argument_list.append(Argument(p.NAME, p.type))
 
-    @_('const', 'NAME')
+    @ _('const', 'NAME')
     def expression(self, p):
         return Expression(p[0])
 
-    @_('NAME ASSIGN expression')
+    @ _('NAME ASSIGN expression')
     def statement(self, p):
         return Assigment(p.NAME, p.expression)
 
-    @_('type COLON NAME ASSIGN const')
+    @ _('type COLON NAME ASSIGN const')
     def statement(self, p):
         return Assigment(p.NAME, p.const, p.type)
 
-    @_('type COLON NAME ASSIGN expression')
+    @ _('type COLON NAME ASSIGN expression')
     def statement(self, p):
         return Assigment(p.NAME, p.expression, p.type)
 
@@ -166,7 +185,7 @@ class EclatParser(Parser):
     def type(self, p):
         return Type(p[0])
 
-    @_('HEX', 'FLOAT', 'INTEGER', 'STRING', 'BOOLEAN')
+    @ _('HEX', 'FLOAT', 'INTEGER', 'STRING', 'BOOLEAN')
     def const(self, p):
         return p[0]
 

@@ -51,45 +51,36 @@ class If(Statement):
 
 
 class Elif(Statement):
+    def __init__(self, expression, block, elif_part=None, else_part=None):
+        self.expression = expression
+        self.block = block
+        self.elif_part = elif_part
+        self.else_part = else_part
+
+    def to_c(self):
+        ret = f"else if ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
+        if self.elif_part:
+            ret += ' ' + self.elif_part.to_c()
+        if self.else_part:
+            ret += ' ' + self.else_part.to_c()
+        return ret
+
+
+class Else(Statement):
+    def __init__(self, block):
+        self.block = block
+
+    def to_c(self):
+        return f"else {{ {self.block.to_c()} }}"
+
+
+class While(Statement):
     def __init__(self, expression, block):
         self.expression = expression
         self.block = block
 
     def to_c(self):
-        return f"else if ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
-
-
-class Expression():
-    def __init__(self, expression):
-        self.expression = expression
-
-    def to_c(self):
-        try:
-            return self.expression.to_c()
-        except AttributeError:
-            return self.expression
-
-
-class BinaryExpression(Expression):
-    def __init__(self, lvalue, operator, rvalue):
-        self.lvalue = lvalue
-        self.rvalue = rvalue
-        self.operator = operator
-
-    def to_c(self):
-        rvalue = self.rvalue.to_c() if hasattr(self.rvalue, 'to_c') else self.rvalue
-        lvalue = self.lvalue.to_c() if hasattr(self.lvalue, 'to_c') else self.lvalue
-        return f"{lvalue} {self.operator} {rvalue}"
-
-
-class FunctionCall(Expression):
-    def __init__(self, function_name, arguments):
-        self.function_name = function_name
-        self.arguments = arguments
-
-    def to_c(self):
-        flat_arguments = ', '.join([a.to_c() for a in self.arguments])
-        return f"{self.function_name}({flat_arguments})"
+        return f"while ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
 
 
 class Assigment(Statement):
@@ -115,6 +106,49 @@ class Pass(Statement):
 
     def to_c(self):
         return ";"
+
+
+# EXPRESSION
+class Expression():
+    def __init__(self, expression=None, brackets=False):
+        self.expression = expression
+        self.brackets = brackets
+
+    def set_brackets(self):
+        self.brackets = True
+
+    def handle_brackets(self, code):
+        return code if not self.brackets else f"({code})"
+
+    def to_c(self):
+        try:
+            return self.handle_brackets(self.expression.to_c())
+        except AttributeError:
+            return self.handle_brackets(self.expression)
+
+
+class BinaryExpression(Expression):
+    def __init__(self, lvalue, operator, rvalue):
+        super().__init__()
+        self.lvalue = lvalue
+        self.rvalue = rvalue
+        self.operator = operator
+
+    def to_c(self):
+        rvalue = self.rvalue.to_c() if hasattr(self.rvalue, 'to_c') else self.rvalue
+        lvalue = self.lvalue.to_c() if hasattr(self.lvalue, 'to_c') else self.lvalue
+        return self.handle_brackets(f"{lvalue} {self.operator} {rvalue}")
+
+
+class FunctionCall(Expression):
+    def __init__(self, function_name, arguments):
+        super().__init__()
+        self.function_name = function_name
+        self.arguments = arguments
+
+    def to_c(self):
+        flat_arguments = ', '.join([a.to_c() for a in self.arguments])
+        return f"{self.function_name}({flat_arguments})"
 
 
 class Argument():

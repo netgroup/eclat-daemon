@@ -79,6 +79,7 @@ def mychain():
     p = 2 >= 2
     p = 2 <= 2
     p = 2 == 2
+    p = (1+1) == 2
         """
         tokens = lexer.tokenize(prog)
         for tok in tokens:
@@ -103,7 +104,40 @@ def mychainIF():
     if p == 3:
         pass
     a = 5 + 2
+    if p == 2:
+        pass
+    else:
+        p = 1
 
+# if indent this comment -> error
+    pass
+    if p == 2:
+        pass
+        pass
+    elif p == 2:
+        pass
+        pass
+    elif p == 9:
+        pass
+        pass
+    else:
+        pass
+        pass
+
+"""
+        tokens = lexer.tokenize(prog)
+        for tok in tokens:
+            print(tok)
+        tokens = lexer.tokenize(prog)
+        p = parser.parse(tokens)
+
+    def test_while(self):
+        lexer = EclatLexer()
+        parser = EclatParser()
+        prog = """
+def mychain_while():
+    while 5 == 5:
+        pass
 """
         tokens = lexer.tokenize(prog)
         for tok in tokens:
