@@ -122,6 +122,10 @@ class EclatParser(Parser):
     def statement(self, p):
         return While(p.expression, p.block)
 
+    # @_('FOR expression COLON NEWLINE block')
+    # def statement(self, p):
+    #    return For(p.expression, p.block)
+
     @_('RETURN expression')
     def statement(self, p):
         return Return(p.expression)

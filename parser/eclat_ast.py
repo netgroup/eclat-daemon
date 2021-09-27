@@ -83,6 +83,15 @@ class While(Statement):
         return f"while ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
 
 
+class For(Statement):
+    def __init__(self, expression, block):
+        self.expression = expression
+        self.block = block
+
+    def to_c(self):
+        return f"for ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
+
+
 class Assigment(Statement):
     def __init__(self, lvalue, rvalue, ltype=None):
         self.lvalue = lvalue
