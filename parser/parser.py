@@ -122,6 +122,10 @@ class EclatParser(Parser):
     def statement(self, p):
         return While(p.expression, p.block)
 
+    @_('RETURN expression')
+    def statement(self, p):
+        return Return(p.expression)
+
     # expressions
     @_('NAME LPAR arglist RPAR')
     def expression(self, p):
@@ -134,14 +138,23 @@ class EclatParser(Parser):
         'expression MINUS expression',
         'expression MULT expression',
         'expression DIV expression',
+        'expression MOD expression',
         'expression GTE expression',
         'expression LTE expression',
         'expression GT expression',
         'expression LT expression',
-        'expression EQ expression'
+        'expression EQ expression',
+        'expression NEQ expression',
+        'expression AND expression',
+        'expression OR expression',
        )
     def expression(self, p):
         return BinaryExpression(p.expression0, p[1], p.expression1)
+
+    @_('NOT expression',
+       )
+    def expression(self, p):
+        return UnaryExpression(p[0], p.expression)
 
     @_('LPAR expression RPAR')
     def expression(self, p):

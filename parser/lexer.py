@@ -92,6 +92,9 @@ class EclatLexer(IndentedLexer):
         LPAR,
         RPAR,
         COLON,
+        AND,
+        OR,
+        NOT,
         EQ,
         NEQ,
         LTE,
@@ -103,6 +106,7 @@ class EclatLexer(IndentedLexer):
         MINUS,
         MULT,
         DIV,
+        MOD,
         RETURN,
         NEWLINE,
         COMMA,
@@ -128,6 +132,9 @@ class EclatLexer(IndentedLexer):
     INDENT = r'_INDENT'
     DEDENT = r'_DEDENT'
     COLON = r':'
+    AND = r'and'
+    OR = r'or'
+    NOT = r'not'
     EQ = r'=='
     NEQ = r'!='
     LTE = r'<='
@@ -139,6 +146,7 @@ class EclatLexer(IndentedLexer):
     MINUS = r'-'
     MULT = r'\*'
     DIV = r'/'
+    MOD = r'%'
     COMMA = r','
 
     U8 = r'u8'

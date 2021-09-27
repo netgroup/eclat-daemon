@@ -48,6 +48,7 @@ def mychain0():
     b = drop()
     u16: x = drop()
     pass
+    return 1
         """
         #tokens = lexer.tokenize(prog)
         # for tok in tokens:
@@ -79,7 +80,12 @@ def mychain():
     p = 2 >= 2
     p = 2 <= 2
     p = 2 == 2
+    p = 2 != 2
+    p = 2 % 2
     p = (1+1) == 2
+    p = 2 and 2
+    p = 2 or 2
+    p = not 2
         """
         tokens = lexer.tokenize(prog)
         for tok in tokens:

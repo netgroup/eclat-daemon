@@ -100,6 +100,14 @@ class Assigment(Statement):
             return f"{self.lvalue} = {rvalue};"
 
 
+class Return(Statement):
+    def __init__(self, expression):
+        self.expression = expression
+
+    def to_c(self):
+        return f"return {self.expression.to_c()}"
+
+
 class Pass(Statement):
     def __init__(self):
         pass
@@ -127,17 +135,50 @@ class Expression():
             return self.handle_brackets(self.expression)
 
 
+class UnaryExpression(Expression):
+    def __init__(self, operator, value):
+        super().__init__()
+        self.value = value
+        self.operator = operator
+        self.operator_map = {
+            '~': '~',
+            'not': '!',
+        }
+
+    def to_c(self):
+        value = self.value.to_c() if hasattr(self.value, 'to_c') else self.value
+        operator = self.operator_map[self.operator]
+        return self.handle_brackets(f"{operator} {value}")
+
+
 class BinaryExpression(Expression):
     def __init__(self, lvalue, operator, rvalue):
         super().__init__()
         self.lvalue = lvalue
         self.rvalue = rvalue
         self.operator = operator
+        # python <-> C operators conversion
+        self.operator_map = {
+            '+': '+',
+            '-': '-',
+            '*': '*',
+            '/': '/',
+            '%': '%',
+            '>': '>',
+            '<': '<',
+            '>=': '>=',
+            '<=': '<=',
+            '==': '==',
+            '!=': '!=',
+            'and': '&&',
+            'or': '||',
+        }
 
     def to_c(self):
         rvalue = self.rvalue.to_c() if hasattr(self.rvalue, 'to_c') else self.rvalue
         lvalue = self.lvalue.to_c() if hasattr(self.lvalue, 'to_c') else self.lvalue
-        return self.handle_brackets(f"{lvalue} {self.operator} {rvalue}")
+        operator = self.operator_map[self.operator]
+        return self.handle_brackets(f"{lvalue} {operator} {rvalue}")
 
 
 class FunctionCall(Expression):
@@ -172,3 +213,15 @@ class Type():
 
     def to_c(self):
         return self.type
+
+
+########### TODO #########
+# statements:  for
+# +=, -= ...
+# >> , <<
+
+# chiamare i moduli
+# modificare mappe (?)
+
+# const
+# variabili globali
