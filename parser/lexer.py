@@ -11,6 +11,7 @@ class IndentedLexer(Lexer):
         Preprocess the file to:
         - convert tab in spaces
         - insert _INDENT and _DEDENT markers to ease the parsing phase
+        - put _END at the end of the text
         """
         # convert tab in spaces
         text = text.replace('\t', '    ')
@@ -20,6 +21,7 @@ class IndentedLexer(Lexer):
         # put INDENT and DEDENT
         INDENT = "_INDENT"
         DEDENT = "_DEDENT"
+        END = '_END'
         curr_indentation_level = 0
         indentations = [0, ]
         output = ""
@@ -51,6 +53,7 @@ class IndentedLexer(Lexer):
         while (len(indentations) > 1):
             indentation = indentations.pop()
             output += DEDENT + '\n'
+        # output += ' ' + END
         print(output)
         return output
 
@@ -61,7 +64,9 @@ class IndentedLexer(Lexer):
 class EclatLexer(IndentedLexer):
     tokens = {
         DEF,
+        ELIF,
         IF,
+        ELSE,
         FROM,
         IMPORT,
         PASS,
@@ -87,6 +92,7 @@ class EclatLexer(IndentedLexer):
         RPAR,
         COLON,
         EQ,
+        NEQ,
         LTE,
         GTE,
         LT,
@@ -100,13 +106,17 @@ class EclatLexer(IndentedLexer):
         NEWLINE,
         COMMA,
         INDENT,
-        DEDENT
+        DEDENT,
+
+        END
     }
     ignore = ' \t'
 
     # Tokens
     DEF = r'def'
+    ELIF = r'elif'
     IF = r'if'
+    ELSE = r'else'
     FROM = r'from'
     IMPORT = r'import'
     PASS = r'pass'
@@ -117,6 +127,7 @@ class EclatLexer(IndentedLexer):
     DEDENT = r'_DEDENT'
     COLON = r':'
     EQ = r'=='
+    NEQ = r'!='
     LTE = r'<='
     GTE = r'>='
     LT = r'<'
@@ -142,6 +153,7 @@ class EclatLexer(IndentedLexer):
     STRING = r'(""".*?""")|(".*?")|(\'.*?\')'
     BOOLEAN = r'true(?!\w)|false(?!\w)'
 
+    END = r'_END'
     NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
     ignore_comment = r'[ ]*\043[^\n]*'

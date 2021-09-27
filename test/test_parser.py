@@ -14,11 +14,12 @@ from package2 import program1, program2, program3
 from package3 import program1 , program2
 
 def chain1():
-    a = 2
+
+    
     pass
 
 def chain2():
-    u8 : b = 7
+    pass
         """
         tokens = lexer.tokenize(prog)
         for tok in tokens:
@@ -79,7 +80,31 @@ def mychain():
     p = 2 <= 2
     p = 2 == 2
         """
+        tokens = lexer.tokenize(prog)
+        for tok in tokens:
+            print(tok)
+        tokens = lexer.tokenize(prog)
+        p = parser.parse(tokens)
 
+    def test_if(self):
+        lexer = EclatLexer()
+        parser = EclatParser()
+        prog = """
+def mychainIF():
+    a = 2 + 2
+    if p == 3:
+        pass
+        b = 2
+    elif p == 2:
+        pass
+        c = 4 * 3
+    a = 3 + 2
+
+    if p == 3:
+        pass
+    a = 5 + 2
+
+"""
         tokens = lexer.tokenize(prog)
         for tok in tokens:
             print(tok)

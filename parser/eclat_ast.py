@@ -35,12 +35,28 @@ class Statement():
 
 
 class If(Statement):
+    def __init__(self, expression, block, elif_part=None, else_part=None):
+        self.expression = expression
+        self.block = block
+        self.elif_part = elif_part
+        self.else_part = else_part
+
+    def to_c(self):
+        ret = f"if ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
+        if self.elif_part:
+            ret += ' ' + self.elif_part.to_c()
+        if self.else_part:
+            ret += ' ' + self.else_part.to_c()
+        return ret
+
+
+class Elif(Statement):
     def __init__(self, expression, block):
         self.expression = expression
         self.block = block
 
     def to_c(self):
-        return f"if ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
+        return f"else if ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
 
 
 class Expression():
@@ -48,7 +64,10 @@ class Expression():
         self.expression = expression
 
     def to_c(self):
-        return self.expression.to_c()
+        try:
+            return self.expression.to_c()
+        except AttributeError:
+            return self.expression
 
 
 class BinaryExpression(Expression):
@@ -59,7 +78,7 @@ class BinaryExpression(Expression):
 
     def to_c(self):
         rvalue = self.rvalue.to_c() if hasattr(self.rvalue, 'to_c') else self.rvalue
-        lvalue = self.rvalue.to_c() if hasattr(self.lvalue, 'to_c') else self.lvalue
+        lvalue = self.lvalue.to_c() if hasattr(self.lvalue, 'to_c') else self.lvalue
         return f"{lvalue} {self.operator} {rvalue}"
 
 
