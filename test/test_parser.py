@@ -150,3 +150,23 @@ def mychain_while():
             print(tok)
         tokens = lexer.tokenize(prog)
         p = parser.parse(tokens)
+
+#     def test_globals(self):
+#         lexer = EclatLexer()
+#         parser = EclatParser()
+#         prog = """
+# u8 p = 4
+# def mychain_while():
+#     while 5 == 5:
+#         pass
+#     """
+#         tokens = lexer.tokenize(prog)
+#         for tok in tokens:
+#             print(tok)
+#         tokens = lexer.tokenize(prog)
+#         p = parser.parse(tokens)
+
+#     def test_indentation(self):
+#         # indentation and multiple newlines
+#         # argumentlist and expressionlist
+#         pass

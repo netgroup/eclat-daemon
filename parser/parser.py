@@ -54,6 +54,7 @@ class EclatParser(Parser):
 
     @_('chain_statement', 'import_statement')
     def statement(self, p):
+        # top statements
         return p
 
     @_('FROM NAME IMPORT module_list')

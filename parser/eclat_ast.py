@@ -225,12 +225,12 @@ class Type():
 
 
 ########### TODO #########
-# statements:  for
+# statements:  for --> come lo facciamo?
 # +=, -= ...
 # >> , <<
 
 # chiamare i moduli
 # modificare mappe (?)
 
-# const
+
 # variabili globali

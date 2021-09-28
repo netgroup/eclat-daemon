@@ -68,6 +68,7 @@ Rule 64    const -> HEX
 
 Unused terminals:
 
+    FOR
     END
 
 Terminals, with rules where they appear:
@@ -85,6 +86,7 @@ ELSE                 : 24
 END                  : 
 EQ                   : 35
 FLOAT                : 63
+FOR                  : 
 FROM                 : 17
 GT                   : 37
 GTE                  : 39
