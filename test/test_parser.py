@@ -190,10 +190,11 @@ def mychain_globals():
         for tok in tokens:
             print(tok)
         tokens = lexer.tokenize(prog)
-        p = parser.parse(tokens)
+        parser.parse(tokens)
+        print(parser.globals)
 
 #     def test_indentation(self):
 #         # indentation and multiple newlines OK
 #         # argumentlist and expressionlist
-#         # globals variable
-#         pass
+#         # globals variable OK
+#         # constants -> CONST_NAME = "Name"

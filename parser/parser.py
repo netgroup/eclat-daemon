@@ -37,6 +37,7 @@ class EclatParser(Parser):
         self.imports = {}
         self.chains = {}
         self.loaders = {}
+        self.globals = []
         # stack for the parser
         self.statement_list = []
         self.argument_list = []
@@ -46,6 +47,9 @@ class EclatParser(Parser):
 
     @_('statement_full', 'statement_full program')
     def program(self, p):
+        if p.statement_full:
+            # only global statements return
+            self.globals.append(p.statement_full.to_c())
         pass
 
     @_('statement NEWLINE', 'statement')
@@ -55,7 +59,7 @@ class EclatParser(Parser):
     @_('chain_statement', 'import_statement')
     def statement(self, p):
         # top statements
-        return p
+        return p[0]
 
     @_('FROM NAME IMPORT module_list')
     def import_statement(self, p):
