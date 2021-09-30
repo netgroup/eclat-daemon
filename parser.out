@@ -45,26 +45,27 @@ Rule 41    expression -> expression DIV expression  [precedence=left, level=6]
 Rule 42    expression -> expression MULT expression  [precedence=left, level=6]
 Rule 43    expression -> expression MINUS expression  [precedence=left, level=5]
 Rule 44    expression -> expression PLUS expression  [precedence=left, level=5]
-Rule 45    expression -> NAME LPAR arglist RPAR
-Rule 46    argument -> type COLON NAME
-Rule 47    argument -> const
+Rule 45    expression -> NAME DOT NAME LPAR arglist RPAR
+Rule 46    expression -> NAME LPAR arglist RPAR
+Rule 47    argument -> type COLON NAME
 Rule 48    argument -> NAME
-Rule 49    arglist -> <empty>
-Rule 50    arglist -> argument
-Rule 51    arglist -> argument COMMA arglist
-Rule 52    type -> S64
-Rule 53    type -> S32
-Rule 54    type -> S16
-Rule 55    type -> S8
-Rule 56    type -> U64
-Rule 57    type -> U32
-Rule 58    type -> U16
-Rule 59    type -> U8
-Rule 60    const -> BOOLEAN
-Rule 61    const -> STRING
-Rule 62    const -> INTEGER
-Rule 63    const -> FLOAT
-Rule 64    const -> HEX
+Rule 49    argument -> const
+Rule 50    arglist -> <empty>
+Rule 51    arglist -> argument
+Rule 52    arglist -> argument COMMA arglist
+Rule 53    type -> S64
+Rule 54    type -> S32
+Rule 55    type -> S16
+Rule 56    type -> S8
+Rule 57    type -> U64
+Rule 58    type -> U32
+Rule 59    type -> U16
+Rule 60    type -> U8
+Rule 61    const -> BOOLEAN
+Rule 62    const -> STRING
+Rule 63    const -> INTEGER
+Rule 64    const -> FLOAT
+Rule 65    const -> HEX
 
 Unused terminals:
 
@@ -75,33 +76,34 @@ Terminals, with rules where they appear:
 
 AND                  : 33
 ASSIGN               : 5 6 7
-BOOLEAN              : 60
-COLON                : 5 6 9 10 11 12 20 24 25 26 27 46
-COMMA                : 19 51
+BOOLEAN              : 61
+COLON                : 5 6 9 10 11 12 20 24 25 26 27 47
+COMMA                : 19 52
 DEDENT               : 21
 DEF                  : 20
 DIV                  : 41
+DOT                  : 45
 ELIF                 : 25 26 27
 ELSE                 : 24
 END                  : 
 EQ                   : 35
-FLOAT                : 63
+FLOAT                : 64
 FOR                  : 
 FROM                 : 17
 GT                   : 37
 GTE                  : 39
-HEX                  : 64
+HEX                  : 65
 IF                   : 10 11 12
 IMPORT               : 17
 INDENT               : 21
-INTEGER              : 62
-LPAR                 : 20 30 45
+INTEGER              : 63
+LPAR                 : 20 30 45 46
 LT                   : 36
 LTE                  : 38
 MINUS                : 43
 MOD                  : 40
 MULT                 : 42
-NAME                 : 5 6 7 17 18 19 20 28 45 46 48
+NAME                 : 5 6 7 17 18 19 20 28 45 45 46 47 48
 NEQ                  : 34
 NEWLINE              : 4 9 10 10 11 11 12 12 20 24 25 25 26 26 27 27
 NOT                  : 31
@@ -109,27 +111,27 @@ OR                   : 32
 PASS                 : 14
 PLUS                 : 44
 RETURN               : 8
-RPAR                 : 20 30 45
-S16                  : 54
-S32                  : 53
-S64                  : 52
-S8                   : 55
-STRING               : 61
-U16                  : 58
-U32                  : 57
-U64                  : 56
-U8                   : 59
+RPAR                 : 20 30 45 46
+S16                  : 55
+S32                  : 54
+S64                  : 53
+S8                   : 56
+STRING               : 62
+U16                  : 59
+U32                  : 58
+U64                  : 57
+U8                   : 60
 WHILE                : 9
 error                : 
 
 Nonterminals, with rules where they appear:
 
-arglist              : 20 45 51
-argument             : 50 51
+arglist              : 20 45 46 52
+argument             : 51 52
 block                : 9 10 11 12 20 24 25 26 27
 block_statements     : 21 22
 chain_statement      : 16
-const                : 6 29 47
+const                : 6 29 49
 elif_statement       : 12 27
 else_statement       : 11 26
 expression           : 5 7 8 9 10 11 12 13 25 26 27 30 31 32 32 33 33 34 34 35 35 36 36 37 37 38 38 39 39 40 40 41 41 42 42 43 43 44 44
@@ -138,7 +140,7 @@ module_list          : 17 19
 program              : 1 0
 statement            : 3 4
 statement_full       : 1 2 22 23
-type                 : 5 6 46
+type                 : 5 6 47
 
 
 state 0
@@ -160,14 +162,14 @@ state 0
     (14) statement -> . PASS
     (15) statement -> . import_statement
     (16) statement -> . chain_statement
-    (52) type -> . S64
-    (53) type -> . S32
-    (54) type -> . S16
-    (55) type -> . S8
-    (56) type -> . U64
-    (57) type -> . U32
-    (58) type -> . U16
-    (59) type -> . U8
+    (53) type -> . S64
+    (54) type -> . S32
+    (55) type -> . S16
+    (56) type -> . S8
+    (57) type -> . U64
+    (58) type -> . U32
+    (59) type -> . U16
+    (60) type -> . U8
     (28) expression -> . NAME
     (29) expression -> . const
     (30) expression -> . LPAR expression RPAR
@@ -185,14 +187,15 @@ state 0
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
     (17) import_statement -> . FROM NAME IMPORT module_list
     (20) chain_statement -> . DEF NAME LPAR arglist RPAR COLON NEWLINE block
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
     NAME            shift and go to state 5
     RETURN          shift and go to state 8
     WHILE           shift and go to state 9
@@ -250,14 +253,14 @@ state 2
     (14) statement -> . PASS
     (15) statement -> . import_statement
     (16) statement -> . chain_statement
-    (52) type -> . S64
-    (53) type -> . S32
-    (54) type -> . S16
-    (55) type -> . S8
-    (56) type -> . U64
-    (57) type -> . U32
-    (58) type -> . U16
-    (59) type -> . U8
+    (53) type -> . S64
+    (54) type -> . S32
+    (55) type -> . S16
+    (56) type -> . S8
+    (57) type -> . U64
+    (58) type -> . U32
+    (59) type -> . U16
+    (60) type -> . U8
     (28) expression -> . NAME
     (29) expression -> . const
     (30) expression -> . LPAR expression RPAR
@@ -275,14 +278,15 @@ state 2
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
     (17) import_statement -> . FROM NAME IMPORT module_list
     (20) chain_statement -> . DEF NAME LPAR arglist RPAR COLON NEWLINE block
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
     $end            reduce using rule 2 (program -> statement_full .)
     NAME            shift and go to state 5
     RETURN          shift and go to state 8
@@ -358,7 +362,8 @@ state 5
 
     (7) statement -> NAME . ASSIGN expression
     (28) expression -> NAME .
-    (45) expression -> NAME . LPAR arglist RPAR
+    (45) expression -> NAME . DOT NAME LPAR arglist RPAR
+    (46) expression -> NAME . LPAR arglist RPAR
   ! shift/reduce conflict for LPAR resolved as shift
     ASSIGN          shift and go to state 34
     OR              reduce using rule 28 (expression -> NAME .)
@@ -398,7 +403,8 @@ state 5
     HEX             reduce using rule 28 (expression -> NAME .)
     $end            reduce using rule 28 (expression -> NAME .)
     DEDENT          reduce using rule 28 (expression -> NAME .)
-    LPAR            shift and go to state 35
+    DOT             shift and go to state 35
+    LPAR            shift and go to state 36
 
 
 state 6
@@ -442,19 +448,19 @@ state 6
     HEX             reduce using rule 13 (statement -> expression .)
     $end            reduce using rule 13 (statement -> expression .)
     DEDENT          reduce using rule 13 (statement -> expression .)
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
 state 7
@@ -522,13 +528,14 @@ state 8
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -537,7 +544,7 @@ state 8
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 49
+    expression                     shift and go to state 50
     const                          shift and go to state 7
 
 state 9
@@ -560,13 +567,14 @@ state 9
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -575,7 +583,7 @@ state 9
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 51
+    expression                     shift and go to state 52
     const                          shift and go to state 7
 
 state 10
@@ -600,13 +608,14 @@ state 10
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -615,7 +624,7 @@ state 10
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 52
+    expression                     shift and go to state 53
     const                          shift and go to state 7
 
 state 11
@@ -710,50 +719,50 @@ state 13
 
 state 14
 
-    (52) type -> S64 .
-    COLON           reduce using rule 52 (type -> S64 .)
+    (53) type -> S64 .
+    COLON           reduce using rule 53 (type -> S64 .)
 
 
 state 15
 
-    (53) type -> S32 .
-    COLON           reduce using rule 53 (type -> S32 .)
+    (54) type -> S32 .
+    COLON           reduce using rule 54 (type -> S32 .)
 
 
 state 16
 
-    (54) type -> S16 .
-    COLON           reduce using rule 54 (type -> S16 .)
+    (55) type -> S16 .
+    COLON           reduce using rule 55 (type -> S16 .)
 
 
 state 17
 
-    (55) type -> S8 .
-    COLON           reduce using rule 55 (type -> S8 .)
+    (56) type -> S8 .
+    COLON           reduce using rule 56 (type -> S8 .)
 
 
 state 18
 
-    (56) type -> U64 .
-    COLON           reduce using rule 56 (type -> U64 .)
+    (57) type -> U64 .
+    COLON           reduce using rule 57 (type -> U64 .)
 
 
 state 19
 
-    (57) type -> U32 .
-    COLON           reduce using rule 57 (type -> U32 .)
+    (58) type -> U32 .
+    COLON           reduce using rule 58 (type -> U32 .)
 
 
 state 20
 
-    (58) type -> U16 .
-    COLON           reduce using rule 58 (type -> U16 .)
+    (59) type -> U16 .
+    COLON           reduce using rule 59 (type -> U16 .)
 
 
 state 21
 
-    (59) type -> U8 .
-    COLON           reduce using rule 59 (type -> U8 .)
+    (60) type -> U8 .
+    COLON           reduce using rule 60 (type -> U8 .)
 
 
 state 22
@@ -776,13 +785,14 @@ state 22
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -791,7 +801,7 @@ state 22
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 53
+    expression                     shift and go to state 54
     const                          shift and go to state 7
 
 state 23
@@ -814,13 +824,14 @@ state 23
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -829,249 +840,249 @@ state 23
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 54
+    expression                     shift and go to state 55
     const                          shift and go to state 7
 
 state 24
 
     (17) import_statement -> FROM . NAME IMPORT module_list
-    NAME            shift and go to state 55
+    NAME            shift and go to state 56
 
 
 state 25
 
     (20) chain_statement -> DEF . NAME LPAR arglist RPAR COLON NEWLINE block
-    NAME            shift and go to state 56
+    NAME            shift and go to state 57
 
 
 state 26
 
-    (60) const -> BOOLEAN .
-    OR              reduce using rule 60 (const -> BOOLEAN .)
-    AND             reduce using rule 60 (const -> BOOLEAN .)
-    NEQ             reduce using rule 60 (const -> BOOLEAN .)
-    EQ              reduce using rule 60 (const -> BOOLEAN .)
-    LT              reduce using rule 60 (const -> BOOLEAN .)
-    GT              reduce using rule 60 (const -> BOOLEAN .)
-    LTE             reduce using rule 60 (const -> BOOLEAN .)
-    GTE             reduce using rule 60 (const -> BOOLEAN .)
-    MOD             reduce using rule 60 (const -> BOOLEAN .)
-    DIV             reduce using rule 60 (const -> BOOLEAN .)
-    MULT            reduce using rule 60 (const -> BOOLEAN .)
-    MINUS           reduce using rule 60 (const -> BOOLEAN .)
-    PLUS            reduce using rule 60 (const -> BOOLEAN .)
-    NEWLINE         reduce using rule 60 (const -> BOOLEAN .)
-    NAME            reduce using rule 60 (const -> BOOLEAN .)
-    RETURN          reduce using rule 60 (const -> BOOLEAN .)
-    WHILE           reduce using rule 60 (const -> BOOLEAN .)
-    IF              reduce using rule 60 (const -> BOOLEAN .)
-    PASS            reduce using rule 60 (const -> BOOLEAN .)
-    S64             reduce using rule 60 (const -> BOOLEAN .)
-    S32             reduce using rule 60 (const -> BOOLEAN .)
-    S16             reduce using rule 60 (const -> BOOLEAN .)
-    S8              reduce using rule 60 (const -> BOOLEAN .)
-    U64             reduce using rule 60 (const -> BOOLEAN .)
-    U32             reduce using rule 60 (const -> BOOLEAN .)
-    U16             reduce using rule 60 (const -> BOOLEAN .)
-    U8              reduce using rule 60 (const -> BOOLEAN .)
-    LPAR            reduce using rule 60 (const -> BOOLEAN .)
-    NOT             reduce using rule 60 (const -> BOOLEAN .)
-    FROM            reduce using rule 60 (const -> BOOLEAN .)
-    DEF             reduce using rule 60 (const -> BOOLEAN .)
-    BOOLEAN         reduce using rule 60 (const -> BOOLEAN .)
-    STRING          reduce using rule 60 (const -> BOOLEAN .)
-    INTEGER         reduce using rule 60 (const -> BOOLEAN .)
-    FLOAT           reduce using rule 60 (const -> BOOLEAN .)
-    HEX             reduce using rule 60 (const -> BOOLEAN .)
-    $end            reduce using rule 60 (const -> BOOLEAN .)
-    DEDENT          reduce using rule 60 (const -> BOOLEAN .)
-    COLON           reduce using rule 60 (const -> BOOLEAN .)
-    RPAR            reduce using rule 60 (const -> BOOLEAN .)
-    COMMA           reduce using rule 60 (const -> BOOLEAN .)
+    (61) const -> BOOLEAN .
+    OR              reduce using rule 61 (const -> BOOLEAN .)
+    AND             reduce using rule 61 (const -> BOOLEAN .)
+    NEQ             reduce using rule 61 (const -> BOOLEAN .)
+    EQ              reduce using rule 61 (const -> BOOLEAN .)
+    LT              reduce using rule 61 (const -> BOOLEAN .)
+    GT              reduce using rule 61 (const -> BOOLEAN .)
+    LTE             reduce using rule 61 (const -> BOOLEAN .)
+    GTE             reduce using rule 61 (const -> BOOLEAN .)
+    MOD             reduce using rule 61 (const -> BOOLEAN .)
+    DIV             reduce using rule 61 (const -> BOOLEAN .)
+    MULT            reduce using rule 61 (const -> BOOLEAN .)
+    MINUS           reduce using rule 61 (const -> BOOLEAN .)
+    PLUS            reduce using rule 61 (const -> BOOLEAN .)
+    NEWLINE         reduce using rule 61 (const -> BOOLEAN .)
+    NAME            reduce using rule 61 (const -> BOOLEAN .)
+    RETURN          reduce using rule 61 (const -> BOOLEAN .)
+    WHILE           reduce using rule 61 (const -> BOOLEAN .)
+    IF              reduce using rule 61 (const -> BOOLEAN .)
+    PASS            reduce using rule 61 (const -> BOOLEAN .)
+    S64             reduce using rule 61 (const -> BOOLEAN .)
+    S32             reduce using rule 61 (const -> BOOLEAN .)
+    S16             reduce using rule 61 (const -> BOOLEAN .)
+    S8              reduce using rule 61 (const -> BOOLEAN .)
+    U64             reduce using rule 61 (const -> BOOLEAN .)
+    U32             reduce using rule 61 (const -> BOOLEAN .)
+    U16             reduce using rule 61 (const -> BOOLEAN .)
+    U8              reduce using rule 61 (const -> BOOLEAN .)
+    LPAR            reduce using rule 61 (const -> BOOLEAN .)
+    NOT             reduce using rule 61 (const -> BOOLEAN .)
+    FROM            reduce using rule 61 (const -> BOOLEAN .)
+    DEF             reduce using rule 61 (const -> BOOLEAN .)
+    BOOLEAN         reduce using rule 61 (const -> BOOLEAN .)
+    STRING          reduce using rule 61 (const -> BOOLEAN .)
+    INTEGER         reduce using rule 61 (const -> BOOLEAN .)
+    FLOAT           reduce using rule 61 (const -> BOOLEAN .)
+    HEX             reduce using rule 61 (const -> BOOLEAN .)
+    $end            reduce using rule 61 (const -> BOOLEAN .)
+    DEDENT          reduce using rule 61 (const -> BOOLEAN .)
+    COLON           reduce using rule 61 (const -> BOOLEAN .)
+    RPAR            reduce using rule 61 (const -> BOOLEAN .)
+    COMMA           reduce using rule 61 (const -> BOOLEAN .)
 
 
 state 27
 
-    (61) const -> STRING .
-    OR              reduce using rule 61 (const -> STRING .)
-    AND             reduce using rule 61 (const -> STRING .)
-    NEQ             reduce using rule 61 (const -> STRING .)
-    EQ              reduce using rule 61 (const -> STRING .)
-    LT              reduce using rule 61 (const -> STRING .)
-    GT              reduce using rule 61 (const -> STRING .)
-    LTE             reduce using rule 61 (const -> STRING .)
-    GTE             reduce using rule 61 (const -> STRING .)
-    MOD             reduce using rule 61 (const -> STRING .)
-    DIV             reduce using rule 61 (const -> STRING .)
-    MULT            reduce using rule 61 (const -> STRING .)
-    MINUS           reduce using rule 61 (const -> STRING .)
-    PLUS            reduce using rule 61 (const -> STRING .)
-    NEWLINE         reduce using rule 61 (const -> STRING .)
-    NAME            reduce using rule 61 (const -> STRING .)
-    RETURN          reduce using rule 61 (const -> STRING .)
-    WHILE           reduce using rule 61 (const -> STRING .)
-    IF              reduce using rule 61 (const -> STRING .)
-    PASS            reduce using rule 61 (const -> STRING .)
-    S64             reduce using rule 61 (const -> STRING .)
-    S32             reduce using rule 61 (const -> STRING .)
-    S16             reduce using rule 61 (const -> STRING .)
-    S8              reduce using rule 61 (const -> STRING .)
-    U64             reduce using rule 61 (const -> STRING .)
-    U32             reduce using rule 61 (const -> STRING .)
-    U16             reduce using rule 61 (const -> STRING .)
-    U8              reduce using rule 61 (const -> STRING .)
-    LPAR            reduce using rule 61 (const -> STRING .)
-    NOT             reduce using rule 61 (const -> STRING .)
-    FROM            reduce using rule 61 (const -> STRING .)
-    DEF             reduce using rule 61 (const -> STRING .)
-    BOOLEAN         reduce using rule 61 (const -> STRING .)
-    STRING          reduce using rule 61 (const -> STRING .)
-    INTEGER         reduce using rule 61 (const -> STRING .)
-    FLOAT           reduce using rule 61 (const -> STRING .)
-    HEX             reduce using rule 61 (const -> STRING .)
-    $end            reduce using rule 61 (const -> STRING .)
-    DEDENT          reduce using rule 61 (const -> STRING .)
-    COLON           reduce using rule 61 (const -> STRING .)
-    RPAR            reduce using rule 61 (const -> STRING .)
-    COMMA           reduce using rule 61 (const -> STRING .)
+    (62) const -> STRING .
+    OR              reduce using rule 62 (const -> STRING .)
+    AND             reduce using rule 62 (const -> STRING .)
+    NEQ             reduce using rule 62 (const -> STRING .)
+    EQ              reduce using rule 62 (const -> STRING .)
+    LT              reduce using rule 62 (const -> STRING .)
+    GT              reduce using rule 62 (const -> STRING .)
+    LTE             reduce using rule 62 (const -> STRING .)
+    GTE             reduce using rule 62 (const -> STRING .)
+    MOD             reduce using rule 62 (const -> STRING .)
+    DIV             reduce using rule 62 (const -> STRING .)
+    MULT            reduce using rule 62 (const -> STRING .)
+    MINUS           reduce using rule 62 (const -> STRING .)
+    PLUS            reduce using rule 62 (const -> STRING .)
+    NEWLINE         reduce using rule 62 (const -> STRING .)
+    NAME            reduce using rule 62 (const -> STRING .)
+    RETURN          reduce using rule 62 (const -> STRING .)
+    WHILE           reduce using rule 62 (const -> STRING .)
+    IF              reduce using rule 62 (const -> STRING .)
+    PASS            reduce using rule 62 (const -> STRING .)
+    S64             reduce using rule 62 (const -> STRING .)
+    S32             reduce using rule 62 (const -> STRING .)
+    S16             reduce using rule 62 (const -> STRING .)
+    S8              reduce using rule 62 (const -> STRING .)
+    U64             reduce using rule 62 (const -> STRING .)
+    U32             reduce using rule 62 (const -> STRING .)
+    U16             reduce using rule 62 (const -> STRING .)
+    U8              reduce using rule 62 (const -> STRING .)
+    LPAR            reduce using rule 62 (const -> STRING .)
+    NOT             reduce using rule 62 (const -> STRING .)
+    FROM            reduce using rule 62 (const -> STRING .)
+    DEF             reduce using rule 62 (const -> STRING .)
+    BOOLEAN         reduce using rule 62 (const -> STRING .)
+    STRING          reduce using rule 62 (const -> STRING .)
+    INTEGER         reduce using rule 62 (const -> STRING .)
+    FLOAT           reduce using rule 62 (const -> STRING .)
+    HEX             reduce using rule 62 (const -> STRING .)
+    $end            reduce using rule 62 (const -> STRING .)
+    DEDENT          reduce using rule 62 (const -> STRING .)
+    COLON           reduce using rule 62 (const -> STRING .)
+    RPAR            reduce using rule 62 (const -> STRING .)
+    COMMA           reduce using rule 62 (const -> STRING .)
 
 
 state 28
 
-    (62) const -> INTEGER .
-    OR              reduce using rule 62 (const -> INTEGER .)
-    AND             reduce using rule 62 (const -> INTEGER .)
-    NEQ             reduce using rule 62 (const -> INTEGER .)
-    EQ              reduce using rule 62 (const -> INTEGER .)
-    LT              reduce using rule 62 (const -> INTEGER .)
-    GT              reduce using rule 62 (const -> INTEGER .)
-    LTE             reduce using rule 62 (const -> INTEGER .)
-    GTE             reduce using rule 62 (const -> INTEGER .)
-    MOD             reduce using rule 62 (const -> INTEGER .)
-    DIV             reduce using rule 62 (const -> INTEGER .)
-    MULT            reduce using rule 62 (const -> INTEGER .)
-    MINUS           reduce using rule 62 (const -> INTEGER .)
-    PLUS            reduce using rule 62 (const -> INTEGER .)
-    NEWLINE         reduce using rule 62 (const -> INTEGER .)
-    NAME            reduce using rule 62 (const -> INTEGER .)
-    RETURN          reduce using rule 62 (const -> INTEGER .)
-    WHILE           reduce using rule 62 (const -> INTEGER .)
-    IF              reduce using rule 62 (const -> INTEGER .)
-    PASS            reduce using rule 62 (const -> INTEGER .)
-    S64             reduce using rule 62 (const -> INTEGER .)
-    S32             reduce using rule 62 (const -> INTEGER .)
-    S16             reduce using rule 62 (const -> INTEGER .)
-    S8              reduce using rule 62 (const -> INTEGER .)
-    U64             reduce using rule 62 (const -> INTEGER .)
-    U32             reduce using rule 62 (const -> INTEGER .)
-    U16             reduce using rule 62 (const -> INTEGER .)
-    U8              reduce using rule 62 (const -> INTEGER .)
-    LPAR            reduce using rule 62 (const -> INTEGER .)
-    NOT             reduce using rule 62 (const -> INTEGER .)
-    FROM            reduce using rule 62 (const -> INTEGER .)
-    DEF             reduce using rule 62 (const -> INTEGER .)
-    BOOLEAN         reduce using rule 62 (const -> INTEGER .)
-    STRING          reduce using rule 62 (const -> INTEGER .)
-    INTEGER         reduce using rule 62 (const -> INTEGER .)
-    FLOAT           reduce using rule 62 (const -> INTEGER .)
-    HEX             reduce using rule 62 (const -> INTEGER .)
-    $end            reduce using rule 62 (const -> INTEGER .)
-    DEDENT          reduce using rule 62 (const -> INTEGER .)
-    COLON           reduce using rule 62 (const -> INTEGER .)
-    RPAR            reduce using rule 62 (const -> INTEGER .)
-    COMMA           reduce using rule 62 (const -> INTEGER .)
+    (63) const -> INTEGER .
+    OR              reduce using rule 63 (const -> INTEGER .)
+    AND             reduce using rule 63 (const -> INTEGER .)
+    NEQ             reduce using rule 63 (const -> INTEGER .)
+    EQ              reduce using rule 63 (const -> INTEGER .)
+    LT              reduce using rule 63 (const -> INTEGER .)
+    GT              reduce using rule 63 (const -> INTEGER .)
+    LTE             reduce using rule 63 (const -> INTEGER .)
+    GTE             reduce using rule 63 (const -> INTEGER .)
+    MOD             reduce using rule 63 (const -> INTEGER .)
+    DIV             reduce using rule 63 (const -> INTEGER .)
+    MULT            reduce using rule 63 (const -> INTEGER .)
+    MINUS           reduce using rule 63 (const -> INTEGER .)
+    PLUS            reduce using rule 63 (const -> INTEGER .)
+    NEWLINE         reduce using rule 63 (const -> INTEGER .)
+    NAME            reduce using rule 63 (const -> INTEGER .)
+    RETURN          reduce using rule 63 (const -> INTEGER .)
+    WHILE           reduce using rule 63 (const -> INTEGER .)
+    IF              reduce using rule 63 (const -> INTEGER .)
+    PASS            reduce using rule 63 (const -> INTEGER .)
+    S64             reduce using rule 63 (const -> INTEGER .)
+    S32             reduce using rule 63 (const -> INTEGER .)
+    S16             reduce using rule 63 (const -> INTEGER .)
+    S8              reduce using rule 63 (const -> INTEGER .)
+    U64             reduce using rule 63 (const -> INTEGER .)
+    U32             reduce using rule 63 (const -> INTEGER .)
+    U16             reduce using rule 63 (const -> INTEGER .)
+    U8              reduce using rule 63 (const -> INTEGER .)
+    LPAR            reduce using rule 63 (const -> INTEGER .)
+    NOT             reduce using rule 63 (const -> INTEGER .)
+    FROM            reduce using rule 63 (const -> INTEGER .)
+    DEF             reduce using rule 63 (const -> INTEGER .)
+    BOOLEAN         reduce using rule 63 (const -> INTEGER .)
+    STRING          reduce using rule 63 (const -> INTEGER .)
+    INTEGER         reduce using rule 63 (const -> INTEGER .)
+    FLOAT           reduce using rule 63 (const -> INTEGER .)
+    HEX             reduce using rule 63 (const -> INTEGER .)
+    $end            reduce using rule 63 (const -> INTEGER .)
+    DEDENT          reduce using rule 63 (const -> INTEGER .)
+    COLON           reduce using rule 63 (const -> INTEGER .)
+    RPAR            reduce using rule 63 (const -> INTEGER .)
+    COMMA           reduce using rule 63 (const -> INTEGER .)
 
 
 state 29
 
-    (63) const -> FLOAT .
-    OR              reduce using rule 63 (const -> FLOAT .)
-    AND             reduce using rule 63 (const -> FLOAT .)
-    NEQ             reduce using rule 63 (const -> FLOAT .)
-    EQ              reduce using rule 63 (const -> FLOAT .)
-    LT              reduce using rule 63 (const -> FLOAT .)
-    GT              reduce using rule 63 (const -> FLOAT .)
-    LTE             reduce using rule 63 (const -> FLOAT .)
-    GTE             reduce using rule 63 (const -> FLOAT .)
-    MOD             reduce using rule 63 (const -> FLOAT .)
-    DIV             reduce using rule 63 (const -> FLOAT .)
-    MULT            reduce using rule 63 (const -> FLOAT .)
-    MINUS           reduce using rule 63 (const -> FLOAT .)
-    PLUS            reduce using rule 63 (const -> FLOAT .)
-    NEWLINE         reduce using rule 63 (const -> FLOAT .)
-    NAME            reduce using rule 63 (const -> FLOAT .)
-    RETURN          reduce using rule 63 (const -> FLOAT .)
-    WHILE           reduce using rule 63 (const -> FLOAT .)
-    IF              reduce using rule 63 (const -> FLOAT .)
-    PASS            reduce using rule 63 (const -> FLOAT .)
-    S64             reduce using rule 63 (const -> FLOAT .)
-    S32             reduce using rule 63 (const -> FLOAT .)
-    S16             reduce using rule 63 (const -> FLOAT .)
-    S8              reduce using rule 63 (const -> FLOAT .)
-    U64             reduce using rule 63 (const -> FLOAT .)
-    U32             reduce using rule 63 (const -> FLOAT .)
-    U16             reduce using rule 63 (const -> FLOAT .)
-    U8              reduce using rule 63 (const -> FLOAT .)
-    LPAR            reduce using rule 63 (const -> FLOAT .)
-    NOT             reduce using rule 63 (const -> FLOAT .)
-    FROM            reduce using rule 63 (const -> FLOAT .)
-    DEF             reduce using rule 63 (const -> FLOAT .)
-    BOOLEAN         reduce using rule 63 (const -> FLOAT .)
-    STRING          reduce using rule 63 (const -> FLOAT .)
-    INTEGER         reduce using rule 63 (const -> FLOAT .)
-    FLOAT           reduce using rule 63 (const -> FLOAT .)
-    HEX             reduce using rule 63 (const -> FLOAT .)
-    $end            reduce using rule 63 (const -> FLOAT .)
-    DEDENT          reduce using rule 63 (const -> FLOAT .)
-    COLON           reduce using rule 63 (const -> FLOAT .)
-    RPAR            reduce using rule 63 (const -> FLOAT .)
-    COMMA           reduce using rule 63 (const -> FLOAT .)
+    (64) const -> FLOAT .
+    OR              reduce using rule 64 (const -> FLOAT .)
+    AND             reduce using rule 64 (const -> FLOAT .)
+    NEQ             reduce using rule 64 (const -> FLOAT .)
+    EQ              reduce using rule 64 (const -> FLOAT .)
+    LT              reduce using rule 64 (const -> FLOAT .)
+    GT              reduce using rule 64 (const -> FLOAT .)
+    LTE             reduce using rule 64 (const -> FLOAT .)
+    GTE             reduce using rule 64 (const -> FLOAT .)
+    MOD             reduce using rule 64 (const -> FLOAT .)
+    DIV             reduce using rule 64 (const -> FLOAT .)
+    MULT            reduce using rule 64 (const -> FLOAT .)
+    MINUS           reduce using rule 64 (const -> FLOAT .)
+    PLUS            reduce using rule 64 (const -> FLOAT .)
+    NEWLINE         reduce using rule 64 (const -> FLOAT .)
+    NAME            reduce using rule 64 (const -> FLOAT .)
+    RETURN          reduce using rule 64 (const -> FLOAT .)
+    WHILE           reduce using rule 64 (const -> FLOAT .)
+    IF              reduce using rule 64 (const -> FLOAT .)
+    PASS            reduce using rule 64 (const -> FLOAT .)
+    S64             reduce using rule 64 (const -> FLOAT .)
+    S32             reduce using rule 64 (const -> FLOAT .)
+    S16             reduce using rule 64 (const -> FLOAT .)
+    S8              reduce using rule 64 (const -> FLOAT .)
+    U64             reduce using rule 64 (const -> FLOAT .)
+    U32             reduce using rule 64 (const -> FLOAT .)
+    U16             reduce using rule 64 (const -> FLOAT .)
+    U8              reduce using rule 64 (const -> FLOAT .)
+    LPAR            reduce using rule 64 (const -> FLOAT .)
+    NOT             reduce using rule 64 (const -> FLOAT .)
+    FROM            reduce using rule 64 (const -> FLOAT .)
+    DEF             reduce using rule 64 (const -> FLOAT .)
+    BOOLEAN         reduce using rule 64 (const -> FLOAT .)
+    STRING          reduce using rule 64 (const -> FLOAT .)
+    INTEGER         reduce using rule 64 (const -> FLOAT .)
+    FLOAT           reduce using rule 64 (const -> FLOAT .)
+    HEX             reduce using rule 64 (const -> FLOAT .)
+    $end            reduce using rule 64 (const -> FLOAT .)
+    DEDENT          reduce using rule 64 (const -> FLOAT .)
+    COLON           reduce using rule 64 (const -> FLOAT .)
+    RPAR            reduce using rule 64 (const -> FLOAT .)
+    COMMA           reduce using rule 64 (const -> FLOAT .)
 
 
 state 30
 
-    (64) const -> HEX .
-    OR              reduce using rule 64 (const -> HEX .)
-    AND             reduce using rule 64 (const -> HEX .)
-    NEQ             reduce using rule 64 (const -> HEX .)
-    EQ              reduce using rule 64 (const -> HEX .)
-    LT              reduce using rule 64 (const -> HEX .)
-    GT              reduce using rule 64 (const -> HEX .)
-    LTE             reduce using rule 64 (const -> HEX .)
-    GTE             reduce using rule 64 (const -> HEX .)
-    MOD             reduce using rule 64 (const -> HEX .)
-    DIV             reduce using rule 64 (const -> HEX .)
-    MULT            reduce using rule 64 (const -> HEX .)
-    MINUS           reduce using rule 64 (const -> HEX .)
-    PLUS            reduce using rule 64 (const -> HEX .)
-    NEWLINE         reduce using rule 64 (const -> HEX .)
-    NAME            reduce using rule 64 (const -> HEX .)
-    RETURN          reduce using rule 64 (const -> HEX .)
-    WHILE           reduce using rule 64 (const -> HEX .)
-    IF              reduce using rule 64 (const -> HEX .)
-    PASS            reduce using rule 64 (const -> HEX .)
-    S64             reduce using rule 64 (const -> HEX .)
-    S32             reduce using rule 64 (const -> HEX .)
-    S16             reduce using rule 64 (const -> HEX .)
-    S8              reduce using rule 64 (const -> HEX .)
-    U64             reduce using rule 64 (const -> HEX .)
-    U32             reduce using rule 64 (const -> HEX .)
-    U16             reduce using rule 64 (const -> HEX .)
-    U8              reduce using rule 64 (const -> HEX .)
-    LPAR            reduce using rule 64 (const -> HEX .)
-    NOT             reduce using rule 64 (const -> HEX .)
-    FROM            reduce using rule 64 (const -> HEX .)
-    DEF             reduce using rule 64 (const -> HEX .)
-    BOOLEAN         reduce using rule 64 (const -> HEX .)
-    STRING          reduce using rule 64 (const -> HEX .)
-    INTEGER         reduce using rule 64 (const -> HEX .)
-    FLOAT           reduce using rule 64 (const -> HEX .)
-    HEX             reduce using rule 64 (const -> HEX .)
-    $end            reduce using rule 64 (const -> HEX .)
-    DEDENT          reduce using rule 64 (const -> HEX .)
-    COLON           reduce using rule 64 (const -> HEX .)
-    RPAR            reduce using rule 64 (const -> HEX .)
-    COMMA           reduce using rule 64 (const -> HEX .)
+    (65) const -> HEX .
+    OR              reduce using rule 65 (const -> HEX .)
+    AND             reduce using rule 65 (const -> HEX .)
+    NEQ             reduce using rule 65 (const -> HEX .)
+    EQ              reduce using rule 65 (const -> HEX .)
+    LT              reduce using rule 65 (const -> HEX .)
+    GT              reduce using rule 65 (const -> HEX .)
+    LTE             reduce using rule 65 (const -> HEX .)
+    GTE             reduce using rule 65 (const -> HEX .)
+    MOD             reduce using rule 65 (const -> HEX .)
+    DIV             reduce using rule 65 (const -> HEX .)
+    MULT            reduce using rule 65 (const -> HEX .)
+    MINUS           reduce using rule 65 (const -> HEX .)
+    PLUS            reduce using rule 65 (const -> HEX .)
+    NEWLINE         reduce using rule 65 (const -> HEX .)
+    NAME            reduce using rule 65 (const -> HEX .)
+    RETURN          reduce using rule 65 (const -> HEX .)
+    WHILE           reduce using rule 65 (const -> HEX .)
+    IF              reduce using rule 65 (const -> HEX .)
+    PASS            reduce using rule 65 (const -> HEX .)
+    S64             reduce using rule 65 (const -> HEX .)
+    S32             reduce using rule 65 (const -> HEX .)
+    S16             reduce using rule 65 (const -> HEX .)
+    S8              reduce using rule 65 (const -> HEX .)
+    U64             reduce using rule 65 (const -> HEX .)
+    U32             reduce using rule 65 (const -> HEX .)
+    U16             reduce using rule 65 (const -> HEX .)
+    U8              reduce using rule 65 (const -> HEX .)
+    LPAR            reduce using rule 65 (const -> HEX .)
+    NOT             reduce using rule 65 (const -> HEX .)
+    FROM            reduce using rule 65 (const -> HEX .)
+    DEF             reduce using rule 65 (const -> HEX .)
+    BOOLEAN         reduce using rule 65 (const -> HEX .)
+    STRING          reduce using rule 65 (const -> HEX .)
+    INTEGER         reduce using rule 65 (const -> HEX .)
+    FLOAT           reduce using rule 65 (const -> HEX .)
+    HEX             reduce using rule 65 (const -> HEX .)
+    $end            reduce using rule 65 (const -> HEX .)
+    DEDENT          reduce using rule 65 (const -> HEX .)
+    COLON           reduce using rule 65 (const -> HEX .)
+    RPAR            reduce using rule 65 (const -> HEX .)
+    COMMA           reduce using rule 65 (const -> HEX .)
 
 
 state 31
@@ -1113,7 +1124,7 @@ state 33
 
     (5) statement -> type COLON . NAME ASSIGN expression
     (6) statement -> type COLON . NAME ASSIGN const
-    NAME            shift and go to state 57
+    NAME            shift and go to state 58
 
 
 state 34
@@ -1136,13 +1147,14 @@ state 34
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1151,33 +1163,39 @@ state 34
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 58
+    expression                     shift and go to state 59
     const                          shift and go to state 7
 
 state 35
 
-    (45) expression -> NAME LPAR . arglist RPAR
-    (49) arglist -> .
-    (50) arglist -> . argument
-    (51) arglist -> . argument COMMA arglist
-    (46) argument -> . type COLON NAME
-    (47) argument -> . const
+    (45) expression -> NAME DOT . NAME LPAR arglist RPAR
+    NAME            shift and go to state 60
+
+
+state 36
+
+    (46) expression -> NAME LPAR . arglist RPAR
+    (50) arglist -> .
+    (51) arglist -> . argument
+    (52) arglist -> . argument COMMA arglist
+    (47) argument -> . type COLON NAME
     (48) argument -> . NAME
-    (52) type -> . S64
-    (53) type -> . S32
-    (54) type -> . S16
-    (55) type -> . S8
-    (56) type -> . U64
-    (57) type -> . U32
-    (58) type -> . U16
-    (59) type -> . U8
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    RPAR            reduce using rule 49 (arglist -> .)
-    NAME            shift and go to state 59
+    (49) argument -> . const
+    (53) type -> . S64
+    (54) type -> . S32
+    (55) type -> . S16
+    (56) type -> . S8
+    (57) type -> . U64
+    (58) type -> . U32
+    (59) type -> . U16
+    (60) type -> . U8
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    RPAR            reduce using rule 50 (arglist -> .)
+    NAME            shift and go to state 61
     S64             shift and go to state 14
     S32             shift and go to state 15
     S16             shift and go to state 16
@@ -1192,12 +1210,12 @@ state 35
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    arglist                        shift and go to state 60
-    argument                       shift and go to state 61
-    type                           shift and go to state 62
-    const                          shift and go to state 63
+    arglist                        shift and go to state 62
+    argument                       shift and go to state 63
+    type                           shift and go to state 64
+    const                          shift and go to state 65
 
-state 36
+state 37
 
     (32) expression -> expression OR . expression
     (28) expression -> . NAME
@@ -1217,13 +1235,14 @@ state 36
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1232,10 +1251,10 @@ state 36
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 64
+    expression                     shift and go to state 66
     const                          shift and go to state 7
 
-state 37
+state 38
 
     (33) expression -> expression AND . expression
     (28) expression -> . NAME
@@ -1255,13 +1274,14 @@ state 37
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1270,10 +1290,10 @@ state 37
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 65
+    expression                     shift and go to state 67
     const                          shift and go to state 7
 
-state 38
+state 39
 
     (34) expression -> expression NEQ . expression
     (28) expression -> . NAME
@@ -1293,13 +1313,14 @@ state 38
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1308,10 +1329,10 @@ state 38
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 66
+    expression                     shift and go to state 68
     const                          shift and go to state 7
 
-state 39
+state 40
 
     (35) expression -> expression EQ . expression
     (28) expression -> . NAME
@@ -1331,13 +1352,14 @@ state 39
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1346,10 +1368,10 @@ state 39
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 67
+    expression                     shift and go to state 69
     const                          shift and go to state 7
 
-state 40
+state 41
 
     (36) expression -> expression LT . expression
     (28) expression -> . NAME
@@ -1369,13 +1391,14 @@ state 40
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1384,10 +1407,10 @@ state 40
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 68
+    expression                     shift and go to state 70
     const                          shift and go to state 7
 
-state 41
+state 42
 
     (37) expression -> expression GT . expression
     (28) expression -> . NAME
@@ -1407,13 +1430,14 @@ state 41
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1422,10 +1446,10 @@ state 41
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 69
+    expression                     shift and go to state 71
     const                          shift and go to state 7
 
-state 42
+state 43
 
     (38) expression -> expression LTE . expression
     (28) expression -> . NAME
@@ -1445,13 +1469,14 @@ state 42
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1460,10 +1485,10 @@ state 42
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 70
+    expression                     shift and go to state 72
     const                          shift and go to state 7
 
-state 43
+state 44
 
     (39) expression -> expression GTE . expression
     (28) expression -> . NAME
@@ -1483,13 +1508,14 @@ state 43
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1498,10 +1524,10 @@ state 43
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 71
+    expression                     shift and go to state 73
     const                          shift and go to state 7
 
-state 44
+state 45
 
     (40) expression -> expression MOD . expression
     (28) expression -> . NAME
@@ -1521,13 +1547,14 @@ state 44
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1536,10 +1563,10 @@ state 44
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 72
+    expression                     shift and go to state 74
     const                          shift and go to state 7
 
-state 45
+state 46
 
     (41) expression -> expression DIV . expression
     (28) expression -> . NAME
@@ -1559,13 +1586,14 @@ state 45
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1574,10 +1602,10 @@ state 45
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 73
+    expression                     shift and go to state 75
     const                          shift and go to state 7
 
-state 46
+state 47
 
     (42) expression -> expression MULT . expression
     (28) expression -> . NAME
@@ -1597,13 +1625,14 @@ state 46
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1612,10 +1641,10 @@ state 46
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 74
+    expression                     shift and go to state 76
     const                          shift and go to state 7
 
-state 47
+state 48
 
     (43) expression -> expression MINUS . expression
     (28) expression -> . NAME
@@ -1635,13 +1664,14 @@ state 47
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1650,10 +1680,10 @@ state 47
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 75
+    expression                     shift and go to state 77
     const                          shift and go to state 7
 
-state 48
+state 49
 
     (44) expression -> expression PLUS . expression
     (28) expression -> . NAME
@@ -1673,13 +1703,14 @@ state 48
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -1688,10 +1719,10 @@ state 48
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 76
+    expression                     shift and go to state 78
     const                          shift and go to state 7
 
-state 49
+state 50
 
     (8) statement -> RETURN expression .
     (32) expression -> expression . OR expression
@@ -1732,25 +1763,26 @@ state 49
     HEX             reduce using rule 8 (statement -> RETURN expression .)
     $end            reduce using rule 8 (statement -> RETURN expression .)
     DEDENT          reduce using rule 8 (statement -> RETURN expression .)
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 50
+state 51
 
     (28) expression -> NAME .
-    (45) expression -> NAME . LPAR arglist RPAR
+    (45) expression -> NAME . DOT NAME LPAR arglist RPAR
+    (46) expression -> NAME . LPAR arglist RPAR
   ! shift/reduce conflict for LPAR resolved as shift
     OR              reduce using rule 28 (expression -> NAME .)
     AND             reduce using rule 28 (expression -> NAME .)
@@ -1791,10 +1823,11 @@ state 50
     DEDENT          reduce using rule 28 (expression -> NAME .)
     COLON           reduce using rule 28 (expression -> NAME .)
     RPAR            reduce using rule 28 (expression -> NAME .)
-    LPAR            shift and go to state 35
+    DOT             shift and go to state 35
+    LPAR            shift and go to state 36
 
 
-state 51
+state 52
 
     (9) statement -> WHILE expression . COLON NEWLINE block
     (32) expression -> expression . OR expression
@@ -1810,23 +1843,23 @@ state 51
     (42) expression -> expression . MULT expression
     (43) expression -> expression . MINUS expression
     (44) expression -> expression . PLUS expression
-    COLON           shift and go to state 77
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    COLON           shift and go to state 79
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 52
+state 53
 
     (10) statement -> IF expression . COLON NEWLINE block NEWLINE
     (11) statement -> IF expression . COLON NEWLINE block NEWLINE else_statement
@@ -1844,23 +1877,23 @@ state 52
     (42) expression -> expression . MULT expression
     (43) expression -> expression . MINUS expression
     (44) expression -> expression . PLUS expression
-    COLON           shift and go to state 78
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    COLON           shift and go to state 80
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 53
+state 54
 
     (30) expression -> LPAR expression . RPAR
     (32) expression -> expression . OR expression
@@ -1876,23 +1909,23 @@ state 53
     (42) expression -> expression . MULT expression
     (43) expression -> expression . MINUS expression
     (44) expression -> expression . PLUS expression
-    RPAR            shift and go to state 79
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    RPAR            shift and go to state 81
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 54
+state 55
 
     (31) expression -> NOT expression .
     (32) expression -> expression . OR expression
@@ -1948,41 +1981,41 @@ state 54
     DEDENT          reduce using rule 31 (expression -> NOT expression .)
     COLON           reduce using rule 31 (expression -> NOT expression .)
     RPAR            reduce using rule 31 (expression -> NOT expression .)
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
-
-
-state 55
-
-    (17) import_statement -> FROM NAME . IMPORT module_list
-    IMPORT          shift and go to state 80
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
 state 56
 
-    (20) chain_statement -> DEF NAME . LPAR arglist RPAR COLON NEWLINE block
-    LPAR            shift and go to state 81
+    (17) import_statement -> FROM NAME . IMPORT module_list
+    IMPORT          shift and go to state 82
 
 
 state 57
 
-    (5) statement -> type COLON NAME . ASSIGN expression
-    (6) statement -> type COLON NAME . ASSIGN const
-    ASSIGN          shift and go to state 82
+    (20) chain_statement -> DEF NAME . LPAR arglist RPAR COLON NEWLINE block
+    LPAR            shift and go to state 83
 
 
 state 58
+
+    (5) statement -> type COLON NAME . ASSIGN expression
+    (6) statement -> type COLON NAME . ASSIGN const
+    ASSIGN          shift and go to state 84
+
+
+state 59
 
     (7) statement -> NAME ASSIGN expression .
     (32) expression -> expression . OR expression
@@ -2023,56 +2056,62 @@ state 58
     HEX             reduce using rule 7 (statement -> NAME ASSIGN expression .)
     $end            reduce using rule 7 (statement -> NAME ASSIGN expression .)
     DEDENT          reduce using rule 7 (statement -> NAME ASSIGN expression .)
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 59
+state 60
+
+    (45) expression -> NAME DOT NAME . LPAR arglist RPAR
+    LPAR            shift and go to state 85
+
+
+state 61
 
     (48) argument -> NAME .
     COMMA           reduce using rule 48 (argument -> NAME .)
     RPAR            reduce using rule 48 (argument -> NAME .)
 
 
-state 60
-
-    (45) expression -> NAME LPAR arglist . RPAR
-    RPAR            shift and go to state 83
-
-
-state 61
-
-    (50) arglist -> argument .
-    (51) arglist -> argument . COMMA arglist
-    RPAR            reduce using rule 50 (arglist -> argument .)
-    COMMA           shift and go to state 84
-
-
 state 62
 
-    (46) argument -> type . COLON NAME
-    COLON           shift and go to state 85
+    (46) expression -> NAME LPAR arglist . RPAR
+    RPAR            shift and go to state 86
 
 
 state 63
 
-    (47) argument -> const .
-    COMMA           reduce using rule 47 (argument -> const .)
-    RPAR            reduce using rule 47 (argument -> const .)
+    (51) arglist -> argument .
+    (52) arglist -> argument . COMMA arglist
+    RPAR            reduce using rule 51 (arglist -> argument .)
+    COMMA           shift and go to state 87
 
 
 state 64
+
+    (47) argument -> type . COLON NAME
+    COLON           shift and go to state 88
+
+
+state 65
+
+    (49) argument -> const .
+    COMMA           reduce using rule 49 (argument -> const .)
+    RPAR            reduce using rule 49 (argument -> const .)
+
+
+state 66
 
     (32) expression -> expression OR expression .
     (32) expression -> expression . OR expression
@@ -2128,22 +2167,22 @@ state 64
     DEDENT          reduce using rule 32 (expression -> expression OR expression .)
     COLON           reduce using rule 32 (expression -> expression OR expression .)
     RPAR            reduce using rule 32 (expression -> expression OR expression .)
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 65
+state 67
 
     (33) expression -> expression AND expression .
     (32) expression -> expression . OR expression
@@ -2199,22 +2238,22 @@ state 65
     DEDENT          reduce using rule 33 (expression -> expression AND expression .)
     COLON           reduce using rule 33 (expression -> expression AND expression .)
     RPAR            reduce using rule 33 (expression -> expression AND expression .)
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 66
+state 68
 
     (34) expression -> expression NEQ expression .
     (32) expression -> expression . OR expression
@@ -2266,13 +2305,13 @@ state 66
     DEDENT          reduce using rule 34 (expression -> expression NEQ expression .)
     COLON           reduce using rule 34 (expression -> expression NEQ expression .)
     RPAR            reduce using rule 34 (expression -> expression NEQ expression .)
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 67
+state 69
 
     (35) expression -> expression EQ expression .
     (32) expression -> expression . OR expression
@@ -2324,13 +2363,13 @@ state 67
     DEDENT          reduce using rule 35 (expression -> expression EQ expression .)
     COLON           reduce using rule 35 (expression -> expression EQ expression .)
     RPAR            reduce using rule 35 (expression -> expression EQ expression .)
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 68
+state 70
 
     (36) expression -> expression LT expression .
     (32) expression -> expression . OR expression
@@ -2382,13 +2421,13 @@ state 68
     DEDENT          reduce using rule 36 (expression -> expression LT expression .)
     COLON           reduce using rule 36 (expression -> expression LT expression .)
     RPAR            reduce using rule 36 (expression -> expression LT expression .)
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 69
+state 71
 
     (37) expression -> expression GT expression .
     (32) expression -> expression . OR expression
@@ -2440,13 +2479,13 @@ state 69
     DEDENT          reduce using rule 37 (expression -> expression GT expression .)
     COLON           reduce using rule 37 (expression -> expression GT expression .)
     RPAR            reduce using rule 37 (expression -> expression GT expression .)
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 70
+state 72
 
     (38) expression -> expression LTE expression .
     (32) expression -> expression . OR expression
@@ -2498,13 +2537,13 @@ state 70
     DEDENT          reduce using rule 38 (expression -> expression LTE expression .)
     COLON           reduce using rule 38 (expression -> expression LTE expression .)
     RPAR            reduce using rule 38 (expression -> expression LTE expression .)
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 71
+state 73
 
     (39) expression -> expression GTE expression .
     (32) expression -> expression . OR expression
@@ -2556,13 +2595,13 @@ state 71
     DEDENT          reduce using rule 39 (expression -> expression GTE expression .)
     COLON           reduce using rule 39 (expression -> expression GTE expression .)
     RPAR            reduce using rule 39 (expression -> expression GTE expression .)
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 72
+state 74
 
     (40) expression -> expression MOD expression .
     (32) expression -> expression . OR expression
@@ -2618,22 +2657,22 @@ state 72
     DEDENT          reduce using rule 40 (expression -> expression MOD expression .)
     COLON           reduce using rule 40 (expression -> expression MOD expression .)
     RPAR            reduce using rule 40 (expression -> expression MOD expression .)
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 73
+state 75
 
     (41) expression -> expression DIV expression .
     (32) expression -> expression . OR expression
@@ -2691,7 +2730,7 @@ state 73
     RPAR            reduce using rule 41 (expression -> expression DIV expression .)
 
 
-state 74
+state 76
 
     (42) expression -> expression MULT expression .
     (32) expression -> expression . OR expression
@@ -2749,7 +2788,7 @@ state 74
     RPAR            reduce using rule 42 (expression -> expression MULT expression .)
 
 
-state 75
+state 77
 
     (43) expression -> expression MINUS expression .
     (32) expression -> expression . OR expression
@@ -2803,11 +2842,11 @@ state 75
     DEDENT          reduce using rule 43 (expression -> expression MINUS expression .)
     COLON           reduce using rule 43 (expression -> expression MINUS expression .)
     RPAR            reduce using rule 43 (expression -> expression MINUS expression .)
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
 
 
-state 76
+state 78
 
     (44) expression -> expression PLUS expression .
     (32) expression -> expression . OR expression
@@ -2861,25 +2900,25 @@ state 76
     DEDENT          reduce using rule 44 (expression -> expression PLUS expression .)
     COLON           reduce using rule 44 (expression -> expression PLUS expression .)
     RPAR            reduce using rule 44 (expression -> expression PLUS expression .)
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
 
 
-state 77
+state 79
 
     (9) statement -> WHILE expression COLON . NEWLINE block
-    NEWLINE         shift and go to state 86
+    NEWLINE         shift and go to state 89
 
 
-state 78
+state 80
 
     (10) statement -> IF expression COLON . NEWLINE block NEWLINE
     (11) statement -> IF expression COLON . NEWLINE block NEWLINE else_statement
     (12) statement -> IF expression COLON . NEWLINE block NEWLINE elif_statement
-    NEWLINE         shift and go to state 87
+    NEWLINE         shift and go to state 90
 
 
-state 79
+state 81
 
     (30) expression -> LPAR expression RPAR .
     OR              reduce using rule 30 (expression -> LPAR expression RPAR .)
@@ -2924,39 +2963,39 @@ state 79
     RPAR            reduce using rule 30 (expression -> LPAR expression RPAR .)
 
 
-state 80
+state 82
 
     (17) import_statement -> FROM NAME IMPORT . module_list
     (18) module_list -> . NAME
     (19) module_list -> . NAME COMMA module_list
-    NAME            shift and go to state 88
+    NAME            shift and go to state 91
 
-    module_list                    shift and go to state 89
+    module_list                    shift and go to state 92
 
-state 81
+state 83
 
     (20) chain_statement -> DEF NAME LPAR . arglist RPAR COLON NEWLINE block
-    (49) arglist -> .
-    (50) arglist -> . argument
-    (51) arglist -> . argument COMMA arglist
-    (46) argument -> . type COLON NAME
-    (47) argument -> . const
+    (50) arglist -> .
+    (51) arglist -> . argument
+    (52) arglist -> . argument COMMA arglist
+    (47) argument -> . type COLON NAME
     (48) argument -> . NAME
-    (52) type -> . S64
-    (53) type -> . S32
-    (54) type -> . S16
-    (55) type -> . S8
-    (56) type -> . U64
-    (57) type -> . U32
-    (58) type -> . U16
-    (59) type -> . U8
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    RPAR            reduce using rule 49 (arglist -> .)
-    NAME            shift and go to state 59
+    (49) argument -> . const
+    (53) type -> . S64
+    (54) type -> . S32
+    (55) type -> . S16
+    (56) type -> . S8
+    (57) type -> . U64
+    (58) type -> . U32
+    (59) type -> . U16
+    (60) type -> . U8
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    RPAR            reduce using rule 50 (arglist -> .)
+    NAME            shift and go to state 61
     S64             shift and go to state 14
     S32             shift and go to state 15
     S16             shift and go to state 16
@@ -2971,12 +3010,12 @@ state 81
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    arglist                        shift and go to state 90
-    argument                       shift and go to state 61
-    type                           shift and go to state 62
-    const                          shift and go to state 63
+    arglist                        shift and go to state 93
+    argument                       shift and go to state 63
+    type                           shift and go to state 64
+    const                          shift and go to state 65
 
-state 82
+state 84
 
     (5) statement -> type COLON NAME ASSIGN . expression
     (6) statement -> type COLON NAME ASSIGN . const
@@ -2997,13 +3036,14 @@ state 82
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -3012,78 +3052,33 @@ state 82
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 91
-    const                          shift and go to state 92
+    expression                     shift and go to state 94
+    const                          shift and go to state 95
 
-state 83
+state 85
 
-    (45) expression -> NAME LPAR arglist RPAR .
-    OR              reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    AND             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    NEQ             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    EQ              reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    LT              reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    GT              reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    LTE             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    GTE             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    MOD             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    DIV             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    MULT            reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    MINUS           reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    PLUS            reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    NEWLINE         reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    NAME            reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    RETURN          reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    WHILE           reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    IF              reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    PASS            reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    S64             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    S32             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    S16             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    S8              reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    U64             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    U32             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    U16             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    U8              reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    LPAR            reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    NOT             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    FROM            reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    DEF             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    BOOLEAN         reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    STRING          reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    INTEGER         reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    FLOAT           reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    HEX             reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    $end            reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    DEDENT          reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    COLON           reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-    RPAR            reduce using rule 45 (expression -> NAME LPAR arglist RPAR .)
-
-
-state 84
-
-    (51) arglist -> argument COMMA . arglist
-    (49) arglist -> .
-    (50) arglist -> . argument
-    (51) arglist -> . argument COMMA arglist
-    (46) argument -> . type COLON NAME
-    (47) argument -> . const
+    (45) expression -> NAME DOT NAME LPAR . arglist RPAR
+    (50) arglist -> .
+    (51) arglist -> . argument
+    (52) arglist -> . argument COMMA arglist
+    (47) argument -> . type COLON NAME
     (48) argument -> . NAME
-    (52) type -> . S64
-    (53) type -> . S32
-    (54) type -> . S16
-    (55) type -> . S8
-    (56) type -> . U64
-    (57) type -> . U32
-    (58) type -> . U16
-    (59) type -> . U8
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    RPAR            reduce using rule 49 (arglist -> .)
-    NAME            shift and go to state 59
+    (49) argument -> . const
+    (53) type -> . S64
+    (54) type -> . S32
+    (55) type -> . S16
+    (56) type -> . S8
+    (57) type -> . U64
+    (58) type -> . U32
+    (59) type -> . U16
+    (60) type -> . U8
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    RPAR            reduce using rule 50 (arglist -> .)
+    NAME            shift and go to state 61
     S64             shift and go to state 14
     S32             shift and go to state 15
     S16             shift and go to state 16
@@ -3098,36 +3093,124 @@ state 84
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    argument                       shift and go to state 61
-    arglist                        shift and go to state 93
-    type                           shift and go to state 62
-    const                          shift and go to state 63
-
-state 85
-
-    (46) argument -> type COLON . NAME
-    NAME            shift and go to state 94
-
+    arglist                        shift and go to state 96
+    argument                       shift and go to state 63
+    type                           shift and go to state 64
+    const                          shift and go to state 65
 
 state 86
 
-    (9) statement -> WHILE expression COLON NEWLINE . block
-    (21) block -> . INDENT block_statements DEDENT
-    INDENT          shift and go to state 96
+    (46) expression -> NAME LPAR arglist RPAR .
+    OR              reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    AND             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    NEQ             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    EQ              reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    LT              reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    GT              reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    LTE             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    GTE             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    MOD             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    DIV             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    MULT            reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    MINUS           reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    PLUS            reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    NEWLINE         reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    NAME            reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    RETURN          reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    WHILE           reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    IF              reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    PASS            reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    S64             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    S32             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    S16             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    S8              reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    U64             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    U32             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    U16             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    U8              reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    LPAR            reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    NOT             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    FROM            reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    DEF             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    BOOLEAN         reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    STRING          reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    INTEGER         reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    FLOAT           reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    HEX             reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    $end            reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    DEDENT          reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    COLON           reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
+    RPAR            reduce using rule 46 (expression -> NAME LPAR arglist RPAR .)
 
-    block                          shift and go to state 95
 
 state 87
+
+    (52) arglist -> argument COMMA . arglist
+    (50) arglist -> .
+    (51) arglist -> . argument
+    (52) arglist -> . argument COMMA arglist
+    (47) argument -> . type COLON NAME
+    (48) argument -> . NAME
+    (49) argument -> . const
+    (53) type -> . S64
+    (54) type -> . S32
+    (55) type -> . S16
+    (56) type -> . S8
+    (57) type -> . U64
+    (58) type -> . U32
+    (59) type -> . U16
+    (60) type -> . U8
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    RPAR            reduce using rule 50 (arglist -> .)
+    NAME            shift and go to state 61
+    S64             shift and go to state 14
+    S32             shift and go to state 15
+    S16             shift and go to state 16
+    S8              shift and go to state 17
+    U64             shift and go to state 18
+    U32             shift and go to state 19
+    U16             shift and go to state 20
+    U8              shift and go to state 21
+    BOOLEAN         shift and go to state 26
+    STRING          shift and go to state 27
+    INTEGER         shift and go to state 28
+    FLOAT           shift and go to state 29
+    HEX             shift and go to state 30
+
+    argument                       shift and go to state 63
+    arglist                        shift and go to state 97
+    type                           shift and go to state 64
+    const                          shift and go to state 65
+
+state 88
+
+    (47) argument -> type COLON . NAME
+    NAME            shift and go to state 98
+
+
+state 89
+
+    (9) statement -> WHILE expression COLON NEWLINE . block
+    (21) block -> . INDENT block_statements DEDENT
+    INDENT          shift and go to state 100
+
+    block                          shift and go to state 99
+
+state 90
 
     (10) statement -> IF expression COLON NEWLINE . block NEWLINE
     (11) statement -> IF expression COLON NEWLINE . block NEWLINE else_statement
     (12) statement -> IF expression COLON NEWLINE . block NEWLINE elif_statement
     (21) block -> . INDENT block_statements DEDENT
-    INDENT          shift and go to state 96
+    INDENT          shift and go to state 100
 
-    block                          shift and go to state 97
+    block                          shift and go to state 101
 
-state 88
+state 91
 
     (18) module_list -> NAME .
     (19) module_list -> NAME . COMMA module_list
@@ -3156,10 +3239,10 @@ state 88
     HEX             reduce using rule 18 (module_list -> NAME .)
     $end            reduce using rule 18 (module_list -> NAME .)
     DEDENT          reduce using rule 18 (module_list -> NAME .)
-    COMMA           shift and go to state 98
+    COMMA           shift and go to state 102
 
 
-state 89
+state 92
 
     (17) import_statement -> FROM NAME IMPORT module_list .
     NEWLINE         reduce using rule 17 (import_statement -> FROM NAME IMPORT module_list .)
@@ -3189,13 +3272,13 @@ state 89
     DEDENT          reduce using rule 17 (import_statement -> FROM NAME IMPORT module_list .)
 
 
-state 90
+state 93
 
     (20) chain_statement -> DEF NAME LPAR arglist . RPAR COLON NEWLINE block
-    RPAR            shift and go to state 99
+    RPAR            shift and go to state 103
 
 
-state 91
+state 94
 
     (5) statement -> type COLON NAME ASSIGN expression .
     (32) expression -> expression . OR expression
@@ -3236,22 +3319,22 @@ state 91
     HEX             reduce using rule 5 (statement -> type COLON NAME ASSIGN expression .)
     $end            reduce using rule 5 (statement -> type COLON NAME ASSIGN expression .)
     DEDENT          reduce using rule 5 (statement -> type COLON NAME ASSIGN expression .)
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 92
+state 95
 
     (6) statement -> type COLON NAME ASSIGN const .
     (29) expression -> const .
@@ -3320,20 +3403,26 @@ state 92
     DEDENT          reduce using rule 29 (expression -> const .)
 
 
-state 93
+state 96
 
-    (51) arglist -> argument COMMA arglist .
-    RPAR            reduce using rule 51 (arglist -> argument COMMA arglist .)
-
-
-state 94
-
-    (46) argument -> type COLON NAME .
-    COMMA           reduce using rule 46 (argument -> type COLON NAME .)
-    RPAR            reduce using rule 46 (argument -> type COLON NAME .)
+    (45) expression -> NAME DOT NAME LPAR arglist . RPAR
+    RPAR            shift and go to state 104
 
 
-state 95
+state 97
+
+    (52) arglist -> argument COMMA arglist .
+    RPAR            reduce using rule 52 (arglist -> argument COMMA arglist .)
+
+
+state 98
+
+    (47) argument -> type COLON NAME .
+    COMMA           reduce using rule 47 (argument -> type COLON NAME .)
+    RPAR            reduce using rule 47 (argument -> type COLON NAME .)
+
+
+state 99
 
     (9) statement -> WHILE expression COLON NEWLINE block .
     NEWLINE         reduce using rule 9 (statement -> WHILE expression COLON NEWLINE block .)
@@ -3363,7 +3452,7 @@ state 95
     DEDENT          reduce using rule 9 (statement -> WHILE expression COLON NEWLINE block .)
 
 
-state 96
+state 100
 
     (21) block -> INDENT . block_statements DEDENT
     (22) block_statements -> . statement_full block_statements
@@ -3382,14 +3471,14 @@ state 96
     (14) statement -> . PASS
     (15) statement -> . import_statement
     (16) statement -> . chain_statement
-    (52) type -> . S64
-    (53) type -> . S32
-    (54) type -> . S16
-    (55) type -> . S8
-    (56) type -> . U64
-    (57) type -> . U32
-    (58) type -> . U16
-    (59) type -> . U8
+    (53) type -> . S64
+    (54) type -> . S32
+    (55) type -> . S16
+    (56) type -> . S8
+    (57) type -> . U64
+    (58) type -> . U32
+    (59) type -> . U16
+    (60) type -> . U8
     (28) expression -> . NAME
     (29) expression -> . const
     (30) expression -> . LPAR expression RPAR
@@ -3407,14 +3496,15 @@ state 96
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
     (17) import_statement -> . FROM NAME IMPORT module_list
     (20) chain_statement -> . DEF NAME LPAR arglist RPAR COLON NEWLINE block
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
     NAME            shift and go to state 5
     RETURN          shift and go to state 8
     WHILE           shift and go to state 9
@@ -3438,8 +3528,8 @@ state 96
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    block_statements               shift and go to state 100
-    statement_full                 shift and go to state 101
+    block_statements               shift and go to state 105
+    statement_full                 shift and go to state 106
     statement                      shift and go to state 3
     type                           shift and go to state 4
     expression                     shift and go to state 6
@@ -3447,36 +3537,81 @@ state 96
     import_statement               shift and go to state 12
     chain_statement                shift and go to state 13
 
-state 97
+state 101
 
     (10) statement -> IF expression COLON NEWLINE block . NEWLINE
     (11) statement -> IF expression COLON NEWLINE block . NEWLINE else_statement
     (12) statement -> IF expression COLON NEWLINE block . NEWLINE elif_statement
-    NEWLINE         shift and go to state 102
+    NEWLINE         shift and go to state 107
 
 
-state 98
+state 102
 
     (19) module_list -> NAME COMMA . module_list
     (18) module_list -> . NAME
     (19) module_list -> . NAME COMMA module_list
-    NAME            shift and go to state 88
+    NAME            shift and go to state 91
 
-    module_list                    shift and go to state 103
+    module_list                    shift and go to state 108
 
-state 99
+state 103
 
     (20) chain_statement -> DEF NAME LPAR arglist RPAR . COLON NEWLINE block
-    COLON           shift and go to state 104
+    COLON           shift and go to state 109
 
 
-state 100
+state 104
+
+    (45) expression -> NAME DOT NAME LPAR arglist RPAR .
+    OR              reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    AND             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    NEQ             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    EQ              reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    LT              reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    GT              reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    LTE             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    GTE             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    MOD             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    DIV             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    MULT            reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    MINUS           reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    PLUS            reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    NEWLINE         reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    NAME            reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    RETURN          reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    WHILE           reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    IF              reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    PASS            reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    S64             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    S32             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    S16             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    S8              reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    U64             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    U32             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    U16             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    U8              reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    LPAR            reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    NOT             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    FROM            reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    DEF             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    BOOLEAN         reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    STRING          reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    INTEGER         reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    FLOAT           reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    HEX             reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    $end            reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    DEDENT          reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    COLON           reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+    RPAR            reduce using rule 45 (expression -> NAME DOT NAME LPAR arglist RPAR .)
+
+
+state 105
 
     (21) block -> INDENT block_statements . DEDENT
-    DEDENT          shift and go to state 105
+    DEDENT          shift and go to state 110
 
 
-state 101
+state 106
 
     (22) block_statements -> statement_full . block_statements
     (23) block_statements -> statement_full .
@@ -3496,14 +3631,14 @@ state 101
     (14) statement -> . PASS
     (15) statement -> . import_statement
     (16) statement -> . chain_statement
-    (52) type -> . S64
-    (53) type -> . S32
-    (54) type -> . S16
-    (55) type -> . S8
-    (56) type -> . U64
-    (57) type -> . U32
-    (58) type -> . U16
-    (59) type -> . U8
+    (53) type -> . S64
+    (54) type -> . S32
+    (55) type -> . S16
+    (56) type -> . S8
+    (57) type -> . U64
+    (58) type -> . U32
+    (59) type -> . U16
+    (60) type -> . U8
     (28) expression -> . NAME
     (29) expression -> . const
     (30) expression -> . LPAR expression RPAR
@@ -3521,14 +3656,15 @@ state 101
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
     (17) import_statement -> . FROM NAME IMPORT module_list
     (20) chain_statement -> . DEF NAME LPAR arglist RPAR COLON NEWLINE block
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
     DEDENT          reduce using rule 23 (block_statements -> statement_full .)
     NAME            shift and go to state 5
     RETURN          shift and go to state 8
@@ -3553,8 +3689,8 @@ state 101
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    statement_full                 shift and go to state 101
-    block_statements               shift and go to state 106
+    statement_full                 shift and go to state 106
+    block_statements               shift and go to state 111
     statement                      shift and go to state 3
     type                           shift and go to state 4
     expression                     shift and go to state 6
@@ -3562,7 +3698,7 @@ state 101
     import_statement               shift and go to state 12
     chain_statement                shift and go to state 13
 
-state 102
+state 107
 
     (10) statement -> IF expression COLON NEWLINE block NEWLINE .
     (11) statement -> IF expression COLON NEWLINE block NEWLINE . else_statement
@@ -3596,13 +3732,13 @@ state 102
     HEX             reduce using rule 10 (statement -> IF expression COLON NEWLINE block NEWLINE .)
     $end            reduce using rule 10 (statement -> IF expression COLON NEWLINE block NEWLINE .)
     DEDENT          reduce using rule 10 (statement -> IF expression COLON NEWLINE block NEWLINE .)
-    ELSE            shift and go to state 109
-    ELIF            shift and go to state 110
+    ELSE            shift and go to state 114
+    ELIF            shift and go to state 115
 
-    else_statement                 shift and go to state 107
-    elif_statement                 shift and go to state 108
+    else_statement                 shift and go to state 112
+    elif_statement                 shift and go to state 113
 
-state 103
+state 108
 
     (19) module_list -> NAME COMMA module_list .
     NEWLINE         reduce using rule 19 (module_list -> NAME COMMA module_list .)
@@ -3632,13 +3768,13 @@ state 103
     DEDENT          reduce using rule 19 (module_list -> NAME COMMA module_list .)
 
 
-state 104
+state 109
 
     (20) chain_statement -> DEF NAME LPAR arglist RPAR COLON . NEWLINE block
-    NEWLINE         shift and go to state 111
+    NEWLINE         shift and go to state 116
 
 
-state 105
+state 110
 
     (21) block -> INDENT block_statements DEDENT .
     NEWLINE         reduce using rule 21 (block -> INDENT block_statements DEDENT .)
@@ -3668,13 +3804,13 @@ state 105
     DEDENT          reduce using rule 21 (block -> INDENT block_statements DEDENT .)
 
 
-state 106
+state 111
 
     (22) block_statements -> statement_full block_statements .
     DEDENT          reduce using rule 22 (block_statements -> statement_full block_statements .)
 
 
-state 107
+state 112
 
     (11) statement -> IF expression COLON NEWLINE block NEWLINE else_statement .
     NEWLINE         reduce using rule 11 (statement -> IF expression COLON NEWLINE block NEWLINE else_statement .)
@@ -3704,7 +3840,7 @@ state 107
     DEDENT          reduce using rule 11 (statement -> IF expression COLON NEWLINE block NEWLINE else_statement .)
 
 
-state 108
+state 113
 
     (12) statement -> IF expression COLON NEWLINE block NEWLINE elif_statement .
     NEWLINE         reduce using rule 12 (statement -> IF expression COLON NEWLINE block NEWLINE elif_statement .)
@@ -3734,13 +3870,13 @@ state 108
     DEDENT          reduce using rule 12 (statement -> IF expression COLON NEWLINE block NEWLINE elif_statement .)
 
 
-state 109
+state 114
 
     (24) else_statement -> ELSE . COLON NEWLINE block
-    COLON           shift and go to state 112
+    COLON           shift and go to state 117
 
 
-state 110
+state 115
 
     (25) elif_statement -> ELIF . expression COLON NEWLINE block NEWLINE
     (26) elif_statement -> ELIF . expression COLON NEWLINE block NEWLINE else_statement
@@ -3762,13 +3898,14 @@ state 110
     (42) expression -> . expression MULT expression
     (43) expression -> . expression MINUS expression
     (44) expression -> . expression PLUS expression
-    (45) expression -> . NAME LPAR arglist RPAR
-    (60) const -> . BOOLEAN
-    (61) const -> . STRING
-    (62) const -> . INTEGER
-    (63) const -> . FLOAT
-    (64) const -> . HEX
-    NAME            shift and go to state 50
+    (45) expression -> . NAME DOT NAME LPAR arglist RPAR
+    (46) expression -> . NAME LPAR arglist RPAR
+    (61) const -> . BOOLEAN
+    (62) const -> . STRING
+    (63) const -> . INTEGER
+    (64) const -> . FLOAT
+    (65) const -> . HEX
+    NAME            shift and go to state 51
     LPAR            shift and go to state 22
     NOT             shift and go to state 23
     BOOLEAN         shift and go to state 26
@@ -3777,24 +3914,24 @@ state 110
     FLOAT           shift and go to state 29
     HEX             shift and go to state 30
 
-    expression                     shift and go to state 113
+    expression                     shift and go to state 118
     const                          shift and go to state 7
 
-state 111
+state 116
 
     (20) chain_statement -> DEF NAME LPAR arglist RPAR COLON NEWLINE . block
     (21) block -> . INDENT block_statements DEDENT
-    INDENT          shift and go to state 96
+    INDENT          shift and go to state 100
 
-    block                          shift and go to state 114
+    block                          shift and go to state 119
 
-state 112
+state 117
 
     (24) else_statement -> ELSE COLON . NEWLINE block
-    NEWLINE         shift and go to state 115
+    NEWLINE         shift and go to state 120
 
 
-state 113
+state 118
 
     (25) elif_statement -> ELIF expression . COLON NEWLINE block NEWLINE
     (26) elif_statement -> ELIF expression . COLON NEWLINE block NEWLINE else_statement
@@ -3812,23 +3949,23 @@ state 113
     (42) expression -> expression . MULT expression
     (43) expression -> expression . MINUS expression
     (44) expression -> expression . PLUS expression
-    COLON           shift and go to state 116
-    OR              shift and go to state 36
-    AND             shift and go to state 37
-    NEQ             shift and go to state 38
-    EQ              shift and go to state 39
-    LT              shift and go to state 40
-    GT              shift and go to state 41
-    LTE             shift and go to state 42
-    GTE             shift and go to state 43
-    MOD             shift and go to state 44
-    DIV             shift and go to state 45
-    MULT            shift and go to state 46
-    MINUS           shift and go to state 47
-    PLUS            shift and go to state 48
+    COLON           shift and go to state 121
+    OR              shift and go to state 37
+    AND             shift and go to state 38
+    NEQ             shift and go to state 39
+    EQ              shift and go to state 40
+    LT              shift and go to state 41
+    GT              shift and go to state 42
+    LTE             shift and go to state 43
+    GTE             shift and go to state 44
+    MOD             shift and go to state 45
+    DIV             shift and go to state 46
+    MULT            shift and go to state 47
+    MINUS           shift and go to state 48
+    PLUS            shift and go to state 49
 
 
-state 114
+state 119
 
     (20) chain_statement -> DEF NAME LPAR arglist RPAR COLON NEWLINE block .
     NEWLINE         reduce using rule 20 (chain_statement -> DEF NAME LPAR arglist RPAR COLON NEWLINE block .)
@@ -3858,23 +3995,23 @@ state 114
     DEDENT          reduce using rule 20 (chain_statement -> DEF NAME LPAR arglist RPAR COLON NEWLINE block .)
 
 
-state 115
+state 120
 
     (24) else_statement -> ELSE COLON NEWLINE . block
     (21) block -> . INDENT block_statements DEDENT
-    INDENT          shift and go to state 96
+    INDENT          shift and go to state 100
 
-    block                          shift and go to state 117
+    block                          shift and go to state 122
 
-state 116
+state 121
 
     (25) elif_statement -> ELIF expression COLON . NEWLINE block NEWLINE
     (26) elif_statement -> ELIF expression COLON . NEWLINE block NEWLINE else_statement
     (27) elif_statement -> ELIF expression COLON . NEWLINE block NEWLINE elif_statement
-    NEWLINE         shift and go to state 118
+    NEWLINE         shift and go to state 123
 
 
-state 117
+state 122
 
     (24) else_statement -> ELSE COLON NEWLINE block .
     NEWLINE         reduce using rule 24 (else_statement -> ELSE COLON NEWLINE block .)
@@ -3904,25 +4041,25 @@ state 117
     DEDENT          reduce using rule 24 (else_statement -> ELSE COLON NEWLINE block .)
 
 
-state 118
+state 123
 
     (25) elif_statement -> ELIF expression COLON NEWLINE . block NEWLINE
     (26) elif_statement -> ELIF expression COLON NEWLINE . block NEWLINE else_statement
     (27) elif_statement -> ELIF expression COLON NEWLINE . block NEWLINE elif_statement
     (21) block -> . INDENT block_statements DEDENT
-    INDENT          shift and go to state 96
+    INDENT          shift and go to state 100
 
-    block                          shift and go to state 119
+    block                          shift and go to state 124
 
-state 119
+state 124
 
     (25) elif_statement -> ELIF expression COLON NEWLINE block . NEWLINE
     (26) elif_statement -> ELIF expression COLON NEWLINE block . NEWLINE else_statement
     (27) elif_statement -> ELIF expression COLON NEWLINE block . NEWLINE elif_statement
-    NEWLINE         shift and go to state 120
+    NEWLINE         shift and go to state 125
 
 
-state 120
+state 125
 
     (25) elif_statement -> ELIF expression COLON NEWLINE block NEWLINE .
     (26) elif_statement -> ELIF expression COLON NEWLINE block NEWLINE . else_statement
@@ -3956,13 +4093,13 @@ state 120
     HEX             reduce using rule 25 (elif_statement -> ELIF expression COLON NEWLINE block NEWLINE .)
     $end            reduce using rule 25 (elif_statement -> ELIF expression COLON NEWLINE block NEWLINE .)
     DEDENT          reduce using rule 25 (elif_statement -> ELIF expression COLON NEWLINE block NEWLINE .)
-    ELSE            shift and go to state 109
-    ELIF            shift and go to state 110
+    ELSE            shift and go to state 114
+    ELIF            shift and go to state 115
 
-    else_statement                 shift and go to state 121
-    elif_statement                 shift and go to state 122
+    else_statement                 shift and go to state 126
+    elif_statement                 shift and go to state 127
 
-state 121
+state 126
 
     (26) elif_statement -> ELIF expression COLON NEWLINE block NEWLINE else_statement .
     NEWLINE         reduce using rule 26 (elif_statement -> ELIF expression COLON NEWLINE block NEWLINE else_statement .)
@@ -3992,7 +4129,7 @@ state 121
     DEDENT          reduce using rule 26 (elif_statement -> ELIF expression COLON NEWLINE block NEWLINE else_statement .)
 
 
-state 122
+state 127
 
     (27) elif_statement -> ELIF expression COLON NEWLINE block NEWLINE elif_statement .
     NEWLINE         reduce using rule 27 (elif_statement -> ELIF expression COLON NEWLINE block NEWLINE elif_statement .)
@@ -4025,59 +4162,59 @@ state 122
 Conflicts:
 
 shift/reduce conflict for LPAR in state 5 resolved as shift
-shift/reduce conflict for LPAR in state 50 resolved as shift
-shift/reduce conflict for OR in state 54 resolved as shift
-shift/reduce conflict for AND in state 54 resolved as shift
-shift/reduce conflict for NEQ in state 54 resolved as shift
-shift/reduce conflict for EQ in state 54 resolved as shift
-shift/reduce conflict for LT in state 54 resolved as shift
-shift/reduce conflict for GT in state 54 resolved as shift
-shift/reduce conflict for LTE in state 54 resolved as shift
-shift/reduce conflict for GTE in state 54 resolved as shift
-shift/reduce conflict for MOD in state 54 resolved as shift
-shift/reduce conflict for DIV in state 54 resolved as shift
-shift/reduce conflict for MULT in state 54 resolved as shift
-shift/reduce conflict for MINUS in state 54 resolved as shift
-shift/reduce conflict for PLUS in state 54 resolved as shift
-shift/reduce conflict for OR in state 64 resolved as shift
-shift/reduce conflict for AND in state 64 resolved as shift
-shift/reduce conflict for NEQ in state 64 resolved as shift
-shift/reduce conflict for EQ in state 64 resolved as shift
-shift/reduce conflict for LT in state 64 resolved as shift
-shift/reduce conflict for GT in state 64 resolved as shift
-shift/reduce conflict for LTE in state 64 resolved as shift
-shift/reduce conflict for GTE in state 64 resolved as shift
-shift/reduce conflict for MOD in state 64 resolved as shift
-shift/reduce conflict for DIV in state 64 resolved as shift
-shift/reduce conflict for MULT in state 64 resolved as shift
-shift/reduce conflict for MINUS in state 64 resolved as shift
-shift/reduce conflict for PLUS in state 64 resolved as shift
-shift/reduce conflict for OR in state 65 resolved as shift
-shift/reduce conflict for AND in state 65 resolved as shift
-shift/reduce conflict for NEQ in state 65 resolved as shift
-shift/reduce conflict for EQ in state 65 resolved as shift
-shift/reduce conflict for LT in state 65 resolved as shift
-shift/reduce conflict for GT in state 65 resolved as shift
-shift/reduce conflict for LTE in state 65 resolved as shift
-shift/reduce conflict for GTE in state 65 resolved as shift
-shift/reduce conflict for MOD in state 65 resolved as shift
-shift/reduce conflict for DIV in state 65 resolved as shift
-shift/reduce conflict for MULT in state 65 resolved as shift
-shift/reduce conflict for MINUS in state 65 resolved as shift
-shift/reduce conflict for PLUS in state 65 resolved as shift
-shift/reduce conflict for OR in state 72 resolved as shift
-shift/reduce conflict for AND in state 72 resolved as shift
-shift/reduce conflict for NEQ in state 72 resolved as shift
-shift/reduce conflict for EQ in state 72 resolved as shift
-shift/reduce conflict for LT in state 72 resolved as shift
-shift/reduce conflict for GT in state 72 resolved as shift
-shift/reduce conflict for LTE in state 72 resolved as shift
-shift/reduce conflict for GTE in state 72 resolved as shift
-shift/reduce conflict for MOD in state 72 resolved as shift
-shift/reduce conflict for DIV in state 72 resolved as shift
-shift/reduce conflict for MULT in state 72 resolved as shift
-shift/reduce conflict for MINUS in state 72 resolved as shift
-shift/reduce conflict for PLUS in state 72 resolved as shift
-reduce/reduce conflict in state 92 resolved using rule expression -> const
-rejected rule (statement -> type COLON NAME ASSIGN const  [precedence=left, level=2]) in state 92
+shift/reduce conflict for LPAR in state 51 resolved as shift
+shift/reduce conflict for OR in state 55 resolved as shift
+shift/reduce conflict for AND in state 55 resolved as shift
+shift/reduce conflict for NEQ in state 55 resolved as shift
+shift/reduce conflict for EQ in state 55 resolved as shift
+shift/reduce conflict for LT in state 55 resolved as shift
+shift/reduce conflict for GT in state 55 resolved as shift
+shift/reduce conflict for LTE in state 55 resolved as shift
+shift/reduce conflict for GTE in state 55 resolved as shift
+shift/reduce conflict for MOD in state 55 resolved as shift
+shift/reduce conflict for DIV in state 55 resolved as shift
+shift/reduce conflict for MULT in state 55 resolved as shift
+shift/reduce conflict for MINUS in state 55 resolved as shift
+shift/reduce conflict for PLUS in state 55 resolved as shift
+shift/reduce conflict for OR in state 66 resolved as shift
+shift/reduce conflict for AND in state 66 resolved as shift
+shift/reduce conflict for NEQ in state 66 resolved as shift
+shift/reduce conflict for EQ in state 66 resolved as shift
+shift/reduce conflict for LT in state 66 resolved as shift
+shift/reduce conflict for GT in state 66 resolved as shift
+shift/reduce conflict for LTE in state 66 resolved as shift
+shift/reduce conflict for GTE in state 66 resolved as shift
+shift/reduce conflict for MOD in state 66 resolved as shift
+shift/reduce conflict for DIV in state 66 resolved as shift
+shift/reduce conflict for MULT in state 66 resolved as shift
+shift/reduce conflict for MINUS in state 66 resolved as shift
+shift/reduce conflict for PLUS in state 66 resolved as shift
+shift/reduce conflict for OR in state 67 resolved as shift
+shift/reduce conflict for AND in state 67 resolved as shift
+shift/reduce conflict for NEQ in state 67 resolved as shift
+shift/reduce conflict for EQ in state 67 resolved as shift
+shift/reduce conflict for LT in state 67 resolved as shift
+shift/reduce conflict for GT in state 67 resolved as shift
+shift/reduce conflict for LTE in state 67 resolved as shift
+shift/reduce conflict for GTE in state 67 resolved as shift
+shift/reduce conflict for MOD in state 67 resolved as shift
+shift/reduce conflict for DIV in state 67 resolved as shift
+shift/reduce conflict for MULT in state 67 resolved as shift
+shift/reduce conflict for MINUS in state 67 resolved as shift
+shift/reduce conflict for PLUS in state 67 resolved as shift
+shift/reduce conflict for OR in state 74 resolved as shift
+shift/reduce conflict for AND in state 74 resolved as shift
+shift/reduce conflict for NEQ in state 74 resolved as shift
+shift/reduce conflict for EQ in state 74 resolved as shift
+shift/reduce conflict for LT in state 74 resolved as shift
+shift/reduce conflict for GT in state 74 resolved as shift
+shift/reduce conflict for LTE in state 74 resolved as shift
+shift/reduce conflict for GTE in state 74 resolved as shift
+shift/reduce conflict for MOD in state 74 resolved as shift
+shift/reduce conflict for DIV in state 74 resolved as shift
+shift/reduce conflict for MULT in state 74 resolved as shift
+shift/reduce conflict for MINUS in state 74 resolved as shift
+shift/reduce conflict for PLUS in state 74 resolved as shift
+reduce/reduce conflict in state 95 resolved using rule expression -> const
+rejected rule (statement -> type COLON NAME ASSIGN const  [precedence=left, level=2]) in state 95
 Rule (statement -> type COLON NAME ASSIGN const  [precedence=left, level=2]) is never reduced

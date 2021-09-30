@@ -50,7 +50,11 @@ class EclatParser(Parser):
         if p.statement_full:
             # only global statements return
             self.globals.append(p.statement_full.to_c())
-        pass
+        return {'imports': self.imports,
+                'chains': self.chains,
+                'loaders': self.loaders,
+                'globals': self.globals
+                }
 
     @_('statement NEWLINE', 'statement')
     def statement_full(self, p):
@@ -136,12 +140,17 @@ class EclatParser(Parser):
         return Return(p.expression)
 
     # expressions
-    @_('NAME LPAR arglist RPAR')
+    @_('NAME LPAR arglist RPAR', 'NAME DOT NAME LPAR arglist RPAR')
     def expression(self, p):
         # function call
         argument_list = self.argument_list[:]
         self.argument_list = []
-        return FunctionCall(p.NAME, argument_list)
+        if hasattr(p, 'NAME1'):
+            # method call
+            return FunctionCall(p.NAME1, argument_list, object=p.NAME0)
+        else:
+            # function call
+            return FunctionCall(p.NAME, argument_list)
 
     @_('expression PLUS expression',
         'expression MINUS expression',
@@ -171,13 +180,9 @@ class EclatParser(Parser):
         exp.set_brackets()
         return exp
 
-    @ _('NAME')
+    @ _('const', 'NAME')
     def argument(self, p):
-        self.argument_list.append(Argument(p.NAME))
-
-    @ _('const')
-    def argument(self, p):
-        self.argument_list.append(Argument(p.const))
+        self.argument_list.append(Argument(p[0]))
 
     @ _('argument COMMA arglist', 'argument', '')
     def arglist(self, p):

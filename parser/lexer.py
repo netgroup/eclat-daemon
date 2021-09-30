@@ -92,6 +92,7 @@ class EclatLexer(IndentedLexer):
         LPAR,
         RPAR,
         COLON,
+        DOT,
         AND,
         OR,
         NOT,
@@ -149,6 +150,7 @@ class EclatLexer(IndentedLexer):
     DIV = r'/'
     MOD = r'%'
     COMMA = r','
+    DOT = r'\.'
 
     U8 = r'u8'
     U16 = r'u16'

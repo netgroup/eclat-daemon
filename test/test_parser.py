@@ -193,8 +193,52 @@ def mychain_globals():
         parser.parse(tokens)
         print(parser.globals)
 
-#     def test_indentation(self):
-#         # indentation and multiple newlines OK
-#         # argumentlist and expressionlist
-#         # globals variable OK
-#         # constants -> CONST_NAME = "Name"
+    def test_objects(self):
+        lexer = EclatLexer()
+        parser = EclatParser()
+        prog = """
+from hike import Packet
+def mychain():
+    Packet.readU16(12)
+    pass
+    """
+        tokens = lexer.tokenize(prog)
+        for tok in tokens:
+            print(tok)
+        tokens = lexer.tokenize(prog)
+        parser.parse(tokens)
+        print(parser.globals)
+
+    def test_code1(self):
+        lexer = EclatLexer()
+        parser = EclatParser()
+        prog = """
+def mychain0():
+    eth_type = Packet.readU16(12)
+    if eth_type == 0x86dd :
+        ttl = Packet.readU8(21)
+        if ttl == 64:
+            Packet.writeU8(17,21) 
+        
+    
+    if eth_type == 0x800 :
+        drop(eth_type)
+        return
+
+    allow(eth_type)
+    return
+        """
+        tokens = lexer.tokenize(prog)
+        for tok in tokens:
+            print(tok)
+        tokens = lexer.tokenize(prog)
+        p = parser.parse(tokens)
+        print("p=", p)
+        print(parser.globals)
+
+    #     def test_indentation(self):
+    #         # indentation and multiple newlines OK
+    #         # argumentlist and expressionlist
+    #         # globals variable OK
+    #         # constants -> CONST_NAME = "Name"
+        # https://clang.llvm.org/docs/pip.html

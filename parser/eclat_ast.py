@@ -191,14 +191,18 @@ class BinaryExpression(Expression):
 
 
 class FunctionCall(Expression):
-    def __init__(self, function_name, arguments):
+    def __init__(self, function_name, arguments, object=None):
         super().__init__()
         self.function_name = function_name
         self.arguments = arguments
+        self.object = object
 
     def to_c(self):
         flat_arguments = ', '.join([a.to_c() for a in self.arguments])
-        return f"{self.function_name}({flat_arguments})"
+        if self.object:
+            return f"{self.object}_{self.function_name}({flat_arguments})"
+        else:
+            return f"{self.function_name}({flat_arguments})"
 
 
 class Argument():
