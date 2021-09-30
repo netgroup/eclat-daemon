@@ -151,22 +151,49 @@ def mychain_while():
         tokens = lexer.tokenize(prog)
         p = parser.parse(tokens)
 
-#     def test_globals(self):
-#         lexer = EclatLexer()
-#         parser = EclatParser()
-#         prog = """
-# u8 p = 4
-# def mychain_while():
-#     while 5 == 5:
-#         pass
-#     """
-#         tokens = lexer.tokenize(prog)
-#         for tok in tokens:
-#             print(tok)
-#         tokens = lexer.tokenize(prog)
-#         p = parser.parse(tokens)
+    def test_indentation(self):
+        lexer = EclatLexer()
+        parser = EclatParser()
+        prog = """
+#putting comments with random indentation should not affect the code
+    #ddd  
+def mychain_indent():
+    while 5 == 5:
+        pass
+
+
+    while 1 == 1:
+        if (1 == 2):
+            pass
+                #daaaaa
+        #ddd
+          #ddd
+#ddd
+    #xxx
+    """
+        tokens = lexer.tokenize(prog)
+        for tok in tokens:
+            print(tok)
+        tokens = lexer.tokenize(prog)
+        p = parser.parse(tokens)
+
+    def test_globals(self):
+        lexer = EclatLexer()
+        parser = EclatParser()
+        prog = """
+u8 : a = 1
+def mychain_globals():
+    while a == 5:
+        pass
+    """
+        tokens = lexer.tokenize(prog)
+        for tok in tokens:
+            print(tok)
+        tokens = lexer.tokenize(prog)
+        p = parser.parse(tokens)
 
 #     def test_indentation(self):
-#         # indentation and multiple newlines
+#         # indentation and multiple newlines OK
 #         # argumentlist and expressionlist
+#         # globals variable
 #         pass

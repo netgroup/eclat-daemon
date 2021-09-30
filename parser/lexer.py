@@ -16,7 +16,8 @@ class IndentedLexer(Lexer):
         # convert tab in spaces
         text = text.replace('\t', '    ')
         # remove comments
-        text = re.sub(re.compile("#.*?\n"), "", text)
+        text = re.sub(re.compile("#.*?\n"), "\n", text)
+        #text = re.sub(re.compile("\s*?\n"), "", text)
         lines = text.split('\n')
         # put INDENT and DEDENT
         INDENT = "_INDENT"
@@ -25,14 +26,12 @@ class IndentedLexer(Lexer):
         curr_indentation_level = 0
         indentations = [0, ]
         output = ""
-
         for lineno, line in enumerate(lines):
             # remove spaces at the end and skip white lines
             line = line.rstrip()
             if not line:
-                # output += '\n'
+                # skip empty lines
                 continue
-
             initial_spaces = len(line) - len(line.lstrip(' '))
             if initial_spaces > curr_indentation_level:
                 indentations.append(initial_spaces)
@@ -54,7 +53,7 @@ class IndentedLexer(Lexer):
             indentation = indentations.pop()
             output += DEDENT + '\n'
         # output += ' ' + END
-        print(output)
+        print("Preprocessing output:", output)
         return output
 
     def tokenize(self, text):

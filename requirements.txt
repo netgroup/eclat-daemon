@@ -2,5 +2,3 @@ grpcio==1.6.0
 grpcio-tools==1.6.0
 sly==0.4
 integer==1.0.3
-requests
-tarfile

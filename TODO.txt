@@ -1,0 +1,62 @@
+# packet 
+from hyke import Packet
+inventarsi gli oggetti come collezioni di funzioni
+Packet {
+    'readU16': 'hike_packet_read_u16'
+}
+
+
+# define python
+OFFSET_TYPE = 12
+readU16(OFFSET_TYPE)
+-> define in C?
+
+# classificatore
+from hyke import Loader
+Loader.set(name='test', conf={'conf1': 5, 'conf2': 9})
+
+{name: ‘xdd’, ‘configuration: {...}’}
+
+# se ci sono righe in C senza mapping di python (const?)
+
+##########################################################################
+
+def mychain0():
+    eth_type = Packet.readU16(12)
+    if eth_type == 0x86dd :
+        ttl = Packet.readU8(21)
+        if ttl == 64:
+            Packet.writeU8(17,21) 
+        
+    
+    if eth_type == 0x800 :
+        drop(eth_type)
+        return
+
+    allow(eth_type)
+    return
+
+##########################################################################
+
+#include <hike_vm.h>
+#define MYCHAIN0 78
+#define HIKE_EBPF_PROG_DROP_ANY 12
+#define HIKE_EBPF_PROG_ALLOW_ANY 11
+
+HIKE_CHAIN(MYCHAIN0) {
+    __s64 eth_type, ttl;
+    eth_type = hike_packet_read_u16(__u16, 12);
+    if ( eth_type == 0x86dd ) {
+        ttl = hike_packet_read_u8(__u8, 21);
+        if ( ttl == 64 ) {
+            hike_packet_write_u8(17, 21);
+        }
+    }
+    if ( eth_type == 0x800 ) {
+        hike_elem_call_2(HIKE_EBPF_PROG_DROP_ANY, eth_type);
+        return 0;
+    }
+    hike_elem_call_2(HIKE_EBPF_PROG_ALLOW_ANY, eth_type);
+    return 0;
+    
+}
