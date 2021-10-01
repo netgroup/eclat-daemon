@@ -191,12 +191,13 @@ class BinaryExpression(Expression):
 
 
 class FunctionCall(Expression):
-    def __init__(self, function_name, arguments, object=None, mapper={}):
+    def __init__(self, function_name, arguments, globals, object=None, mapper={}):
         super().__init__()
         self.function_name = function_name
         self.arguments = arguments
         self.object = object
         self.mapper = mapper
+        self.globals = globals
         print("Function call contructor", self.mapper)
 
     def to_c(self):
@@ -207,13 +208,24 @@ class FunctionCall(Expression):
             print(obj_map)
             print(self.function_name)
             try:
-                return obj_map['methods'][self.function_name].format(*[a.to_c() for a in self.arguments])
+                ret = obj_map['methods'][self.function_name]['template'].format(
+                    *[a.to_c() for a in self.arguments])
+                deps = obj_map['methods'][self.function_name].get(
+                    'dependencies', None)
+                if deps:
+                    self.globals.append(deps)
+                return ret
             except KeyError:
                 return f"{self.object}_{self.function_name}({flat_arguments})"
         else:
             func_map = self.mapper.get(self.function_name, {})
             try:
-                return func_map['template'].format([a.to_c() for a in self.arguments])
+                ret = func_map['template'].format(
+                    [a.to_c() for a in self.arguments])
+                deps = func_map.get('dependencies')
+                if deps:
+                    self.globals.append(deps)
+                return ret
             except KeyError:
                 return f"{self.function_name}({flat_arguments})"
 

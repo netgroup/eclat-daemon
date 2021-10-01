@@ -160,10 +160,10 @@ class EclatParser(Parser):
         self.argument_list = []
         if hasattr(p, 'NAME1'):
             # method call
-            return FunctionCall(p.NAME1, argument_list, object=p.NAME0, mapper=self.mapper)
+            return FunctionCall(p.NAME1, argument_list, globals=self.globals, object=p.NAME0, mapper=self.mapper, )
         else:
             # function call
-            return FunctionCall(p.NAME, argument_list, mapper=self.mapper)
+            return FunctionCall(p.NAME, argument_list, globals=self.globals, mapper=self.mapper)
 
     @_('expression PLUS expression',
         'expression MINUS expression',

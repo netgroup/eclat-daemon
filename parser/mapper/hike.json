@@ -7,8 +7,12 @@
     "Packet": {
         "type": "object",
         "methods" : {
-            "readU16": "hike_packet_read_u16(__u16, {})",
-            "readU8" : "hike_packet_read_u8(__u8, {})"
+            "readU16": {
+                "template": "hike_packet_read_u16(__u16, {})"
+            },
+            "readU8" : {
+                "template": "hike_packet_read_u8(__u8, {})"
+            }
         }
     }
 }

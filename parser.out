@@ -70,8 +70,8 @@ Rule 66    const -> HEX
 
 Unused terminals:
 
-    END
     FOR
+    END
 
 Terminals, with rules where they appear:
 
