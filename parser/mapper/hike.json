@@ -1,0 +1,14 @@
+{
+    "drop": {
+        "type": "function",
+        "template" : "hike_elem_call_2(HIKE_EBPF_PROG_DROP_ANY, {})",
+        "dependencies": "#define HIKE_EBPF_PROG_DROP_ANY 12"
+    },
+    "Packet": {
+        "type": "object",
+        "methods" : {
+            "readU16": "hike_packet_read_u16(__u16, {})",
+            "readU8" : "hike_packet_read_u8(__u8, {})"
+        }
+    }
+}

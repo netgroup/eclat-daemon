@@ -1,6 +1,7 @@
 from .eclat_ast import *
 from sly import Lexer, Parser
 import re
+import json
 from .lexer import EclatLexer
 
 
@@ -42,6 +43,9 @@ class EclatParser(Parser):
         self.statement_list = []
         self.argument_list = []
 
+        # function mapper
+        self.mapper = {}
+
         #####
         self._imports_name = []
 
@@ -68,6 +72,12 @@ class EclatParser(Parser):
     @_('FROM NAME IMPORT module_list')
     def import_statement(self, p):
         self.imports[p.NAME] = self._imports_name[:]
+        if p.NAME == 'hike':
+            with open('parser/mapper/hike.json') as f:
+                d = json.load(f)
+                self.mapper.update(d)
+                print(self.mapper)
+
         self._imports_name = []
 
     @ _('NAME COMMA module_list',
@@ -147,10 +157,10 @@ class EclatParser(Parser):
         self.argument_list = []
         if hasattr(p, 'NAME1'):
             # method call
-            return FunctionCall(p.NAME1, argument_list, object=p.NAME0)
+            return FunctionCall(p.NAME1, argument_list, object=p.NAME0, mapper=self.mapper)
         else:
             # function call
-            return FunctionCall(p.NAME, argument_list)
+            return FunctionCall(p.NAME, argument_list, mapper=self.mapper)
 
     @_('expression PLUS expression',
         'expression MINUS expression',

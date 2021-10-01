@@ -191,18 +191,31 @@ class BinaryExpression(Expression):
 
 
 class FunctionCall(Expression):
-    def __init__(self, function_name, arguments, object=None):
+    def __init__(self, function_name, arguments, object=None, mapper={}):
         super().__init__()
         self.function_name = function_name
         self.arguments = arguments
         self.object = object
+        self.mapper = mapper
+        print("Function call contructor", self.mapper)
 
     def to_c(self):
         flat_arguments = ', '.join([a.to_c() for a in self.arguments])
         if self.object:
-            return f"{self.object}_{self.function_name}({flat_arguments})"
+            print("------->Object")
+            obj_map = self.mapper.get(self.object, {})
+            print(obj_map)
+            print(self.function_name)
+            try:
+                return obj_map['methods'][self.function_name].format(*[a.to_c() for a in self.arguments])
+            except KeyError:
+                return f"{self.object}_{self.function_name}({flat_arguments})"
         else:
-            return f"{self.function_name}({flat_arguments})"
+            func_map = self.mapper.get(self.function_name, {})
+            try:
+                return func_map['template'].format([a.to_c() for a in self.arguments])
+            except KeyError:
+                return f"{self.function_name}({flat_arguments})"
 
 
 class Argument():
@@ -226,15 +239,3 @@ class Type():
 
     def to_c(self):
         return self.type
-
-
-########### TODO #########
-# statements:  for --> come lo facciamo?
-# +=, -= ...
-# >> , <<
-
-# chiamare i moduli
-# modificare mappe (?)
-
-
-# variabili globali

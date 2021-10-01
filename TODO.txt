@@ -1,23 +1,14 @@
-# packet 
-from hyke import Packet
-inventarsi gli oggetti come collezioni di funzioni
-Packet {
-    'readU16': 'hike_packet_read_u16'
-}
-
-
-# define python
-OFFSET_TYPE = 12
-readU16(OFFSET_TYPE)
--> define in C?
-
-# classificatore
+OK from hyke import Packet -> inventarsi gli oggetti come collezioni di funzioni
+OK variabili globali
+- define python
+- +=, -= ...
+- >> , <<
+- mappe e liste?
+- classificatore
 from hyke import Loader
 Loader.set(name='test', conf={'conf1': 5, 'conf2': 9})
 
 {name: ‘xdd’, ‘configuration: {...}’}
-
-# se ci sono righe in C senza mapping di python (const?)
 
 ##########################################################################
 
@@ -59,19 +50,4 @@ HIKE_CHAIN(MYCHAIN0) {
     hike_elem_call_2(HIKE_EBPF_PROG_ALLOW_ANY, eth_type);
     return 0;
     
-}
-#
-function_map = {
-    'drop': {
-        'type': 'function',
-        'template': 'hike_elem_call_2(HIKE_EBPF_PROG_DROP_ANY, {arg0})',
-        'globals_dependencies': '#define HIKE_EBPF_PROG_DROP_ANY 12'
-    },
-    'Packet': {
-        'type': 'object',
-        'methods': {
-            'readU16': 'hike_packet_read_u16(__u16, {arg0})',
-            'readU8': hike_packet_read_u8(__u8, {arg0});
-        }
-    }
 }
