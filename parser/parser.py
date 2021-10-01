@@ -145,9 +145,12 @@ class EclatParser(Parser):
     # def statement(self, p):
     #    return For(p.expression, p.block)
 
-    @_('RETURN expression')
+    @_('RETURN expression', 'RETURN')
     def statement(self, p):
-        return Return(p.expression)
+        if hasattr(p, 'expression'):
+            return Return(p.expression)
+        else:
+            return Return(Expression(0))
 
     # expressions
     @_('NAME LPAR arglist RPAR', 'NAME DOT NAME LPAR arglist RPAR')

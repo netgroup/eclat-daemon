@@ -1,5 +1,6 @@
 OK from hyke import Packet -> inventarsi gli oggetti come collezioni di funzioni
 OK variabili globali
+- expression list (oltre a argument list)
 - define python
 - +=, -= ...
 - >> , <<

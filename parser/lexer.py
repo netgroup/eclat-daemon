@@ -17,7 +17,7 @@ class IndentedLexer(Lexer):
         text = text.replace('\t', '    ')
         # remove comments
         text = re.sub(re.compile("#.*?\n"), "\n", text)
-        #text = re.sub(re.compile("\s*?\n"), "", text)
+        # text = re.sub(re.compile("\s*?\n"), "", text)
         lines = text.split('\n')
         # put INDENT and DEDENT
         INDENT = "_INDENT"
@@ -26,25 +26,36 @@ class IndentedLexer(Lexer):
         curr_indentation_level = 0
         indentations = [0, ]
         output = ""
+        print(lines)
         for lineno, line in enumerate(lines):
             # remove spaces at the end and skip white lines
             line = line.rstrip()
             if not line:
                 # skip empty lines
                 continue
+            print(f"Line #{lineno}", line)
             initial_spaces = len(line) - len(line.lstrip(' '))
             if initial_spaces > curr_indentation_level:
                 indentations.append(initial_spaces)
                 output += INDENT + line + '\n'
-                print("indenting of {} space. Current indentation was {}".format(
-                    initial_spaces, curr_indentation_level))
+                # print("indenting of {} space. Current indentation was {}".format(
+                #    initial_spaces, curr_indentation_level))
             elif initial_spaces < curr_indentation_level:
-                indentations.pop()
-                expected_spaces = indentations[-1]
-                if expected_spaces != initial_spaces:
-                    raise Exception("Syntax error on line {}: expected {} space for deindent ({} received)".format(
-                        lineno, expected_spaces, initial_spaces))
-                output += DEDENT + '\n' + line + '\n'
+                indentations.reverse()
+                try:
+                    idx = indentations.index(initial_spaces)
+                except ValueError:
+                    raise Exception("Indentation error on line {}: expected {} space for deindent ({} received)".format(
+                        lineno, indentations, initial_spaces))
+                idx = len(indentations) - idx - 1
+                indentations.reverse()
+
+                dedent_n = len(indentations) - idx - 1
+                # print(f"initial_spaces={initial_spaces}; idx = {idx}; indentations={indentations}")
+                indentations = indentations[:len(indentations) - dedent_n]
+                for i in range(dedent_n):
+                    output += DEDENT + '\n'
+                output += line + '\n'
             else:
                 output += line + '\n'
             curr_indentation_level = initial_spaces
@@ -184,7 +195,7 @@ class EclatLexer(IndentedLexer):
     # def ignore_newline(self, t):
     #    self.lineno += t.value.count('\n')
 
-    @_(r'\n')
+    @ _(r'\n')
     def NEWLINE(self, t):
         self.lineno += 1
         # t.value = 'NEWLINE'

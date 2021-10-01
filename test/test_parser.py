@@ -48,6 +48,8 @@ def mychain0():
     b = drop()
     u16: x = drop()
     pass
+    if x:
+        return 1
     return 1
         """
         #tokens = lexer.tokenize(prog)
@@ -129,7 +131,13 @@ def mychainIF():
     else:
         pass
         pass
-
+# nested if
+    if p == 2:
+        pass
+        if p == 4:
+            pass
+    if p == 20:
+        pass
 """
         tokens = lexer.tokenize(prog)
         for tok in tokens:
@@ -213,6 +221,7 @@ def mychain():
         lexer = EclatLexer()
         parser = EclatParser()
         prog = """
+from hike import Packet
 def mychain0():
     eth_type = Packet.readU16(12)
     if eth_type == 0x86dd :
@@ -223,7 +232,9 @@ def mychain0():
     
     if eth_type == 0x800 :
         drop(eth_type)
+        pass
         return
+        
 
     allow(eth_type)
     return
