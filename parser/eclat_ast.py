@@ -198,18 +198,18 @@ class FunctionCall(Expression):
         self.object = object
         self.mapper = mapper
         self.globals = globals
-        print("Function call contructor", self.mapper)
 
     def to_c(self):
         flat_arguments = ', '.join([a.to_c() for a in self.arguments])
         if self.object:
-            print("------->Object")
+            # object view
             obj_map = self.mapper.get(self.object, {})
-            print(obj_map)
-            print(self.function_name)
             try:
-                ret = obj_map['methods'][self.function_name]['template'].format(
-                    *[a.to_c() for a in self.arguments])
+                if self.arguments:
+                    ret = obj_map['methods'][self.function_name]['template'].format(
+                        *[a.to_c() for a in self.arguments])
+                else:
+                    ret = obj_map['methods'][self.function_name]['template']
                 deps = obj_map['methods'][self.function_name].get(
                     'dependencies', None)
                 if deps:
@@ -218,10 +218,14 @@ class FunctionCall(Expression):
             except KeyError:
                 return f"{self.object}_{self.function_name}({flat_arguments})"
         else:
+            # function view
             func_map = self.mapper.get(self.function_name, {})
             try:
-                ret = func_map['template'].format(
-                    [a.to_c() for a in self.arguments])
+                if self.arguments:
+                    ret = func_map['template'].format(
+                        *[a.to_c() for a in self.arguments])
+                else:
+                    ret = func_map['template']
                 deps = func_map.get('dependencies')
                 if deps:
                     self.globals.append(deps)

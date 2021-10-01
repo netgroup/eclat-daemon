@@ -1,5 +1,7 @@
 OK from hyke import Packet -> inventarsi gli oggetti come collezioni di funzioni
 OK variabili globali
+OK multiple indents
+OK dependencies
 - expression list (oltre a argument list)
 - define python
 - +=, -= ...
