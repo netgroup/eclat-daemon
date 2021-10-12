@@ -59,7 +59,7 @@ def mount_bpf(mount_point):
     # that points to the pid of the parent process (launching bash).
     cmd = f"mount -t bpf bpf {mount_point}"
     ret = os.system(cmd)
-    if not ret:
+    if ret:
         raise OSError(f"Can not mount BPF fs on {mount_point}")
 
 
@@ -69,7 +69,7 @@ def mount_tracefs(mount_point):
     """
     cmd = f"mount -t tracefs nodev {mount_point}"
     ret = os.system(cmd)
-    if not ret:
+    if ret:
         raise OSError(f"Can not mount trace fs on {mount_point}")
 
 
