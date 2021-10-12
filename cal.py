@@ -29,7 +29,13 @@ def hike_system_init():
     Initialize HIKe system by loading HIKe maps.
     """
     import settings
+
+    # It allows to load maps with many entries without failing
+    if os.system("ulimit -l unlimited"):
+        raise OSError(f"Failing in setting user limit to unlimited")
+
     # load a "dummy" classifier to load the maps
+    # TODO no such file
     bpf_source_file = os.path.join(settings.LOADERS_DIR, '/init/hike_init.o')
 
     pinned_maps = {}
@@ -41,9 +47,9 @@ def mkdir(path):
     """
     mkdir path
     """
-    cmd = f"mkdir {path}"
+    cmd = f"mkdir -p {path}"
     ret = os.system(cmd)
-    if not ret:
+    if ret:
         raise OSError(f"Can not create directory {path}")
 
 
@@ -57,7 +63,7 @@ def mount_bpf(mount_point):
     # of the bpf filesystem. If you need to get access to the bpf filesystem
     # (where maps are available), you need to use nsenter with -m and -t
     # that points to the pid of the parent process (launching bash).
-    cmd = f"mount -t bpf bpf {mount_point}"
+    cmd = f"grep -qs '{mount_point} ' /proc/mounts || mount -t bpf bpf {mount_point}"
     ret = os.system(cmd)
     if ret:
         raise OSError(f"Can not mount BPF fs on {mount_point}")
@@ -67,8 +73,9 @@ def mount_tracefs(mount_point):
     """
     mount -t tracefs nodev /sys/kernel/tracing
     """
-    cmd = f"mount -t tracefs nodev {mount_point}"
+    cmd = f"grep -qs '{mount_point} ' /proc/mounts || mount -t tracefs nodev {mount_point}"
     ret = os.system(cmd)
+    print(ret)
     if ret:
         raise OSError(f"Can not mount trace fs on {mount_point}")
 
