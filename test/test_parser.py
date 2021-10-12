@@ -228,6 +228,8 @@ def mychain0():
         ttl = Packet.readU8(21)
         if ttl == 64:
             Packet.writeU8(17,21) 
+            funzione1(pippo)
+            fun_funzion1(par1, pippo)
         
     
     if eth_type == 0x800 :
