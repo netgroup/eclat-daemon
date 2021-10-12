@@ -1,4 +1,5 @@
 from cal import ebpf_system_init, hike_system_init
+from hikechain import HikeChain
 from hikeprogram import HikeProgram
 from parser.parser import EclatParser
 from parser.lexer import EclatLexer
@@ -21,11 +22,33 @@ class EclatController:
     #     p.pull()
 
     def load_configuration(self, eclat_script):
+        # Parse the config
         tokens = EclatLexer().tokenize(eclat_script)
         parser = EclatParser()
         parser.parse(tokens)
         print(parser.imports)
         print(parser.chains)
+
+        # load hikeprograms
+        for package, functions in parser.imports:
+            for function in functions:
+                if not (package, function) in self.hike_programs.keys():
+                    hp = HikeProgram(package, function)
+                    hp.pull()
+                    hp.compile()
+                    hp.load()
+                    hp.register()
+                    self.hike_programs[(package, function)] = hp
+
+        programs_map = [f + (hp.program_id,)
+                        for f, hp in self.hike_programs.items()]
+        for ast_chain in parser.chains:
+            self.hike_chain[ast_chain.name] = HikeChain(
+                name=ast_chain.name, code=ast_chain.to_c(), programs_map=programs_map, globals=parser.globals)
+
+        # TODO load chainloader
+
+        #
 
         #data = prog.eval()
         # 1. genera una struttura dati

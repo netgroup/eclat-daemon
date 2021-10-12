@@ -3,14 +3,19 @@ class HikeChain:
     """
     chain_id = None
 
-    def __init__(self, name, package):
-        # file path preso da nome e package
-        pass
-
-    def pull(self):
-        pass
+    # def pull(self):
+    #     # needed?
+    #     # better another constructor
+    #     pass
+    def __init__(self, name, code, programs_map, globals):
+        self.name = name
+        self.code = code
+        self.programs_map = programs_map
+        self.globals = globals
 
     def compile(self):
+        # take code and add macros for the maps
+        # add the globals
         pass
 
     def clean(self):

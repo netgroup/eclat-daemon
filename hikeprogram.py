@@ -6,7 +6,7 @@ import cal
 class HikeProgram:
     program_id = None
 
-    def __init__(self, program_name, package):
+    def __init__(self, package, program_name):
         self.program_name = program_name
         self.package = package
         self.is_compiled = False
