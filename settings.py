@@ -1,15 +1,21 @@
-COMPONENTS_DIR = '/components'
+COMPONENTS_DIR = 'components'
 LOADERS_DIR = f"{COMPONENTS_DIR}/loaders"
 PROGRAMS_DIR = f"{COMPONENTS_DIR}/programs"
 CHAINS_DIR = f"{COMPONENTS_DIR}/chains"
 
-BPF_FS_PATH = "/sys/fs/bpf/"
-TRACE_FS_PATH = "/sys/kernel/tracing"
-BPF_FS_PROGS_PATH = BPF_FS_PATH + "progs"
-BPF_FS_MAPS_PATH = BPF_FS_PATH + "maps"
-BPF_FS_MAPS_SYSTEM_PATH = BPF_FS_MAPS_PATH + '/system'
+BUILD_DIR = 'build'
+BUILD_LOADERS_DIR = f"{BUILD_DIR}/{COMPONENTS_DIR}/loaders"
+BUILD_PROGRAMS_DIR = f"{BUILD_DIR}/{COMPONENTS_DIR}/programs"
+BUILD_CHAINS_DIR = f"{BUILD_DIR}/{COMPONENTS_DIR}/chains"
 
-HIKE_SOURCE_PATH = "hike_v3/src/"
+BPF_FS_PATH = "/sys/fs/bpf"
+TRACE_FS_PATH = "/sys/kernel/tracing"
+BPF_FS_PROGS_PATH = f"{BPF_FS_PATH}/progs"
+BPF_FS_MAPS_PATH = f"{BPF_FS_PATH}/maps"
+BPF_FS_MAPS_SYSTEM_PATH = f"{BPF_FS_MAPS_PATH}/system"
+
+HIKE_PATH = "hike_v3"
+HIKE_SOURCE_PATH = f"{HIKE_PATH}/src"
 
 REPOSITORY_URL = "https://www.uniroma2.it/hike/repo/"
 

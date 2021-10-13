@@ -36,11 +36,16 @@ def hike_system_init():
 
     # load a "dummy" classifier to load the maps
 
-    #bpf_source_file = os.path.join(settings.LOADERS_DIR, '/init/hike_init.o')
-    bpf_source_file = os.path.join(settings.LOADERS_DIR, '/init/hike_init.o')
+    # make -f hike_v3/external/Makefile -j24 prog PROG=components/loaders/init_hike.bpf.c HIKE_DIR=hike_v3/src/
+    bpf_source_file = os.path.join(settings.LOADERS_DIR, 'init_hike.bpf.c')
+
+    make_ebpf_hike_program(bpf_source_file)
+
+    bpf_output_file = os.path.join(
+        settings.BUILD_LOADERS_DIR, 'init_hike.bpf.o')
 
     pinned_maps = {}
-    bpftool_prog_load(bpf_source_file, settings.BPF_FS_PROGS_PATH,
+    bpftool_prog_load(bpf_output_file, settings.BPF_FS_PROGS_PATH + '/init',
                       pinned_maps, settings.BPF_FS_MAPS_SYSTEM_PATH, "xdp")
 
 
@@ -114,10 +119,10 @@ def make_ebpf_hike_program(file_path):
     """
         Compile the eBPF HIKe program specified in the file_path
     """
+    print(f"FILE PATH: {file_path}")
     # make -f path-to/hike_vm/external/Makefile -j24 prog PROG=prog.bpf.c HIKE_DIR=path-to/hike_vm/src/
-    makefile = f"{settings.HIKE_SOURCE_PATH}/external/Makefile"
-    hike_dir = f"{settings.HIKE_SOURCE_PATH}/src/"
-    cmd = f"make -f {makefile} prog PROG={file_path} HIKE_DIR={hike_dir}"
+    makefile = f"{settings.HIKE_PATH}/external/Makefile"
+    cmd = f"make -f {makefile} prog PROG={file_path} HIKE_DIR={settings.HIKE_SOURCE_PATH}"
     print(f"Exec: {cmd}")
     os.system(cmd)
     return True
@@ -169,6 +174,7 @@ def hikecc(path_eclat_output, map_name):
     hikecc_file = settings.HIKE_CC
     cmd = f"/bin/bash {hikecc_file} {settings.LOAD_DIR + path_eclat_output} " \
         + f"{map_name} {settings.LOAD_DIR + loader_file}"
+    print(f"Exec: {cmd}")
     os.system(cmd)
 
     return settings.LOAD_DIR + loader_file
@@ -176,6 +182,7 @@ def hikecc(path_eclat_output, map_name):
 
 def load_chain(loader_file):
     cmd = f"/bin/bash {loader_file}"
+    print(f"Exec: {cmd}")
     os.system(cmd)
     # unittest
     return True
@@ -205,6 +212,7 @@ def bpftool_prog_load(prog_obj, prog_path,
     for k, v in pinned_maps:
         cmd += f"map name {k} pinned {v} "
     cmd += f" pinmaps {map_dir}"
+    print(f"Exec: {cmd}")
     os.system(cmd)
     return True
 

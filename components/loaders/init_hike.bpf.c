@@ -1,5 +1,21 @@
 
 #include <stddef.h>
+
+/* HIKe Chain IDs and XDP eBPF/HIKe programs IDs */
+#define HIKE_DEBUG 0
+
+#include "hike_vm.h"
+
+// __section("hike_init") int __hike_init(struct xdp_md *ctx)
+// {
+
+// 	/* default policy allows any unrecognized packed... */
+// 	return XDP_PASS;
+// }
+
+// char LICENSE[] SEC("license") = "Dual BSD/GPL";
+
+#include <stddef.h>
 #include <linux/in.h>
 #include <linux/if_ether.h>
 #include <linux/if_packet.h>
@@ -13,11 +29,10 @@
 #include "hike_vm.h"
 #include "parse_helpers.h"
 
-#define MAP_IPV6_SIZE	64
+#define MAP_IPV6_SIZE 64
 bpf_map(map_ipv6, HASH, struct in6_addr, __u32, MAP_IPV6_SIZE);
 
-static __always_inline
-int __hvxdp_handle_ipv6(struct xdp_md *ctx, struct hdr_cursor *cur)
+static __always_inline int __hvxdp_handle_ipv6(struct xdp_md *ctx, struct hdr_cursor *cur)
 {
 	struct in6_addr *key;
 	struct ipv6hdr *ip6h;
@@ -52,8 +67,7 @@ int __hvxdp_handle_ipv6(struct xdp_md *ctx, struct hdr_cursor *cur)
 	return XDP_ABORTED;
 }
 
-__section("hike_classifier")
-int __hike_classifier(struct xdp_md *ctx)
+__section("hike_classifier") int __hike_classifier(struct xdp_md *ctx)
 {
 	struct pkt_info *info = hike_pcpu_shmem();
 	struct hdr_cursor *cur;
@@ -69,20 +83,21 @@ int __hike_classifier(struct xdp_md *ctx)
 
 	eth_type = parse_ethhdr(ctx, cur, &eth);
 	if (!eth || eth_type < 0)
-		return XDP_ABORTED;	
+		return XDP_ABORTED;
 
 	/* set the network header */
 	cur_reset_network_header(cur);
 
 	proto = bpf_htons(eth_type);
-	switch (proto) {
+	switch (proto)
+	{
 	case ETH_P_IPV6:
 		return __hvxdp_handle_ipv6(ctx, cur);
 	case ETH_P_IP:
 		/* fallthrough */
 	default:
 		DEBUG_PRINT("HIKe VM Classifier passthrough for proto=%x",
-			    bpf_htons(eth_type));
+					bpf_htons(eth_type));
 		break;
 	}
 
