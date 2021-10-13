@@ -3,7 +3,7 @@ LOADERS_DIR = f"{COMPONENTS_DIR}/loaders"
 PROGRAMS_DIR = f"{COMPONENTS_DIR}/programs"
 CHAINS_DIR = f"{COMPONENTS_DIR}/chains"
 
-BPF_FS_PATH = "/sys/fs/bpf/hike"
+BPF_FS_PATH = "/sys/fs/bpf/"
 TRACE_FS_PATH = "/sys/kernel/tracing"
 BPF_FS_PROGS_PATH = BPF_FS_PATH + "progs"
 BPF_FS_MAPS_PATH = BPF_FS_PATH + "maps"

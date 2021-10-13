@@ -35,7 +35,8 @@ def hike_system_init():
         raise OSError(f"Failing in setting user limit to unlimited")
 
     # load a "dummy" classifier to load the maps
-    # TODO no such file
+
+    #bpf_source_file = os.path.join(settings.LOADERS_DIR, '/init/hike_init.o')
     bpf_source_file = os.path.join(settings.LOADERS_DIR, '/init/hike_init.o')
 
     pinned_maps = {}
@@ -64,6 +65,7 @@ def mount_bpf(mount_point):
     # (where maps are available), you need to use nsenter with -m and -t
     # that points to the pid of the parent process (launching bash).
     cmd = f"grep -qs '{mount_point} ' /proc/mounts || mount -t bpf bpf {mount_point}"
+    print(f"Exec: {cmd}")
     ret = os.system(cmd)
     if ret:
         raise OSError(f"Can not mount BPF fs on {mount_point}")
@@ -74,8 +76,8 @@ def mount_tracefs(mount_point):
     mount -t tracefs nodev /sys/kernel/tracing
     """
     cmd = f"grep -qs '{mount_point} ' /proc/mounts || mount -t tracefs nodev {mount_point}"
+    print(f"Exec: {cmd}")
     ret = os.system(cmd)
-    print(ret)
     if ret:
         raise OSError(f"Can not mount trace fs on {mount_point}")
 
@@ -98,6 +100,7 @@ def make_hike_chain(makefile, source, hike_dir):
 
     #cmd = f"make -f {makefile} chain CHAIN={source} HIKE_DIR={hike_dir} BUILD={build_dir}"
     cmd = f"make -f {makefile} chain CHAIN={source} HIKE_DIR={hike_dir}"
+    print(f"Exec: {cmd}")
     os.system(cmd)
 
     # reset directory
@@ -115,6 +118,7 @@ def make_ebpf_hike_program(file_path):
     makefile = f"{settings.HIKE_SOURCE_PATH}/external/Makefile"
     hike_dir = f"{settings.HIKE_SOURCE_PATH}/src/"
     cmd = f"make -f {makefile} prog PROG={file_path} HIKE_DIR={hike_dir}"
+    print(f"Exec: {cmd}")
     os.system(cmd)
     return True
 
