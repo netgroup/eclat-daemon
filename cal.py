@@ -198,15 +198,14 @@ def load_chain(loader_file):
     return True
 
 
-def bpftool_prog_load(program_object, program_fs_path,
-                      pinned_maps, program_maps_fs_path, type="xdp"):
+def bpftool_prog_load(package, program_name,
+                      pinned_maps, attach_type="xdp"):
     """Use BPF tool to load one section
 
-    :param program_object: path of the program file object
-    :param program_fs_path: program path dir
-    :param type: interface name, defaults to "xdp"
-    :param pinned_maps: dictionary of map name and sys fs dir
-    :param program_maps_fs_path: directory of the maps
+    :param package: package name
+    :param program_name: name of the program
+    :param pinned_maps: dictionary of map (name and sys/fs dir) other than the SYSTEM_MAPS_NAMES
+    :param attach_type: interface name, defaults to "xdp"
     """
     # bpftool prog loadall net.o /sys/fs/bpf/progs/net type xdp	\
     #             map name gen_jmp_table					\
@@ -218,13 +217,21 @@ def bpftool_prog_load(program_object, program_fs_path,
     #             map name hike_pcpu_shmem_map				\
     #                     pinned /sys/fs/bpf/maps/init/hike_pcpu_shmem_map \
     #             pinmaps /sys/fs/bpf/maps/net
-    mkdir(program_fs_path)
+
+    program_object = f"{settings.BUILD_PROGRAMS_DIR}/{package}/{program_name}.bpf.o"
+    program_fs_path = f"{settings.BPF_FS_PROGS_PATH}/{package}/{program_name}"
+    program_maps_fs_path = f"{settings.BPF_FS_MAPS_PATH}/{package}"
+
+    mkdir(f"{settings.BPF_FS_PROGS_PATH}/{package}")
     mkdir(program_maps_fs_path)
-    # TODO cambiare program_fs_path con package e/o nome programma
-    cmd = f"bpftool prog load {program_object} {program_fs_path} type {type} "
+    if os.path.exists(program_fs_path):
+        print(f"{program_name} is already loaded")
+        return
+
+    cmd = f"bpftool prog load {program_object} {program_fs_path} type {attach_type} "
     for k, v in pinned_maps:
         cmd += f"map name {k} pinned {v} "
-    for system_map_name in system_maps_names:
+    for system_map_name in settings.SYSTEM_MAPS_NAMES:
         cmd += f"map name {system_map_name} pinned {settings.BPF_FS_MAPS_SYSTEM_PATH}/{system_map_name} "
     cmd += f" pinmaps {program_maps_fs_path}"
     print(f"Exec: {cmd}")
@@ -259,43 +266,79 @@ def bpftool_net_attach(attach_type, dev_name, prog=None, flag_overwrite=None):
 
     os.system(command)
 
-
 # bpftool map update MAP [key DATA] [value VALUE] [UPDATE_FLAGS]
 # MAP := {id MAP_ID | pinned FILE | name MAP_NAME}
 # DATA := {[hex] BYTES}
 # VALUE := {DATA | MAP | PROG}
 # UPDATE_FLAGS := {any | exist | noexist}
-def bpftool_map_update(map_map, key_data=None, value=None, update_flags=None):
-    command = ""
-    if map_map.split(" ")[0] in ["id", "pinned", "tag"]:
-        command = "bpftool map update" + map_map + " "
+# bpftool map update pinned /sys/fs/bpf/maps/init/gen_jmp_table 	\
+#		key	hex 0b 00 00 00					\
+#		value	pinned /sys/fs/bpf/progs/net/hvxdp_allow_any
+
+
+# bpftool map update id <id> key <key> value <new_value>
+# bpftool map update pinned <path> key <key> value <new_value>
+def bpftool_map_update(map_reference, key, value, map_reference_type="pinned"):
+    """Update a eBPF map
+
+    :param map_reference: ID of the map or sys/fs path if reference refers to a pinned map
+    :param key: key to update (passed as list of hex)
+    :param value: value to be written
+    :param map_reference_type: id or pinned, defaults to "pinned"
+    """
+    if map_reference_type == "pinned":
+        key_string = " ".join(key)
+        cmd = f"bpftool map update pinned {map_reference} key hex {key_string} value pinned {value}"
     else:
-        # Placeholder
-        print("ERRORE")
+        raise Exception("bpftool_map_update: Instruction not implemented.")
 
-    if key_data != None:
-        command += "key"
-        if key_data.split(" ")[0] == "hex":
-            try:
-                int(key_data.split(" ")[1], 16)
-                # Placeholder
-                print('That is a valid hex value.')
-            except:
-                # Placeholder
-                print('That is an invalid hex value.')
-            command += "hex" + " "
-        command += key_data + " "
+    print(f"Exec: {cmd}")
+    ret = os.system(cmd)
 
-    if value != None:
-        command += "value" + value + " "
-
-    if update_flags in ["any", "exist", "noexist"]:
-        command += update_flags + " "
-    else:
-        # Placeholder
-        print("ERRORE")
-
-    os.system(command)
+    if ret != 0:
+        raise Exception(f"Map update {map_reference} failed.")
 
     # unittest
     return True
+
+
+# # bpftool map update MAP [key DATA] [value VALUE] [UPDATE_FLAGS]
+# # MAP := {id MAP_ID | pinned FILE | name MAP_NAME}
+# # DATA := {[hex] BYTES}
+# # VALUE := {DATA | MAP | PROG}
+# # UPDATE_FLAGS := {any | exist | noexist}
+# def bpftool_map_update(map_map, key_data=None, value=None, update_flags=None):
+#     cmd = ""
+#     if map_map.split(" ")[0] in ["id", "pinned", "tag"]:
+#         cmd = "bpftool map update" + map_map + " "
+#     else:
+#         # Placeholder
+#         raise Exception("bpftool_map_update: Instruction not implemented.")
+
+#     if key_data != None:
+#         cmd += "key"
+#         if key_data.split(" ")[0] == "hex":
+#             try:
+#                 int(key_data.split(" ")[1], 16)
+#                 # Placeholder
+#                 print('That is a valid hex value.')
+#             except:
+#                 # Placeholder
+#                 print('That is an invalid hex value.')
+#             cmd += "hex" + " "
+#         cmd += key_data + " "
+
+#     if value != None:
+#         cmd += "value" + value + " "
+
+#     if update_flags in ["any", "exist", "noexist"]:
+#         cmd += update_flags + " "
+#     else:
+#         # Placeholder
+#         print("ERRORE")
+
+#     print(f"Exec: {cmd}")
+#     ret = os.system(cmd)
+
+#     # unittest
+#     return True
