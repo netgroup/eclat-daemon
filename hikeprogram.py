@@ -9,7 +9,14 @@ class HikeProgram:
     def __init__(self, package, program_name):
         self.program_name = program_name
         self.package = package
-        self.is_compiled = False
+        ###
+        self.src_file_path = f"{settings.PROGRAMS_DIR}/{self.package}/{program_name}.bpf.c"
+        self.obj_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{program_name}.bpf.o"
+        self.json_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{program_name}.bpf.json"
+        self.is_compiled = self._is_compiled()
+
+    def _is_compiled(self):
+        return os.path.exists(self.obj_file_path)
 
     def pull(self):
         """
@@ -31,19 +38,29 @@ class HikeProgram:
             # this should create the /package_name/ folder
             tar.extractall()
             tar.close()
+            #file_name = f"{self.package}.tar.gz"
 
     def compile(self):
+        if not os.path.exists(self.src_file_path):
+            raise Exception(
+                f"Compilation failed. File {self.src_file_path} does not exist.")
         if not self.is_compiled:
-            file_name = f"{self.package}.tar.gz"
-            file_path = f"{settings.PROGRAMS_DIR}/{self.package}/{file_name}.ebpf.c"
-            cal.make_ebpf_hike_program(file_path)
+            cal.make_ebpf_hike_program(self.src_file_path)
             self.is_compiled = True
+        else:
+            print(f"Hike program {self.program_name} is already compiled")
 
     def clean(self):
-        pass
+        os.remove(self.obj_file_path)
+        os.remove(self.json_file_path)
+        self.is_compiled = False
 
     def load(self):
-        pass
+        pinned_maps = {}
+        program_path = f"{settings.BPF_FS_PROGS_PATH}/{self.package}/{self.program_name}"
+        map_dir = f"{settings.BPF_FS_MAPS_PATH}/{self.package}"
+        cal.bpftool_prog_load(program_object=self.obj_file_path, program_fs_path=program_path,
+                              pinned_maps=pinned_maps, program_maps_fs_path=map_dir)
 
     def unload(self):
         pass

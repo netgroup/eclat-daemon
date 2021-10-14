@@ -10,6 +10,9 @@ import os
 # - https://manpages.ubuntu.com/manpages/focal/man8/bpftool-prog.8.html
 # - https://man.archlinux.org/man/bpftool.8.en
 
+system_maps_names = ["gen_jmp_table", "hike_chain_map",
+                     "pcpu_hike_chain_data_map", "hike_pcpu_shmem_map"]
+
 
 def ebpf_system_init():
     """
@@ -22,6 +25,10 @@ def ebpf_system_init():
 
     mkdir(settings.BPF_FS_PROGS_PATH)
     mkdir(settings.BPF_FS_MAPS_PATH)
+
+    mkdir(settings.BUILD_LOADERS_DIR)
+    mkdir(settings.BUILD_PROGRAMS_DIR)
+    mkdir(settings.BUILD_CHAINS_DIR)
 
 
 def hike_system_init():
@@ -37,16 +44,17 @@ def hike_system_init():
     # load a "dummy" classifier to load the maps
 
     # make -f hike_v3/external/Makefile -j24 prog PROG=components/loaders/init_hike.bpf.c HIKE_DIR=hike_v3/src/
-    bpf_source_file = os.path.join(settings.LOADERS_DIR, 'init_hike.bpf.c')
+    if not os.path.exists("/sys/fs/bpf/progs/init"):
+        bpf_source_file = os.path.join(settings.LOADERS_DIR, 'init_hike.bpf.c')
 
-    make_ebpf_hike_program(bpf_source_file)
+        make_ebpf_hike_program(bpf_source_file)
 
-    bpf_output_file = os.path.join(
-        settings.BUILD_LOADERS_DIR, 'init_hike.bpf.o')
+        bpf_output_file = os.path.join(
+            settings.BUILD_LOADERS_DIR, 'init_hike.bpf.o')
 
-    pinned_maps = {}
-    bpftool_prog_load(bpf_output_file, settings.BPF_FS_PROGS_PATH + '/init',
-                      pinned_maps, settings.BPF_FS_MAPS_SYSTEM_PATH, "xdp")
+        pinned_maps = {}
+        bpftool_prog_load(bpf_output_file, settings.BPF_FS_PROGS_PATH + '/init',
+                          pinned_maps, settings.BPF_FS_MAPS_SYSTEM_PATH, "xdp")
 
 
 def mkdir(path):
@@ -124,8 +132,10 @@ def make_ebpf_hike_program(file_path):
     makefile = f"{settings.HIKE_PATH}/external/Makefile"
     cmd = f"make -f {makefile} prog PROG={file_path} HIKE_DIR={settings.HIKE_SOURCE_PATH}"
     print(f"Exec: {cmd}")
-    os.system(cmd)
-    return True
+    ret = os.system(cmd)
+    if ret != 0:
+        raise Exception(
+            f"Hike Program compilation failed\nOffending command is {cmd}")
 
 
 # def make_ebpf_hike_program(makefile, source, hike_dir):
@@ -188,15 +198,15 @@ def load_chain(loader_file):
     return True
 
 
-def bpftool_prog_load(prog_obj, prog_path,
-                      pinned_maps, map_dir, type="xdp"):
+def bpftool_prog_load(program_object, program_fs_path,
+                      pinned_maps, program_maps_fs_path, type="xdp"):
     """Use BPF tool to load one section
 
-    :param prog_obj: path of the program file object
-    :param prog_path: program path dir
+    :param program_object: path of the program file object
+    :param program_fs_path: program path dir
     :param type: interface name, defaults to "xdp"
     :param pinned_maps: dictionary of map name and sys fs dir
-    :param map_dir: directory of the maps
+    :param program_maps_fs_path: directory of the maps
     """
     # bpftool prog loadall net.o /sys/fs/bpf/progs/net type xdp	\
     #             map name gen_jmp_table					\
@@ -208,13 +218,19 @@ def bpftool_prog_load(prog_obj, prog_path,
     #             map name hike_pcpu_shmem_map				\
     #                     pinned /sys/fs/bpf/maps/init/hike_pcpu_shmem_map \
     #             pinmaps /sys/fs/bpf/maps/net
-    cmd = f"bpftool prog load {prog_obj} {prog_path} type {type} "
+    mkdir(program_fs_path)
+    mkdir(program_maps_fs_path)
+    # TODO cambiare program_fs_path con package e/o nome programma
+    cmd = f"bpftool prog load {program_object} {program_fs_path} type {type} "
     for k, v in pinned_maps:
         cmd += f"map name {k} pinned {v} "
-    cmd += f" pinmaps {map_dir}"
+    for system_map_name in system_maps_names:
+        cmd += f"map name {system_map_name} pinned {settings.BPF_FS_MAPS_SYSTEM_PATH}/{system_map_name} "
+    cmd += f" pinmaps {program_maps_fs_path}"
     print(f"Exec: {cmd}")
-    os.system(cmd)
-    return True
+    ret = os.system(cmd)
+    if ret != 0:
+        raise Exception(f"Program {program_object} load failed.")
 
 
 # bpftool net attach ATTACH_TYPE PROG dev NAME [ overwrite ]
