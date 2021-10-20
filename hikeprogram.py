@@ -4,19 +4,17 @@ import cal
 
 
 class HikeProgram:
-    counter = 11
 
-    def __init__(self, package, program_name):
-        self.program_name = program_name
+    def __init__(self, name, package):
+        self.name = name
         self.package = package
         ###
-        self.src_file_path = f"{settings.PROGRAMS_DIR}/{self.package}/{program_name}.bpf.c"
-        self.obj_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{program_name}.bpf.o"
-        self.json_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{program_name}.bpf.json"
-        self.program_path = f"{settings.BPF_FS_PROGS_PATH}/{self.package}/{self.program_name}"
+        self.src_file_path = f"{settings.PROGRAMS_DIR}/{self.package}/{name}.bpf.c"
+        self.obj_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{name}.bpf.o"
+        self.json_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{name}.bpf.json"
+        self.program_path = f"{settings.BPF_FS_PROGS_PATH}/{self.package}/{self.name}"
         self.is_compiled = self._is_compiled()
-        self.program_id = self.counter
-        HikeProgram.counter += 1
+        self.program_id = None
 
     def _is_compiled(self):
         return os.path.exists(self.obj_file_path)
@@ -51,25 +49,31 @@ class HikeProgram:
             cal.make_ebpf_hike_program(self.src_file_path)
             self.is_compiled = True
         else:
-            print(f"Hike program {self.program_name} is already compiled")
+            print(f"Hike program {self.name} is already compiled")
 
     def clean(self):
-        os.remove(self.obj_file_path)
-        os.remove(self.json_file_path)
+        if os.path.exists(self.obj_file_path):
+            os.remove(self.obj_file_path)
+        if os.path.exists(self.json_file_path):
+            os.remove(self.json_file_path)
         self.is_compiled = False
 
     def load(self):
+        if not self.is_compiled:
+            raise Exception("Can not load a uncompiled program")
         pinned_maps = {}
 
         map_dir = f"{settings.BPF_FS_MAPS_PATH}/{self.package}"
-        cal.bpftool_prog_load(package=self.package, program_name=self.program_name,
+        cal.bpftool_prog_load(name=self.name, package=self.package,
                               pinned_maps=pinned_maps)
 
     def unload(self):
         raise NotImplemented("Unload not implemented")
 
-    def register(self):
-        key_values = ['{0:02x}'.format(self.program_id), '00', '00', '00']
+    def register(self, program_id):
+        if not self.is_compiled:
+            raise Exception("Can not register a uncompiled program")
+        key_values = ['{0:02x}'.format(program_id), '00', '00', '00']
         cal.bpftool_map_update(
             settings.PROGRAMS_REGISTER_MAP, key_values, self.program_path)
 

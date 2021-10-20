@@ -10,9 +10,6 @@ import os
 # - https://manpages.ubuntu.com/manpages/focal/man8/bpftool-prog.8.html
 # - https://man.archlinux.org/man/bpftool.8.en
 
-system_maps_names = ["gen_jmp_table", "hike_chain_map",
-                     "pcpu_hike_chain_data_map", "hike_pcpu_shmem_map"]
-
 
 def ebpf_system_init():
     """
@@ -44,17 +41,18 @@ def hike_system_init():
     # load a "dummy" classifier to load the maps
 
     # make -f hike_v3/external/Makefile -j24 prog PROG=components/loaders/init_hike.bpf.c HIKE_DIR=hike_v3/src/
-    if not os.path.exists("/sys/fs/bpf/progs/init"):
+    if not os.path.exists("/sys/fs/bpf/progs/system"):
         bpf_source_file = os.path.join(settings.LOADERS_DIR, 'init_hike.bpf.c')
 
         make_ebpf_hike_program(bpf_source_file)
 
-        bpf_output_file = os.path.join(
-            settings.BUILD_LOADERS_DIR, 'init_hike.bpf.o')
+        # bpf_output_file = os.path.join(
+        #    settings.BUILD_PROGRAMS_DIR, 'init_hike.bpf.o')
 
         pinned_maps = {}
-        bpftool_prog_load(bpf_output_file, settings.BPF_FS_PROGS_PATH + '/init',
-                          pinned_maps, settings.BPF_FS_MAPS_SYSTEM_PATH, "xdp")
+        bpftool_prog_load("init_hike", "system", pinned_maps,
+                          load_system_maps=False)
+        print("Init program loaded")
 
 
 def mkdir(path):
@@ -95,40 +93,25 @@ def mount_tracefs(mount_point):
         raise OSError(f"Can not mount trace fs on {mount_point}")
 
 
-def make_hike_chain(makefile, source, hike_dir):
+def make_hike_chain(file_path):
     """
     Run makefile to create an HIKe chain.
     $ make -f path-to/hike_vm/external/Makefile -j24 chain CHAIN=chain.hike.c HIKE_DIR=path-to/hike_vm/src/
     """
-    build_dir = settings.BUILD_DIR
-    # We just need the name of the object file
-    source = source.split("/")[-1]
-
-    # BUILD indicates the path where the compiled file is put and NOT the path of the input file
-    # In external MakeFile, $(shell pwd) is executed to get the path:
-    # export OUTPUT := $(abspath $(shell pwd)/$(BUILD))
-    # do we need to change folder ???
-    currentDirectory = os.getcwd()
-    os.chdir(build_dir)
-
-    #cmd = f"make -f {makefile} chain CHAIN={source} HIKE_DIR={hike_dir} BUILD={build_dir}"
-    cmd = f"make -f {makefile} chain CHAIN={source} HIKE_DIR={hike_dir}"
+    makefile = f"{settings.HIKE_PATH}/external/Makefile"
+    cmd = f"make -f {makefile} chain CHAIN={file_path} HIKE_DIR={settings.HIKE_SOURCE_PATH}"
     print(f"Exec: {cmd}")
-    os.system(cmd)
-
-    # reset directory
-    os.chdir(currentDirectory)
-
-    # unittest
-    return True
+    ret = os.system(cmd)
+    if ret != 0:
+        raise Exception(
+            f"Hike Chain compilation failed\nOffending command is {cmd}")
 
 
 def make_ebpf_hike_program(file_path):
     """
         Compile the eBPF HIKe program specified in the file_path
+        $ make -f path-to/hike_vm/external/Makefile -j24 prog PROG=prog.bpf.c HIKE_DIR=path-to/hike_vm/src/
     """
-    print(f"FILE PATH: {file_path}")
-    # make -f path-to/hike_vm/external/Makefile -j24 prog PROG=prog.bpf.c HIKE_DIR=path-to/hike_vm/src/
     makefile = f"{settings.HIKE_PATH}/external/Makefile"
     cmd = f"make -f {makefile} prog PROG={file_path} HIKE_DIR={settings.HIKE_SOURCE_PATH}"
     print(f"Exec: {cmd}")
@@ -164,7 +147,7 @@ def make_ebpf_hike_program(file_path):
 #     return True
 
 
-def hikecc(path_eclat_output, map_name):
+def hikecc(name, package):
     """
     # The HIKECC takes as 1) the HIKe Chains object file; 2) the eBPF map
     # that contains all the HIKe Chains; 3) the path of the load script
@@ -176,34 +159,36 @@ def hikecc(path_eclat_output, map_name):
     # Load HIKe Chains calling the loader script we just built :-o
     /bin/bash data/binaries/minimal_chain.hike.load.sh
     """
-    # We just need the name of the object file
-    map_name = settings.BPF_FS_MAPS_PATH + "/init/" + map_name
-    path_eclat_output = path_eclat_output.split("/")[-1]
+    obj_file_path = f"{settings.BUILD_CHAINS_DIR}/{package}/{name}.hike.o"
+    map_name = f"{settings.BPF_FS_MAPS_SYSTEM_PATH}/hike_chain_map"
+    loader_file_path = f"{settings.BUILD_CHAINS_DIR}/{package}/{name}.hike.load.sh"
+    HIKE_CC = f"{settings.HIKE_PATH}/hike-tools/hikecc.sh"
 
-    loader_file = path_eclat_output[:-1] + "load.sh"
-    hikecc_file = settings.HIKE_CC
-    cmd = f"/bin/bash {hikecc_file} {settings.LOAD_DIR + path_eclat_output} " \
-        + f"{map_name} {settings.LOAD_DIR + loader_file}"
+    cmd = f"/bin/bash {HIKE_CC} {obj_file_path} {map_name} {loader_file_path}"
     print(f"Exec: {cmd}")
-    os.system(cmd)
-
-    return settings.LOAD_DIR + loader_file
+    ret = os.system(cmd)
+    if ret != 0:
+        raise Exception(
+            f"HikeCC Chain loader creation failed\nOffending command is {cmd}")
+    load_chain(loader_file_path)
 
 
 def load_chain(loader_file):
+
     cmd = f"/bin/bash {loader_file}"
     print(f"Exec: {cmd}")
-    os.system(cmd)
-    # unittest
-    return True
+    ret = os.system(cmd)
+    if ret != 0:
+        raise Exception(
+            f"HikeCC Chain loader execution failed\nOffending command is {cmd}")
 
 
-def bpftool_prog_load(package, program_name,
-                      pinned_maps, attach_type="xdp"):
+def bpftool_prog_load(name, package,
+                      pinned_maps, attach_type="xdp", load_system_maps=True):
     """Use BPF tool to load one section
 
+    :param name: name of the program
     :param package: package name
-    :param program_name: name of the program
     :param pinned_maps: dictionary of map (name and sys/fs dir) other than the SYSTEM_MAPS_NAMES
     :param attach_type: interface name, defaults to "xdp"
     """
@@ -218,21 +203,22 @@ def bpftool_prog_load(package, program_name,
     #                     pinned /sys/fs/bpf/maps/init/hike_pcpu_shmem_map \
     #             pinmaps /sys/fs/bpf/maps/net
 
-    program_object = f"{settings.BUILD_PROGRAMS_DIR}/{package}/{program_name}.bpf.o"
-    program_fs_path = f"{settings.BPF_FS_PROGS_PATH}/{package}/{program_name}"
+    program_object = f"{settings.BUILD_PROGRAMS_DIR}/{package}/{name}.bpf.o"
+    program_fs_path = f"{settings.BPF_FS_PROGS_PATH}/{package}/{name}"
     program_maps_fs_path = f"{settings.BPF_FS_MAPS_PATH}/{package}"
 
     mkdir(f"{settings.BPF_FS_PROGS_PATH}/{package}")
     mkdir(program_maps_fs_path)
     if os.path.exists(program_fs_path):
-        print(f"{program_name} is already loaded")
+        print(f"{name} is already loaded")
         return
 
     cmd = f"bpftool prog load {program_object} {program_fs_path} type {attach_type} "
     for k, v in pinned_maps:
         cmd += f"map name {k} pinned {v} "
-    for system_map_name in settings.SYSTEM_MAPS_NAMES:
-        cmd += f"map name {system_map_name} pinned {settings.BPF_FS_MAPS_SYSTEM_PATH}/{system_map_name} "
+    if load_system_maps:
+        for system_map_name in settings.SYSTEM_MAPS_NAMES:
+            cmd += f"map name {system_map_name} pinned {settings.BPF_FS_MAPS_SYSTEM_PATH}/{system_map_name} "
     cmd += f" pinmaps {program_maps_fs_path}"
     print(f"Exec: {cmd}")
     ret = os.system(cmd)

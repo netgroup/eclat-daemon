@@ -8,6 +8,7 @@ from parser.lexer import EclatLexer
 class EclatController:
     hike_programs = {}
     hike_chain = {}
+    registered_ids = []  # {type, package, name, id}
 
     def __init__(self):
         ebpf_system_init()
@@ -20,6 +21,26 @@ class EclatController:
     #         self.hike_programs['test'] = HikeProgram(PROG_NAME, PROG_PKG)
     #     p = self.hike_programs['test']
     #     p.pull()
+    def assign_id(self, element):
+        # find an available id
+        MIN_ID = 0
+        MAX_ID = 255
+        taken_id = [el['id'] for el in self.registered_ids]
+        id = max(taken_id) + 1
+        if id > MAX_ID:
+            raise Exception("ID overflow")
+
+        if element is HikeChain:
+            element_type = 'chain'
+        elif element is HikeProgram:
+            element_type = 'program'
+
+        self.registered_ids.append({
+            "type": element_type,
+            "name": element.name,
+            "package": element.package,
+            "id": id})
+        return id
 
     def load_configuration(self, eclat_script):
         # Parse the config
@@ -29,22 +50,33 @@ class EclatController:
         print(parser.imports)
         print(parser.chains)
 
-        # load hikeprograms
-        for package, functions in parser.imports:
-            for function in functions:
-                if not (package, function) in self.hike_programs.keys():
-                    hp = HikeProgram(package, function)
+        # load hike programs
+        for names, package in parser.imports:
+            for name in names:
+                if not (name, package) in self.hike_programs.keys():
+                    hp = HikeProgram(name, package)
                     hp.pull()
                     hp.compile()
                     hp.load()
-                    hp.register()
-                    self.hike_programs[(package, function)] = hp
+                    p_id = self.assign_id(hp)
+                    hp.register(p_id)
+                    self.hike_programs[(name, package)] = hp
 
-        programs_map = [f + (hp.program_id,)
-                        for f, hp in self.hike_programs.items()]
+        # pre-register chain ids
+        chains = []
         for ast_chain in parser.chains:
-            self.hike_chain[ast_chain.name] = HikeChain(
-                name=ast_chain.name, code=ast_chain.to_c(), programs_map=programs_map, globals=parser.globals)
+
+            hc = HikeChain(
+                name=ast_chain.name, code=ast_chain.to_c(), globals=parser.globals)
+            c_id = self.assign_id(hc)
+            chains.append((hc, c_id))
+        for chain, chain_id in chains:
+            hc.link(self.registered_ids)
+            hc.compile()
+            hc.load()
+            self.hike_chain[ast_chain.name] = hc
+        # update program_id with the id of the new created chain
+        # alla chain
 
         # TODO load chainloader
 
