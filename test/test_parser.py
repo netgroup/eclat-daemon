@@ -222,6 +222,9 @@ def mychain():
         parser = EclatParser()
         prog = """
 from hike import Packet
+from net import drop, allow
+from test import funzione1, fun_funzion1
+
 def mychain0():
     eth_type = Packet.readU16(12)
     if eth_type == 0x86dd :
@@ -240,6 +243,22 @@ def mychain0():
 
     allow(eth_type)
     return
+        """
+        tokens = lexer.tokenize(prog)
+        for tok in tokens:
+            print(tok)
+        tokens = lexer.tokenize(prog)
+        p = parser.parse(tokens)
+        print("p=", p)
+        print(parser.globals)
+
+    def test_arglist(self):
+        lexer = EclatLexer()
+        parser = EclatParser()
+        prog = """
+from hike import Packet
+def mychain0(u8 : a, u8 : b):
+    pass
         """
         tokens = lexer.tokenize(prog)
         for tok in tokens:

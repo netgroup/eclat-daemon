@@ -5,6 +5,7 @@
 #include "hike_vm.h"
 #include "parse_helpers.h"
 
+
 //__sec_hike_chain_
 HIKE_CHAIN_1(HIKE_CHAIN_TEST_MINIMAL_CHAIN)
 {

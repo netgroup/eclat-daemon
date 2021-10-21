@@ -42,6 +42,7 @@ class EclatParser(Parser):
         # stack for the parser
         self.statement_list = []
         self.argument_list = []
+        self.expression_list = []
 
         # function mapper
         self.mapper = {}
@@ -91,7 +92,7 @@ class EclatParser(Parser):
         c = Chain(p.NAME, p.arglist, p.block)
         print(f"Printing {p.NAME} code:\n")
         print("------------------------------")
-        print(c.to_c())
+        print(c.to_c('testing_package'))
         print("------------------------------")
         if p.NAME in self.chains.keys():
             raise Exception(f"Chain {p.NAME} has already been defined")
@@ -153,17 +154,19 @@ class EclatParser(Parser):
             return Return(Expression(0))
 
     # expressions
-    @_('NAME LPAR arglist RPAR', 'NAME DOT NAME LPAR arglist RPAR')
+    @_('NAME LPAR exprlist RPAR', 'NAME DOT NAME LPAR exprlist RPAR')
     def expression(self, p):
         # function call
-        argument_list = self.argument_list[:]
-        self.argument_list = []
+        #argument_list = self.argument_list[:]
+        #self.argument_list = []
+        expression_list = self.expression_list[:]
+        self.expression_list = []
         if hasattr(p, 'NAME1'):
             # method call
-            return FunctionCall(p.NAME1, argument_list, globals=self.globals, object=p.NAME0, mapper=self.mapper, )
+            return FunctionCall(p.NAME1, expression_list, globals=self.globals, object=p.NAME0, mapper=self.mapper, )
         else:
             # function call
-            return FunctionCall(p.NAME, argument_list, globals=self.globals, mapper=self.mapper)
+            return FunctionCall(p.NAME, expression_list, globals=self.globals, imports=self.imports, mapper=self.mapper)
 
     @_('expression PLUS expression',
         'expression MINUS expression',
@@ -193,9 +196,9 @@ class EclatParser(Parser):
         exp.set_brackets()
         return exp
 
-    @ _('const', 'NAME')
-    def argument(self, p):
-        self.argument_list.append(Argument(p[0]))
+    # @ _('const', 'NAME')
+    # def argument(self, p):
+    #    self.argument_list.append(Argument(p[0]))
 
     @ _('argument COMMA arglist', 'argument', '')
     def arglist(self, p):
@@ -208,6 +211,10 @@ class EclatParser(Parser):
     @ _('const', 'NAME')
     def expression(self, p):
         return Expression(p[0])
+
+    @ _('expression COMMA exprlist', 'expression', '')
+    def exprlist(self, p):
+        return self.expression_list
 
     @ _('NAME ASSIGN expression')
     def statement(self, p):
