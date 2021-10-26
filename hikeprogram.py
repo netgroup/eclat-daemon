@@ -4,6 +4,10 @@ import cal
 
 
 class HikeProgram:
+    """
+    An HIKe Program is a conventional eBPF program which can be re-used in multiple composition schemes.
+    An HIKe program should return the control to the HIKe VM.
+    """
 
     def __init__(self, name, package):
         self.name = name
@@ -61,11 +65,13 @@ class HikeProgram:
     def load(self):
         if not self.is_compiled:
             raise Exception("Can not load a uncompiled program")
+        # Multiple programs may use the same maps. Not implemented now.
         pinned_maps = {}
 
         map_dir = f"{settings.BPF_FS_MAPS_PATH}/{self.package}"
         cal.bpftool_prog_load(name=self.name, package=self.package,
                               pinned_maps=pinned_maps)
+        # TODO set maps name
 
     def unload(self):
         raise NotImplemented("Unload not implemented")
@@ -81,6 +87,14 @@ class HikeProgram:
         raise NotImplemented("Unregister not implemented")
 
     def write_map(self, map_name, key, data):
+        # bpftool map update pinned /sys/fs/bpf/maps/init/map_ipv6		\
+        #    key hex		fc 02 00 00 00 00 00 00 00 00 00 00 00 00 00 02 \
+        #    value hex 	4f 00 00 00
+        # TODO
+        full_map_name = f"{settings.BPF_FS_MAPS_PATH}/{self.package}/{self.name}/{map_name}"
+        key_hex = "TODO"
+        data_hex = "TODO"
+        cal.bpftool_map_update(full_map_name, key_hex, data_hex)
         pass
 
     def read_map(self, map_name, key):

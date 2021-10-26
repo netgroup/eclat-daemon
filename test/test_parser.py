@@ -268,9 +268,66 @@ def mychain0(u8 : a, u8 : b):
         print("p=", p)
         print(parser.globals)
 
+    def test_loader(self):
+        lexer = EclatLexer()
+        parser = EclatParser()
+        prog = """
+from programs.hike import Packet, Loader
+from programs.net import drop, allow
+from programs.test import funzione1, fun_funzion1
+from loaders.pippo import ipv6_classifier
+
+ipv6_classifier.attach('enp6s0f0', 'xdp')
+
+def mychain0():
+    eth_type = Packet.readU16(12)
+    if eth_type == 0x86dd :
+        ttl = Packet.readU8(21)
+        if ttl == 64:
+            Packet.writeU8(17,21) 
+            funzione1(pippo)
+            fun_funzion1(par1, pippo)
+        
+    
+    if eth_type == 0x800 :
+        drop(eth_type)
+        pass
+        return
+        
+
+    allow(eth_type)
+    return
+        """
+        tokens = lexer.tokenize(prog)
+        for tok in tokens:
+            print(tok)
+        tokens = lexer.tokenize(prog)
+        p = parser.parse(tokens)
+        print("p=", p)
+        print(parser.globals)
+
     #     def test_indentation(self):
     #         # indentation and multiple newlines OK
     #         # argumentlist and expressionlist
     #         # globals variable OK
     #         # constants -> CONST_NAME = "Name"
         # https://clang.llvm.org/docs/pip.html
+
+# import
+#from programs.net import drop, allow
+#from classifiers.basic import ipv6_classifier
+# configure classifier
+
+
+# ipv6_classifier.attach('enp6s0f0', 'xdp') #<------------------
+
+# set/get map
+# ipv6_classifier.mapname[key] = value
+# ipv6_classifier.map[mapname][key] = value
+# ipv6_classifier.setmap(mapname, key, value)
+
+# ipv6_classifier[mapname] = {'key': value} #write #<------------------
+# ipv6_classifier[mapname][key] #read
+
+# ipv6_classifier[mapname].set(key, value) #write
+# ipv6_classifier[mapname].get(key) #read

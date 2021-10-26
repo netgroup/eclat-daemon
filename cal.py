@@ -42,7 +42,8 @@ def hike_system_init():
 
     # make -f hike_v3/external/Makefile -j24 prog PROG=components/loaders/init_hike.bpf.c HIKE_DIR=hike_v3/src/
     if not os.path.exists("/sys/fs/bpf/progs/system"):
-        bpf_source_file = os.path.join(settings.LOADERS_DIR, 'init_hike.bpf.c')
+        bpf_source_file = os.path.join(
+            settings.PROGRAMS_DIR, 'system/init_hike.bpf.c')  # TODO
 
         make_ebpf_hike_program(bpf_source_file)
 
@@ -230,27 +231,15 @@ def bpftool_prog_load(name, package,
 # bpftool net detach ATTACH_TYPE dev NAME
 # PROG := {id PROG_ID | pinned FILE | tag PROG_TAG}
 # ATTACH_TYPE := {xdp | xdpgeneric | xdpdrv | xdpoffload}
-def bpftool_net_attach(attach_type, dev_name, prog=None, flag_overwrite=None):
-    command = ""
-    if attach_type in ["xdp", "xdpgeneric", "xdpdrv", "xdpoffload"]:
-        command += "bpftool net attach" + attach_type + " "
-    else:
-        # Placeholder
-        print("ERRORE")
+def bpftool_net_attach(attach_type, dev_name, pinned_file):
+    if not attach_type in ["xdp", "xdpgeneric", "xdpdrv", "xdpoffload"]:
+        raise NotImplemented("Attach type not supported")
 
-    if prog != None:
-        if prog.split(" ")[0] in ["id", "pinned", "tag"]:
-            command += prog + " "
-        else:
-            # Placeholder
-            print("ERRORE")
-
-    command += dev_name + " "
-
-    if flag_overwrite != None:
-        command += flag_overwrite
-
-    os.system(command)
+    cmd = f"bpftool net attach {attach_type} pinned {pinned_file} {dev_name}"
+    ret = os.system(cmd)
+    if ret != 0:
+        raise Exception(
+            f"Bpftool net attach of {pinned_file} on dev {dev_name} failed.")
 
 # bpftool map update MAP [key DATA] [value VALUE] [UPDATE_FLAGS]
 # MAP := {id MAP_ID | pinned FILE | name MAP_NAME}

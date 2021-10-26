@@ -4,7 +4,9 @@ import os
 
 
 class HikeChain:
-    """[summary]
+    """
+    An HIKe Chain is a composition of programs.
+    It runs in the HIKe VM.
     """
 
     def __init__(self, name, package, code="", globals=None):

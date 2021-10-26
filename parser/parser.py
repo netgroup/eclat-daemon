@@ -35,9 +35,9 @@ class EclatParser(Parser):
 
     def __init__(self):
 
-        self.imports = {}
+        self.imports = {'programs': {}, 'loaders': {}}
         self.chains = {}
-        self.loaders = {}
+        self.loaders = []
         self.globals = []
         # stack for the parser
         self.statement_list = []
@@ -70,10 +70,13 @@ class EclatParser(Parser):
         # top statements
         return p[0]
 
-    @_('FROM NAME IMPORT module_list')
+    @_('FROM NAME DOT NAME IMPORT module_list')
     def import_statement(self, p):
-        self.imports[p.NAME] = self._imports_name[:]
-        if p.NAME == 'hike':
+        if not p.NAME0 in ['programs', 'loaders']:
+            raise Exception(
+                "Bad import statement: from {programs|loaders}.package import name")
+        self.imports[p.NAME0][p.NAME1] = self._imports_name[:]
+        if p.NAME1 == 'hike':
             with open('parser/mapper/hike.json') as f:
                 d = json.load(f)
                 self.mapper.update(d)
@@ -163,10 +166,11 @@ class EclatParser(Parser):
         self.expression_list = []
         if hasattr(p, 'NAME1'):
             # method call
-            return FunctionCall(p.NAME1, expression_list, globals=self.globals, object=p.NAME0, mapper=self.mapper, )
+            print(f"method call {p.NAME0}.{p.NAME1}: {expression_list}")
+            return FunctionCall(p.NAME1, expression_list, globals=self.globals, object=p.NAME0, imports=self.imports, mapper=self.mapper, loaders=self.loaders)
         else:
             # function call
-            return FunctionCall(p.NAME, expression_list, globals=self.globals, imports=self.imports, mapper=self.mapper)
+            return FunctionCall(p.NAME, expression_list, globals=self.globals, imports=self.imports, mapper=self.mapper, )
 
     @_('expression PLUS expression',
         'expression MINUS expression',
@@ -185,8 +189,7 @@ class EclatParser(Parser):
     def expression(self, p):
         return BinaryExpression(p.expression0, p[1], p.expression1)
 
-    @_('NOT expression',
-       )
+    @_('NOT expression')
     def expression(self, p):
         return UnaryExpression(p[0], p.expression)
 
@@ -195,10 +198,6 @@ class EclatParser(Parser):
         exp = p.expression
         exp.set_brackets()
         return exp
-
-    # @ _('const', 'NAME')
-    # def argument(self, p):
-    #    self.argument_list.append(Argument(p[0]))
 
     @ _('argument COMMA arglist', 'argument', '')
     def arglist(self, p):
@@ -214,6 +213,7 @@ class EclatParser(Parser):
 
     @ _('expression COMMA exprlist', 'expression', '')
     def exprlist(self, p):
+        self.expression_list.append(p.expression)
         return self.expression_list
 
     @ _('NAME ASSIGN expression')

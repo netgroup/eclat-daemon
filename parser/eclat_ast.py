@@ -16,7 +16,7 @@ class Chain():
         n_args = len(self.arguments)
         placeholder = f"hike_chain_{package}_{self.name}".upper()
         flat_c_params = ', '.join([placeholder] + flat_arguments)
-        #e.g. HIKE_CHAIN_3(HIKE_CHAIN_BAR_ID, __u8, allow, __u16, eth_type)
+        # e.g. HIKE_CHAIN_3(HIKE_CHAIN_BAR_ID, __u8, allow, __u16, eth_type)
         return f"""HIKE_CHAIN_{n_args + 1}({flat_c_params})
         {{
             {self.block.to_c()}
@@ -38,6 +38,7 @@ class Statement():
 
     def to_c(self):
         # every statement must ends with a semicolon
+        print(self.statement)
         return self.statement.to_c() + ';'
 
 
@@ -198,7 +199,7 @@ class BinaryExpression(Expression):
 
 
 class FunctionCall(Expression):
-    def __init__(self, function_name, parameters, globals, imports=[], object=None, mapper={}):
+    def __init__(self, function_name, parameters, globals, imports={}, object=None, mapper={}, loaders={}):
         super().__init__()
         self.function_name = function_name
         self.parameters = parameters
@@ -206,6 +207,7 @@ class FunctionCall(Expression):
         self.mapper = mapper
         self.globals = globals
         self.imports = imports
+        self.loaders = loaders
 
     def to_c(self):
         flat_parameters = ', '.join([a.to_c() for a in self.parameters])
@@ -214,6 +216,30 @@ class FunctionCall(Expression):
             # object are syntatic sugar for a set of functions
             # e.g., Packet.read -> hike_packet_read_u16
             # the mapper function is defined in the mapper dir
+            # objects are also loaders, supporting only the attach method
+
+            # is a classifier?
+            for l_package, l_names in self.imports['loaders'].items():
+                if self.object in l_names:
+                    package = l_package
+                    if self.function_name == 'attach':
+                        # ipv6_classifier.attach('enp6s0f0', 'xdp')
+                        print("****************")
+                        print(self.object)
+                        print(self.function_name)
+                        print(self.parameters)
+                        self.loaders.append({
+                            'name': self.object,
+                            'package': package,
+                            'dev': self.parameters[0].to_c(),
+                            'attach_type': self.parameters[1].to_c()
+                        })
+                        return ""
+                    else:
+                        raise NotImplemented(
+                            "No other method but attach has been implemented in a loader")
+
+            # or maybe an object
             obj_map = self.mapper.get(self.object, {})
             try:
                 if self.parameters:
@@ -234,9 +260,12 @@ class FunctionCall(Expression):
             params_n = len(self.parameters)
             # get the package
             package = None
-            for f_package, f_names in self.imports.items():
+
+            for f_package, f_names in self.imports['programs'].items():
                 if self.function_name in f_names:
                     package = f_package
+                    import_class = "programs"
+
             if not package:
                 raise Exception(
                     f"function {self.function_name} has not been imported")
@@ -244,7 +273,8 @@ class FunctionCall(Expression):
             placeholder = f"HIKE_EBPF_PROG_{package}_{self.function_name}".upper(
             )
             args = self.parameters if self.parameters else []
-            flatted_c_args = ",".join([placeholder, ] + args)
+            flatted_c_args = ",".join(
+                [placeholder, ] + [a.to_c() for a in args])
             return f"hike_elem_call_{params_n + 1}({flatted_c_args})".upper()
 
 
