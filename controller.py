@@ -1,4 +1,5 @@
 from cal import ebpf_system_init, hike_system_init
+from chainloader import ChainLoader
 from hikechain import HikeChain
 from hikeprogram import HikeProgram
 from parser.parser import EclatParser
@@ -7,7 +8,8 @@ from parser.lexer import EclatLexer
 
 class EclatController:
     hike_programs = {}
-    hike_chain = {}
+    hike_chains = {}
+    chain_loaders = {}
     registered_ids = []  # {type, package, name, id}
 
     def __init__(self):
@@ -50,8 +52,8 @@ class EclatController:
         print(parser.imports)
         print(parser.chains)
 
-        # load hike programs
-        for names, package in parser.imports:
+        # set up hike programs
+        for package, names in parser.imports['programs'].items():
             for name in names:
                 if not (name, package) in self.hike_programs.keys():
                     hp = HikeProgram(name, package)
@@ -60,53 +62,43 @@ class EclatController:
                     hp.load()
                     p_id = self.assign_id(hp)
                     hp.register(p_id)
-                    self.hike_programs[(name, package)] = hp
+                    self.hike_programs[(hp.name, hp.package)] = hp
 
         # pre-register chain ids
         chains = []
-        for ast_chain in parser.chains:
+        for chain_name, ast_chain in parser.chains.items():
+            # get the package name
+            chain_package = None
+            for package, names in parser.imports['programs'].items():
+                if chain_name in names:
+                    chain_package = package
 
             hc = HikeChain(
-                name=ast_chain.name, code=ast_chain.to_c(), globals=parser.globals)
+                name=ast_chain.name, package=chain_package, code=ast_chain.to_c(), globals=parser.globals)
             c_id = self.assign_id(hc)
             chains.append((hc, c_id))
+
+        # set up chains
         for chain, chain_id in chains:
             hc.link(self.registered_ids)
             hc.compile()
             hc.load()
-            self.hike_chain[ast_chain.name] = hc
-        # update program_id with the id of the new created chain
-        # alla chain
+            self.hike_chains[(hc.name, hc.package)] = hc
 
-        # TODO load chainloader
+        # set up chain loaders
+        for loader in parser.loaders:
+            # get the package
+            loader_package = None
+            for package, name in parser.imports['loaders']:
+                if name == loader['name']:
+                    loader_package = package
 
-        #
+            hl = ChainLoader(name, package)
+            hl.compile()
+            hl.load()
 
-        #data = prog.eval()
-        # 1. genera una struttura dati
-        # il parser capisce solo la sintassi, non esegue comandi
-        # struttura dati (con dei SIMBOLI al prosto degli id):
-        # --programs: [LIST OF NAMES],
-        # --chains: {chain_name: c_code},
-        # --loader: {name: ‘xdd’, ‘configuration: {...}’}
-
-        # 2. linking
-        # self.import_programs(data.programs)
-        # self.link(data)
-
-        # #############################################
-        # deps = prog.get_dependencies()
-        # id_maps = self.resolve_dependencies()
-        # # ritorna lista di programmi, mappe, e chain
-        # prog.eval(id_maps)
-        # # --programs: [LIST OF NAMES],
-        # # --chains: {chain_name: c_code},
-        # # --loader: {name: ‘xdd’, ‘configuration: {...}’}
-
-        # ############################################
-        # ImportBlock .eval()
-        # .to_c()
-
-        # IfBlock
-        # .eval()  # che fa?
-        # .to_c()
+            dev = loader['dev']
+            attach_type = loader['attach_type']
+            hl.attach(dev, attach_type)
+            hl.write_map('todo', [1, 2, 3], [4, 5, 6])
+            self.chain_loaders[(hl.name, hl.package)] = hl

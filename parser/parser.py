@@ -213,7 +213,7 @@ class EclatParser(Parser):
 
     @ _('expression COMMA exprlist', 'expression', '')
     def exprlist(self, p):
-        self.expression_list.append(p.expression)
+        self.expression_list.insert(0, p.expression)
         return self.expression_list
 
     @ _('NAME ASSIGN expression')

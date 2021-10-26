@@ -1,3 +1,4 @@
+import json
 import settings
 import os
 import cal
@@ -13,6 +14,7 @@ class HikeProgram:
         self.name = name
         self.package = package
         ###
+        self.maps = []
         self.src_file_path = f"{settings.PROGRAMS_DIR}/{self.package}/{name}.bpf.c"
         self.obj_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{name}.bpf.o"
         self.json_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{name}.bpf.json"
@@ -71,7 +73,13 @@ class HikeProgram:
         map_dir = f"{settings.BPF_FS_MAPS_PATH}/{self.package}"
         cal.bpftool_prog_load(name=self.name, package=self.package,
                               pinned_maps=pinned_maps)
-        # TODO set maps name
+        # get the maps
+        with open(self.json_file_path) as f:
+            data = json.load(f)
+            for type in data['types']:
+                if type['kind'] == 'STRUCT' and type['name'].startswith("___hike_map_export___"):
+                    map_name = type['members'][1]['name']
+                    self.maps.append(map_name)
 
     def unload(self):
         raise NotImplemented("Unload not implemented")
@@ -87,15 +95,15 @@ class HikeProgram:
         raise NotImplemented("Unregister not implemented")
 
     def write_map(self, map_name, key, data):
+        assert(map_name in self.maps)
+        # as for now, key and data are provided as array of hex
+        # e.g.
         # bpftool map update pinned /sys/fs/bpf/maps/init/map_ipv6		\
         #    key hex		fc 02 00 00 00 00 00 00 00 00 00 00 00 00 00 02 \
         #    value hex 	4f 00 00 00
-        # TODO
+
         full_map_name = f"{settings.BPF_FS_MAPS_PATH}/{self.package}/{self.name}/{map_name}"
-        key_hex = "TODO"
-        data_hex = "TODO"
-        cal.bpftool_map_update(full_map_name, key_hex, data_hex)
-        pass
+        cal.bpftool_map_update(full_map_name, key, data)
 
     def read_map(self, map_name, key):
         pass

@@ -1,3 +1,4 @@
+import json
 import cal
 import settings
 import os
@@ -13,10 +14,12 @@ class ChainLoader:
         self.package = package  # can be the (file) name of the script
         self.configuration = configuration
         ###
+        self.maps = []
         self.src_file_path = f"{settings.LOADERS_DIR}/{self.package}/{name}.bpf.c"
         self.obj_file_path = f"{settings.BUILD_LOADERS_DIR}/{self.package}/{name}.bpf.o"
+        # TODO Andrea
+        self.json_file_path = f"{settings.BUILD_LOADERS_DIR}/{self.package}/{name}.bpf.json"
         self.is_compiled = self._is_compiled()
-        #self.is_linked = self._is_linked()
 
     def _is_compiled(self):
         return os.path.exists(self.obj_file_path)
@@ -39,7 +42,15 @@ class ChainLoader:
         self.is_compiled = False
 
     def write_map(self, map_name, key, data):
-        pass
+        assert(map_name in self.maps)
+        # as for now, key and data are provided as array of hex
+        # e.g.
+        # bpftool map update pinned /sys/fs/bpf/maps/init/map_ipv6		\
+        #    key hex		fc 02 00 00 00 00 00 00 00 00 00 00 00 00 00 02 \
+        #    value hex 	4f 00 00 00
+
+        full_map_name = f"{settings.BPF_FS_MAPS_PATH}/{self.package}/{self.name}/{map_name}"
+        cal.bpftool_map_update(full_map_name, key, data)
 
     def read_map(self, map_name, key):
         pass
@@ -57,13 +68,21 @@ class ChainLoader:
         cal.bpftool_prog_load(name=self.name, package=self.package,
                               pinned_maps=pinned_maps)
 
+        # get the maps
+        with open(self.json_file_path) as f:
+            data = json.load(f)
+            for type in data['types']:
+                if type['kind'] == 'STRUCT' and type['name'].startswith("___hike_map_export___"):
+                    map_name = type['members'][1]['name']
+                    self.maps.append(map_name)
+
     def unload(self):
         raise NotImplemented("Unload not implemented")
 
-    def attach(self, dev_name):
+    def attach(self, dev_name, attach_type="xdp"):
         # name of the section must be equal to the name of the classifier
         pinned_file = f"{settings.BPF_FS_PROGS_PATH}/{self.package}/{self.name}"
-        cal.bpftool_net_attach('xdp', dev_name, pinned_file)
+        cal.bpftool_net_attach(attach_type, dev_name, pinned_file)
 
     def detach(self):
         raise NotImplemented("Unregister not implemented")

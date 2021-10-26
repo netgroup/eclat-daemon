@@ -224,15 +224,11 @@ class FunctionCall(Expression):
                     package = l_package
                     if self.function_name == 'attach':
                         # ipv6_classifier.attach('enp6s0f0', 'xdp')
-                        print("****************")
-                        print(self.object)
-                        print(self.function_name)
-                        print(self.parameters)
                         self.loaders.append({
                             'name': self.object,
                             'package': package,
-                            'dev': self.parameters[0].to_c(),
-                            'attach_type': self.parameters[1].to_c()
+                            'dev': self.parameters[0].to_c().replace("'", "").replace('"', ""),
+                            'attach_type': self.parameters[1].to_c().replace("'", "").replace('"', "")
                         })
                         return ""
                     else:

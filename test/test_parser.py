@@ -9,9 +9,9 @@ class TestParser(unittest.TestCase):
         parser = EclatParser()
         prog = """
 # test
-from package1 import program1
-from package2 import program1, program2, program3
-from package3 import program1 , program2
+from programs.package1 import program1
+from programs.package2 import program1, program2, program3
+from programs.package3 import program1 , program2
 
 def chain1():
 
@@ -38,7 +38,7 @@ def chain2():
     def test_function_call(self):
         lexer = EclatLexer()
         parser = EclatParser()
-        prog = """from hike import drop
+        prog = """from programs.hike import drop
 
 def mychain0():
     u8 : b = 9
@@ -205,7 +205,7 @@ def mychain_globals():
         lexer = EclatLexer()
         parser = EclatParser()
         prog = """
-from hike import Packet
+from programs.hike import Packet
 def mychain():
     Packet.readU16(12)
     pass
@@ -221,9 +221,9 @@ def mychain():
         lexer = EclatLexer()
         parser = EclatParser()
         prog = """
-from hike import Packet
-from net import drop, allow
-from test import funzione1, fun_funzion1
+from programs.hike import Packet
+from programs.net import drop, allow
+from programs.test import funzione1, fun_funzion1
 
 def mychain0():
     eth_type = Packet.readU16(12)
@@ -256,7 +256,7 @@ def mychain0():
         lexer = EclatLexer()
         parser = EclatParser()
         prog = """
-from hike import Packet
+from programs.hike import Packet
 def mychain0(u8 : a, u8 : b):
     pass
         """
@@ -314,8 +314,8 @@ def mychain0():
         # https://clang.llvm.org/docs/pip.html
 
 # import
-#from programs.net import drop, allow
-#from classifiers.basic import ipv6_classifier
+#from programs.programs.net import drop, allow
+#from programs.classifiers.basic import ipv6_classifier
 # configure classifier
 
 
