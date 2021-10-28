@@ -227,8 +227,8 @@ class FunctionCall(Expression):
                         self.loaders.append({
                             'name': self.object,
                             'package': package,
+                            'attach_type': self.parameters[1].to_c().replace("'", "").replace('"', ""),
                             'dev': self.parameters[0].to_c().replace("'", "").replace('"', ""),
-                            'attach_type': self.parameters[1].to_c().replace("'", "").replace('"', "")
                         })
                         return ""
                     else:

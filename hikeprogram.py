@@ -25,10 +25,20 @@ class HikeProgram:
     def _is_compiled(self):
         return os.path.exists(self.obj_file_path)
 
+    def _get_maps(self):
+        # get the maps
+        with open(self.json_file_path) as f:
+            data = json.load(f)
+            for type in data['types']:
+                if type['kind'] == 'STRUCT' and type['name'].startswith("___hike_map_export___"):
+                    map_name = type['members'][1]['name']
+                    self.maps.append(map_name)
+
     def pull(self):
         """
         [Temporary] download a package in the appropriate directory
         """
+        return  #  TODO
         # TODO: handle dependencies. Package manager?
         import requests
         import tarfile
@@ -73,13 +83,7 @@ class HikeProgram:
         map_dir = f"{settings.BPF_FS_MAPS_PATH}/{self.package}"
         cal.bpftool_prog_load(name=self.name, package=self.package,
                               pinned_maps=pinned_maps)
-        # get the maps
-        with open(self.json_file_path) as f:
-            data = json.load(f)
-            for type in data['types']:
-                if type['kind'] == 'STRUCT' and type['name'].startswith("___hike_map_export___"):
-                    map_name = type['members'][1]['name']
-                    self.maps.append(map_name)
+        self._get_maps()
 
     def unload(self):
         raise NotImplemented("Unload not implemented")

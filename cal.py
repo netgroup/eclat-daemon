@@ -185,13 +185,14 @@ def load_chain(loader_file):
 
 
 def bpftool_prog_load(name, package,
-                      pinned_maps, attach_type="xdp", load_system_maps=True):
+                      pinned_maps, attach_type="xdp", load_system_maps=True, is_loader=False):
     """Use BPF tool to load one section
 
     :param name: name of the program
     :param package: package name
     :param pinned_maps: dictionary of map (name and sys/fs dir) other than the SYSTEM_MAPS_NAMES
     :param attach_type: interface name, defaults to "xdp"
+    :param is_loader: whether referring to the load of a program or of a chain loader
     """
     # bpftool prog loadall net.o /sys/fs/bpf/progs/net type xdp	\
     #             map name gen_jmp_table					\
@@ -204,7 +205,8 @@ def bpftool_prog_load(name, package,
     #                     pinned /sys/fs/bpf/maps/init/hike_pcpu_shmem_map \
     #             pinmaps /sys/fs/bpf/maps/net
 
-    program_object = f"{settings.BUILD_PROGRAMS_DIR}/{package}/{name}.bpf.o"
+    program_object_prefix = settings.BUILD_PROGRAMS_DIR if is_loader == False else settings.BUILD_LOADERS_DIR
+    program_object = f"{program_object_prefix}/{package}/{name}.bpf.o"
     program_fs_path = f"{settings.BPF_FS_PROGS_PATH}/{package}/{name}"
     program_maps_fs_path = f"{settings.BPF_FS_MAPS_PATH}/{package}"
 
@@ -235,7 +237,8 @@ def bpftool_net_attach(attach_type, dev_name, pinned_file):
     if not attach_type in ["xdp", "xdpgeneric", "xdpdrv", "xdpoffload"]:
         raise NotImplemented("Attach type not supported")
 
-    cmd = f"bpftool net attach {attach_type} pinned {pinned_file} {dev_name}"
+    cmd = f"bpftool net attach {attach_type} pinned {pinned_file} dev {dev_name}"
+    print(cmd)
     ret = os.system(cmd)
     if ret != 0:
         raise Exception(

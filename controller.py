@@ -56,13 +56,14 @@ class EclatController:
         for package, names in parser.imports['programs'].items():
             for name in names:
                 if not (name, package) in self.hike_programs.keys():
-                    hp = HikeProgram(name, package)
-                    hp.pull()
-                    hp.compile()
-                    hp.load()
-                    p_id = self.assign_id(hp)
-                    hp.register(p_id)
-                    self.hike_programs[(hp.name, hp.package)] = hp
+                    if package != 'hike':  # reserved for system
+                        hp = HikeProgram(name, package)
+                        hp.pull()
+                        hp.compile()
+                        hp.load()
+                        p_id = self.assign_id(hp)
+                        hp.register(p_id)
+                        self.hike_programs[(hp.name, hp.package)] = hp
 
         # pre-register chain ids
         chains = []
@@ -88,17 +89,14 @@ class EclatController:
         # set up chain loaders
         for loader in parser.loaders:
             # get the package
-            loader_package = None
-            for package, name in parser.imports['loaders']:
-                if name == loader['name']:
-                    loader_package = package
+            print(loader)
+            name, package, attach_type, dev = loader['name'], loader[
+                'package'], loader['attach_type'], loader['dev']
 
             hl = ChainLoader(name, package)
             hl.compile()
             hl.load()
 
-            dev = loader['dev']
-            attach_type = loader['attach_type']
             hl.attach(dev, attach_type)
             hl.write_map('todo', [1, 2, 3], [4, 5, 6])
             self.chain_loaders[(hl.name, hl.package)] = hl

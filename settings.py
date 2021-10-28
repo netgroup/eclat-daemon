@@ -14,10 +14,11 @@ BPF_FS_PROGS_PATH = f"{BPF_FS_PATH}/progs"
 BPF_FS_MAPS_PATH = f"{BPF_FS_PATH}/maps"
 BPF_FS_MAPS_SYSTEM_PATH = f"{BPF_FS_MAPS_PATH}/system"
 
-SYSTEM_MAPS_NAMES = ["gen_jmp_table", "hike_chain_map",
-                     "pcpu_hike_chain_data_map", "hike_pcpu_shmem_map"]
+SYSTEM_MAPS_NAMES = ["hvm_cdata_map",
+                     "hvm_chain_map", "hvm_hprog_map", "hvm_shmem_map"]
+# OLD NAMES ["gen_jmp_table", "hike_chain_map", "pcpu_hike_chain_data_map", "hike_pcpu_shmem_map"]
 
-PROGRAMS_REGISTER_MAP = f"{BPF_FS_MAPS_SYSTEM_PATH}/gen_jmp_table"
+PROGRAMS_REGISTER_MAP = f"{BPF_FS_MAPS_SYSTEM_PATH}/hvm_hprog_map"
 HIKE_CHAIN_MAPS = f"{BPF_FS_MAPS_SYSTEM_PATH}/hike_chain_map"
 
 HIKE_PATH = "hike_v3"

@@ -71,8 +71,8 @@ Rule 67    const -> HEX
 
 Unused terminals:
 
-    FOR
     END
+    FOR
 
 Terminals, with rules where they appear:
 

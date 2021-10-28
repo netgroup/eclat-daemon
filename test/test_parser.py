@@ -306,6 +306,26 @@ def mychain0():
         print("p=", p)
         print(parser.globals)
 
+    def test_mapper(self):
+        lexer = EclatLexer()
+        parser = EclatParser()
+        prog = """
+from programs.hike import Packet, Loader
+from programs.net import drop, allow
+from programs.test import funzione1, fun_funzion1
+from loaders.pippo import ipv6_classifier
+
+ipv6_classifier.attach('enp6s0f0', 'xdp')
+ipv6_classifier[mapname] = {'key': value}
+        """
+        tokens = lexer.tokenize(prog)
+        for tok in tokens:
+            print(tok)
+        tokens = lexer.tokenize(prog)
+        p = parser.parse(tokens)
+        print("p=", p)
+        print(parser.globals)
+
     #     def test_indentation(self):
     #         # indentation and multiple newlines OK
     #         # argumentlist and expressionlist
