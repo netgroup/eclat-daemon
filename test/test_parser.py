@@ -227,7 +227,7 @@ from programs.test import funzione1, fun_funzion1
 
 def mychain0():
     eth_type = Packet.readU16(12)
-    if eth_type == 0x86dd :
+    if eth_type == 0x86dd:
         ttl = Packet.readU8(21)
         if ttl == 64:
             Packet.writeU8(17,21) 
@@ -316,7 +316,19 @@ from programs.test import funzione1, fun_funzion1
 from loaders.pippo import ipv6_classifier
 
 ipv6_classifier.attach('enp6s0f0', 'xdp')
-ipv6_classifier[mapname] = {'key': value}
+
+ipv6_simple_classifier[ipv6_simple_classifier_map] = { (0): (MYCHAIN) }
+
+#ipv6_simple_classifier[ipv6_simple_classifier_map] = {
+#    (192,168,1,1): (mychain2), 
+#    (192,168,1,2): (mychain10)
+#}
+
+
+bpftool map update \
+		pinned /sys/fs/bpf/maps/init/ipv6_simple_classifier_map \
+		key hex		00 00 00 00				\
+		value hex 	56 00 00 00
         """
         tokens = lexer.tokenize(prog)
         for tok in tokens:
