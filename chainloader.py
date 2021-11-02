@@ -26,10 +26,12 @@ class ChainLoader:
 
     def _get_maps(self):
         # get the maps
+        # here we should parse 1) map name; 2) list primitive data composing the key; 3) list of primitive data composing the value
+        # e.g.: {'map_name': 'test', 'key_types': ['u8', 'u16']'key_types': ['u8', 'u16']}
         with open(self.json_file_path) as f:
             data = json.load(f)
             for type in data['types']:
-                if type['kind'] == 'STRUCT' and type['name'].startswith("___hike_map_export___"):
+                if type['kind'] == 'STRUCT' and type['name'].startswith("__hike_map_export__"):
                     map_name = type['members'][1]['name']
                     self.maps.append(map_name)
 
@@ -62,6 +64,7 @@ class ChainLoader:
         #    key hex		fc 02 00 00 00 00 00 00 00 00 00 00 00 00 00 02 \
         #    value hex 	4f 00 00 00
 
+        # key and data are tuples of primitive data
         full_map_name = f"{settings.BPF_FS_MAPS_PATH}/{self.package}/{self.name}/{map_name}"
         cal.bpftool_map_update(full_map_name, key, data)
 

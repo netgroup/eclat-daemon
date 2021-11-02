@@ -98,5 +98,7 @@ class EclatController:
             hl.load()
 
             hl.attach(dev, attach_type)
-            hl.write_map('todo', [1, 2, 3], [4, 5, 6])
+            for map_configuration in filter(lambda x: x['program_name'] == name, parser.maps):
+                for key, value in map_configuration['data'].items():
+                    hl.write_map(map_configuration['map_name'], key, value)
             self.chain_loaders[(hl.name, hl.package)] = hl
