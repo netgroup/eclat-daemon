@@ -27,10 +27,10 @@ def chain2():
         tokens = lexer.tokenize(prog)
         p = parser.parse(tokens)
         print(parser.imports)
-        self.assertEqual(parser.imports['package1'], ['program1'])
-        self.assertEqual(sorted(parser.imports['package2']), sorted([
+        self.assertEqual(parser.imports['programs']['package1'], ['program1'])
+        self.assertEqual(sorted(parser.imports['programs']['package2']), sorted([
             'program3', 'program2', 'program1']))
-        self.assertEqual(sorted(parser.imports['package3']), sorted(
+        self.assertEqual(sorted(parser.imports['programs']['package3']), sorted(
             ['program2', 'program1']))
         # print(parser.chains)
         # print(p)
@@ -306,7 +306,7 @@ def mychain0():
         print("p=", p)
         print(parser.globals)
 
-    def test_mapper(self):
+    def test_map_config(self):
         lexer = EclatLexer()
         parser = EclatParser()
         prog = """
@@ -315,20 +315,15 @@ from programs.net import drop, allow
 from programs.test import funzione1, fun_funzion1
 from loaders.pippo import ipv6_classifier
 
-ipv6_classifier.attach('enp6s0f0', 'xdp')
+#ipv6_classifier.attach('enp6s0f0', 'xdp')
 
-ipv6_simple_classifier[ipv6_simple_classifier_map] = { (0): (MYCHAIN) }
+#ipv6_simple_classifier[ipv6_simple_classifier_map] = { (0): (MYCHAIN) }
+ipv6_simple_classifier[ipv6_simple_classifier_map] = { (0): (MYCHAIN), (1,2,3): (MYCHAIN2) }
 
-#ipv6_simple_classifier[ipv6_simple_classifier_map] = {
-#    (192,168,1,1): (mychain2), 
-#    (192,168,1,2): (mychain10)
-#}
-
-
-bpftool map update \
-		pinned /sys/fs/bpf/maps/init/ipv6_simple_classifier_map \
-		key hex		00 00 00 00				\
-		value hex 	56 00 00 00
+ipv6_simple_classifier[ipv6_simple_classifier_map] = {
+    (192,168,1,1): (mychain2), 
+    (192,168,1,2): (mychain10)
+}
         """
         tokens = lexer.tokenize(prog)
         for tok in tokens:

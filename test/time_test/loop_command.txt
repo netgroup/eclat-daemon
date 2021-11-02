@@ -1,5 +1,0 @@
-count=64
-    for i in $(seq $count); do
-        "EXPRESSION"
-        echo $mytime >> file.txt
-    done

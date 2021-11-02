@@ -1,15 +1,15 @@
 #define HIKE_EBPF_PROG_TEST_ALLOW_ANY 13
 #define HIKE_CHAIN_TEST_MINIMAL_CHAIN 10
-#include <linux/errno.h>
+# include <linux/errno.h>
 
-#include "hike_vm.h"
-#include "parse_helpers.h"
+# include "hike_vm.h"
+# include "parse_helpers.h"
 
 
 //__sec_hike_chain_
 HIKE_CHAIN_1(HIKE_CHAIN_TEST_MINIMAL_CHAIN)
 {
-#define __ETH_PROTO_TYPE_ABS_OFF 12
+# define __ETH_PROTO_TYPE_ABS_OFF 12
 
 	__u16 eth_type;
 
@@ -25,5 +25,5 @@ HIKE_CHAIN_1(HIKE_CHAIN_TEST_MINIMAL_CHAIN)
 	}
 
 	return 0;
-#undef __ETH_PROTO_TYPE_ABS_OFF
+# undef __ETH_PROTO_TYPE_ABS_OFF
 }

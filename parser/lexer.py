@@ -102,6 +102,10 @@ class EclatLexer(IndentedLexer):
         # NUMBER,  # Python decimals
         LPAR,
         RPAR,
+        LSPAR,
+        RSPAR,
+        LCPAR,
+        RCPAR,
         COLON,
         DOT,
         AND,
@@ -141,6 +145,10 @@ class EclatLexer(IndentedLexer):
     PASS = r'pass'
     LPAR = r'\('
     RPAR = r'\)'
+    LSPAR = r'\['
+    RSPAR = r'\]'
+    LCPAR = r'\{'
+    RCPAR = r'\}'
     RETURN = r'return'
     INDENT = r'_INDENT'
     DEDENT = r'_DEDENT'

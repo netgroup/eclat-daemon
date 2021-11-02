@@ -1,4 +1,5 @@
 from sys import argv
+from typing import List
 
 
 class Chain():
@@ -38,7 +39,6 @@ class Statement():
 
     def to_c(self):
         # every statement must ends with a semicolon
-        print(self.statement)
         return self.statement.to_c() + ';'
 
 
@@ -138,6 +138,12 @@ class Expression():
     def __init__(self, expression=None, brackets=False):
         self.expression = expression
         self.brackets = brackets
+
+    def __str__(self):
+        return self.to_c()
+
+    def __repr__(self):
+        return self.to_c()
 
     def set_brackets(self):
         self.brackets = True
@@ -298,3 +304,18 @@ class Type():
 
     def to_c(self):
         return f"__{self.type.lower()}"
+
+
+class Dictionary():
+    def __init__(self, key_value_pairs):
+        self.key_value_pairs = key_value_pairs
+
+    def to_python(self):
+        ret = {}
+        for key_value_pair in self.key_value_pairs:
+            k, v = key_value_pair
+            dk = tuple([x.to_c() for x in k]) if isinstance(
+                k, list) else k.to_c()
+            dv = [x.to_c() for x in v] if isinstance(v, list) else v.to_c()
+            ret[dk] = dv
+        return ret

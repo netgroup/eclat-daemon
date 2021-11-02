@@ -35,20 +35,13 @@ class EclatParser(Parser):
 
     def __init__(self):
 
-        self.imports = {'programs': {}, 'loaders': {}}
-        self.chains = {}
-        self.loaders = []
-        self.globals = []
-        # stack for the parser
-        self.statement_list = []
-        self.argument_list = []
-        self.expression_list = []
-
+        self.imports = {'programs': {}, 'loaders': {}}  # import set
+        self.chains = {}  # chains code
+        self.loaders = []  # chain loader configuration
+        self.globals = []  # global variables
+        self.maps = []  #  configure maps
         # function mapper
-        self.mapper = {}
-
-        #####
-        self._imports_name = []
+        self.mapper = {}  # eye candy for "objects"
 
     @_('statement_full', 'statement_full program')
     def program(self, p):
@@ -65,7 +58,7 @@ class EclatParser(Parser):
     def statement_full(self, p):
         return p.statement
 
-    @_('chain_statement', 'import_statement')
+    @_('chain_statement', 'import_statement', 'map_statement')
     def statement(self, p):
         # top statements
         return p[0]
@@ -75,20 +68,47 @@ class EclatParser(Parser):
         if not p.NAME0 in ['programs', 'loaders']:
             raise Exception(
                 "Bad import statement: from {programs|loaders}.package import name")
-        self.imports[p.NAME0][p.NAME1] = self._imports_name[:]
+        self.imports[p.NAME0][p.NAME1] = p.module_list
         if p.NAME1 == 'hike':
             with open('parser/mapper/hike.json') as f:
                 d = json.load(f)
                 self.mapper.update(d)
-                print(self.mapper)
-
-        self._imports_name = []
 
     @ _('NAME COMMA module_list',
         'NAME')
     def module_list(self, p):
-        self._imports_name.append(p.NAME)
-        return p
+        if hasattr(p, "module_list"):
+            return [p.NAME, ] + p.module_list
+        else:
+            return [p.NAME, ]
+
+    @_('NAME LSPAR NAME RSPAR ASSIGN mapping')
+    def map_statement(self, p):
+        print(f"Map {p.NAME1} configuration: ", p.mapping.to_python())
+        self.maps.append({
+            'program_name': p.NAME0,
+            'map_name': p.NAME1,
+            'data': p.mapping.to_python()
+        })
+
+    @_('LCPAR key_value_pairs RCPAR', 'LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR')
+    def mapping(self, p):
+        d = Dictionary(p.key_value_pairs)
+        return d
+
+    @_('key_value_pair COMMA key_value_pairs',
+       'key_value_pair COMMA NEWLINE key_value_pairs',
+       'key_value_pair NEWLINE',
+       'key_value_pair', '')
+    def key_value_pairs(self, p):
+        if hasattr(p, 'key_value_pairs'):
+            return [p.key_value_pair, ] + p.key_value_pairs
+        else:
+            return [p.key_value_pair, ]
+
+    @_('LPAR exprlist RPAR COLON LPAR exprlist RPAR')
+    def key_value_pair(self, p):
+        return p.exprlist0, p.exprlist1
 
     @_('DEF NAME LPAR arglist RPAR COLON NEWLINE block')
     def chain_statement(self, p):
@@ -103,14 +123,15 @@ class EclatParser(Parser):
 
     @_('INDENT block_statements DEDENT')
     def block(self, p):
-        b = Block(self.statement_list[:])
-        self.statement_list = []
+        b = Block(p.block_statements)
         return b
 
     @_('statement_full', 'statement_full block_statements')
     def block_statements(self, p):
-        self.statement_list.insert(0, p.statement_full)
-        return self.statement_list
+        if hasattr(p, "block_statements"):
+            return [p.statement_full, ] + p.block_statements
+        else:
+            return [p.statement_full, ]
 
     # statements
     @_('PASS')
@@ -160,10 +181,7 @@ class EclatParser(Parser):
     @_('NAME LPAR exprlist RPAR', 'NAME DOT NAME LPAR exprlist RPAR')
     def expression(self, p):
         # function call
-        #argument_list = self.argument_list[:]
-        #self.argument_list = []
-        expression_list = self.expression_list[:]
-        self.expression_list = []
+        expression_list = p.exprlist
         if hasattr(p, 'NAME1'):
             # method call
             print(f"method call {p.NAME0}.{p.NAME1}: {expression_list}")
@@ -201,11 +219,16 @@ class EclatParser(Parser):
 
     @ _('argument COMMA arglist', 'argument', '')
     def arglist(self, p):
-        return self.argument_list
+        if hasattr(p, "arglist"):
+            return [p.argument, ] + p.arglist
+        elif hasattr(p, "argument"):
+            return [p.argument, ]
+        else:
+            return []
 
     @ _('type COLON NAME')
     def argument(self, p):
-        self.argument_list.append(Argument(p.NAME, p.type))
+        return Argument(p.NAME, p.type)
 
     @ _('const', 'NAME')
     def expression(self, p):
@@ -213,8 +236,12 @@ class EclatParser(Parser):
 
     @ _('expression COMMA exprlist', 'expression', '')
     def exprlist(self, p):
-        self.expression_list.insert(0, p.expression)
-        return self.expression_list
+        if hasattr(p, "exprlist"):
+            return [p.expression, ] + p.exprlist
+        elif hasattr(p, "expression"):
+            return [p.expression, ]
+        else:
+            return []
 
     @ _('NAME ASSIGN expression')
     def statement(self, p):

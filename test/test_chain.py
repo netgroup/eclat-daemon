@@ -1,22 +1,30 @@
 import unittest
+from unittest import result
 from controller import EclatController
 from hikechain import HikeChain
 import settings
+import cal
 
 
 class TestChain(unittest.TestCase):
+
+    def setUp(self):
+        cal.ebpf_system_init()
+        cal.hike_system_init()
+        return super().setUp()
+
     def test_chain1(self):
         chain_code = """
-#include <linux/errno.h>
+# include <linux/errno.h>
 
-#include "hike_vm.h"
-#include "parse_helpers.h"
+# include "hike_vm.h"
+# include "parse_helpers.h"
 
 
 //__sec_hike_chain_
 HIKE_CHAIN_1(HIKE_CHAIN_TEST_MINIMAL_CHAIN)
 {
-#define __ETH_PROTO_TYPE_ABS_OFF 12
+# define __ETH_PROTO_TYPE_ABS_OFF 12
 
 	__u16 eth_type;
 
@@ -32,7 +40,7 @@ HIKE_CHAIN_1(HIKE_CHAIN_TEST_MINIMAL_CHAIN)
 	}
 
 	return 0;
-#undef __ETH_PROTO_TYPE_ABS_OFF
+# undef __ETH_PROTO_TYPE_ABS_OFF
 }
 """
 
