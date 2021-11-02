@@ -8,6 +8,9 @@ class Chain():
         self.block = block
         self.arguments = arguments
 
+    def __repr__(self):
+        return f"Chain {self.name}"
+
     def to_c(self, package):
         list_of_arguments = [a.to_c(for_chain=True)
                              for a in self.arguments]
@@ -29,6 +32,9 @@ class Block():
     def __init__(self, statements):
         self.statements = statements
 
+    def __repr__(self):
+        return self.to_c()
+
     def to_c(self):
         return "\n".join([s.to_c() for s in self.statements])
 
@@ -36,6 +42,9 @@ class Block():
 class Statement():
     def __init__(self, statement):
         self.statement = statement
+
+    def __repr__(self):
+        return self.to_c()
 
     def to_c(self):
         # every statement must ends with a semicolon
@@ -48,6 +57,9 @@ class If(Statement):
         self.block = block
         self.elif_part = elif_part
         self.else_part = else_part
+
+    def __repr__(self):
+        return self.to_c()
 
     def to_c(self):
         ret = f"if ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
@@ -65,6 +77,9 @@ class Elif(Statement):
         self.elif_part = elif_part
         self.else_part = else_part
 
+    def __repr__(self):
+        return self.to_c()
+
     def to_c(self):
         ret = f"else if ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
         if self.elif_part:
@@ -78,6 +93,9 @@ class Else(Statement):
     def __init__(self, block):
         self.block = block
 
+    def __repr__(self):
+        return self.to_c()
+
     def to_c(self):
         return f"else {{ {self.block.to_c()} }}"
 
@@ -86,6 +104,9 @@ class While(Statement):
     def __init__(self, expression, block):
         self.expression = expression
         self.block = block
+
+    def __repr__(self):
+        return self.to_c()
 
     def to_c(self):
         return f"while ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
@@ -96,6 +117,9 @@ class For(Statement):
         self.expression = expression
         self.block = block
 
+    def __repr__(self):
+        return self.to_c()
+
     def to_c(self):
         return f"for ({self.expression.to_c()}) {{ {self.block.to_c()} }}"
 
@@ -105,6 +129,9 @@ class Assigment(Statement):
         self.lvalue = lvalue
         self.rvalue = rvalue
         self.ltype = ltype
+
+    def __repr__(self):
+        return self.to_c()
 
     def to_c(self):
         is_rvalue_expression = isinstance(self.rvalue, Expression)
@@ -120,6 +147,9 @@ class Assigment(Statement):
 class Return(Statement):
     def __init__(self, expression):
         self.expression = expression
+
+    def __repr__(self):
+        return self.to_c()
 
     def to_c(self):
         return f"return {self.expression.to_c()}"
@@ -281,18 +311,21 @@ class FunctionCall(Expression):
 
 
 class Argument():
-    def __init__(self, arg, type=None):
-        self.arg = arg
+    def __init__(self, name, type=None):
+        self.name = name
         self.type = type
+
+    def __repr__(self):
+        return self.to_c()
 
     def to_c(self, for_chain=False):
         if self.type:
             if for_chain:
-                return [self.type.to_c(), self.arg]
+                return [self.type.to_c(), self.name]
             else:
-                return f"{self.type.to_c()} {self.arg}"
+                return f"{self.type.to_c()} {self.name}"
         else:
-            return self.arg
+            return self.name
 
 
 class Type():
@@ -301,6 +334,9 @@ class Type():
             self.type = type
         else:
             raise Exception(f"Unsupported type {self.type}")
+
+    def __repr__(self):
+        return self.to_c()
 
     def to_c(self):
         return f"__{self.type.lower()}"

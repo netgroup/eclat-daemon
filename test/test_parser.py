@@ -66,6 +66,14 @@ def mychain0():
     """
         tokens = lexer.tokenize(prog)
         p = parser.parse(tokens)
+        self.assertEqual(
+            parser.chains['mychain1'].arguments[0].type.type, 'u8')
+        self.assertEqual(
+            parser.chains['mychain1'].arguments[0].name, 'pippo')
+        self.assertEqual(
+            parser.chains['mychain1'].arguments[1].type.type, 'u16')
+        self.assertEqual(
+            parser.chains['mychain1'].arguments[1].name, 'pluto')
 
     def test_expression(self):
         lexer = EclatLexer()
@@ -315,12 +323,12 @@ from programs.net import drop, allow
 from programs.test import funzione1, fun_funzion1
 from loaders.pippo import ipv6_classifier
 
-#ipv6_classifier.attach('enp6s0f0', 'xdp')
+ipv6_classifier.attach('enp6s0f0', 'xdp')
 
-#ipv6_simple_classifier[ipv6_simple_classifier_map] = { (0): (MYCHAIN) }
-ipv6_simple_classifier[ipv6_simple_classifier_map] = { (0): (MYCHAIN), (1,2,3): (MYCHAIN2) }
+ipv6_simple_classifier[ipv6_simple_classifier_map1] = { (0): (MYCHAIN) }
+ipv6_simple_classifier[ipv6_simple_classifier_map2] = { (0): (MYCHAIN), (1,2,3): (MYCHAIN2) }
 
-ipv6_simple_classifier[ipv6_simple_classifier_map] = {
+ipv6_simple_classifier[ipv6_simple_classifier_map3] = {
     (192,168,1,1): (mychain2), 
     (192,168,1,2): (mychain10)
 }
@@ -332,6 +340,10 @@ ipv6_simple_classifier[ipv6_simple_classifier_map] = {
         p = parser.parse(tokens)
         print("p=", p)
         print(parser.globals)
+        self.assertIn({'program_name': 'ipv6_simple_classifier',
+                      'map_name': 'ipv6_simple_classifier_map1', 'data': {('0',): ['MYCHAIN']}}, parser.maps)
+        self.assertIn({'program_name': 'ipv6_simple_classifier',
+                      'map_name': 'ipv6_simple_classifier_map3', 'data': {('192', '168', '1', '1'): ['mychain2'], ('192', '168', '1', '2'): ['mychain10']}}, parser.maps)
 
     #     def test_indentation(self):
     #         # indentation and multiple newlines OK

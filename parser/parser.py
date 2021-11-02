@@ -82,17 +82,17 @@ class EclatParser(Parser):
         else:
             return [p.NAME, ]
 
-    @_('NAME LSPAR NAME RSPAR ASSIGN mapping')
+    @_('NAME LSPAR NAME RSPAR ASSIGN kv_mapping')
     def map_statement(self, p):
-        print(f"Map {p.NAME1} configuration: ", p.mapping.to_python())
+        print(f"Map {p.NAME1} configuration: ", p.kv_mapping.to_python())
         self.maps.append({
             'program_name': p.NAME0,
             'map_name': p.NAME1,
-            'data': p.mapping.to_python()
+            'data': p.kv_mapping.to_python()
         })
 
     @_('LCPAR key_value_pairs RCPAR', 'LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR')
-    def mapping(self, p):
+    def kv_mapping(self, p):
         d = Dictionary(p.key_value_pairs)
         return d
 

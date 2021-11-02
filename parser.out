@@ -22,9 +22,9 @@ Rule 18    statement -> chain_statement
 Rule 19    import_statement -> FROM NAME DOT NAME IMPORT module_list
 Rule 20    module_list -> NAME
 Rule 21    module_list -> NAME COMMA module_list
-Rule 22    map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping  [precedence=left, level=2]
-Rule 23    mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR
-Rule 24    mapping -> LCPAR key_value_pairs RCPAR
+Rule 22    map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping  [precedence=left, level=2]
+Rule 23    kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR
+Rule 24    kv_mapping -> LCPAR key_value_pairs RCPAR
 Rule 25    key_value_pairs -> <empty>
 Rule 26    key_value_pairs -> key_value_pair
 Rule 27    key_value_pairs -> key_value_pair NEWLINE  [precedence=left, level=3]
@@ -155,8 +155,8 @@ exprlist             : 30 30 56 57 64
 import_statement     : 17
 key_value_pair       : 26 27 28 29
 key_value_pairs      : 23 24 28 29
+kv_mapping           : 22
 map_statement        : 16
-mapping              : 22
 module_list          : 19 21
 program              : 1 0
 statement            : 3 4
@@ -212,7 +212,7 @@ state 0
     (55) expression -> . expression PLUS expression
     (56) expression -> . NAME DOT NAME LPAR exprlist RPAR
     (57) expression -> . NAME LPAR exprlist RPAR
-    (22) map_statement -> . NAME LSPAR NAME RSPAR ASSIGN mapping
+    (22) map_statement -> . NAME LSPAR NAME RSPAR ASSIGN kv_mapping
     (19) import_statement -> . FROM NAME DOT NAME IMPORT module_list
     (31) chain_statement -> . DEF NAME LPAR arglist RPAR COLON NEWLINE block
     (73) const -> . BOOLEAN
@@ -307,7 +307,7 @@ state 2
     (55) expression -> . expression PLUS expression
     (56) expression -> . NAME DOT NAME LPAR exprlist RPAR
     (57) expression -> . NAME LPAR exprlist RPAR
-    (22) map_statement -> . NAME LSPAR NAME RSPAR ASSIGN mapping
+    (22) map_statement -> . NAME LSPAR NAME RSPAR ASSIGN kv_mapping
     (19) import_statement -> . FROM NAME DOT NAME IMPORT module_list
     (31) chain_statement -> . DEF NAME LPAR arglist RPAR COLON NEWLINE block
     (73) const -> . BOOLEAN
@@ -393,7 +393,7 @@ state 5
     (39) expression -> NAME .
     (56) expression -> NAME . DOT NAME LPAR exprlist RPAR
     (57) expression -> NAME . LPAR exprlist RPAR
-    (22) map_statement -> NAME . LSPAR NAME RSPAR ASSIGN mapping
+    (22) map_statement -> NAME . LSPAR NAME RSPAR ASSIGN kv_mapping
   ! shift/reduce conflict for LPAR resolved as shift
     ASSIGN          shift and go to state 35
     OR              reduce using rule 39 (expression -> NAME .)
@@ -1306,7 +1306,7 @@ state 37
 
 state 38
 
-    (22) map_statement -> NAME LSPAR . NAME RSPAR ASSIGN mapping
+    (22) map_statement -> NAME LSPAR . NAME RSPAR ASSIGN kv_mapping
     NAME            shift and go to state 65
 
 
@@ -2216,7 +2216,7 @@ state 64
 
 state 65
 
-    (22) map_statement -> NAME LSPAR NAME . RSPAR ASSIGN mapping
+    (22) map_statement -> NAME LSPAR NAME . RSPAR ASSIGN kv_mapping
     RSPAR           shift and go to state 88
 
 
@@ -3297,7 +3297,7 @@ state 87
 
 state 88
 
-    (22) map_statement -> NAME LSPAR NAME RSPAR . ASSIGN mapping
+    (22) map_statement -> NAME LSPAR NAME RSPAR . ASSIGN kv_mapping
     ASSIGN          shift and go to state 99
 
 
@@ -3484,12 +3484,12 @@ state 98
 
 state 99
 
-    (22) map_statement -> NAME LSPAR NAME RSPAR ASSIGN . mapping
-    (23) mapping -> . LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR
-    (24) mapping -> . LCPAR key_value_pairs RCPAR
+    (22) map_statement -> NAME LSPAR NAME RSPAR ASSIGN . kv_mapping
+    (23) kv_mapping -> . LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR
+    (24) kv_mapping -> . LCPAR key_value_pairs RCPAR
     LCPAR           shift and go to state 109
 
-    mapping                        shift and go to state 108
+    kv_mapping                     shift and go to state 108
 
 state 100
 
@@ -3569,7 +3569,7 @@ state 101
     (55) expression -> . expression PLUS expression
     (56) expression -> . NAME DOT NAME LPAR exprlist RPAR
     (57) expression -> . NAME LPAR exprlist RPAR
-    (22) map_statement -> . NAME LSPAR NAME RSPAR ASSIGN mapping
+    (22) map_statement -> . NAME LSPAR NAME RSPAR ASSIGN kv_mapping
     (19) import_statement -> . FROM NAME DOT NAME IMPORT module_list
     (31) chain_statement -> . DEF NAME LPAR arglist RPAR COLON NEWLINE block
     (73) const -> . BOOLEAN
@@ -3716,38 +3716,38 @@ state 107
 
 state 108
 
-    (22) map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .
-    NEWLINE         reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    NAME            reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    RETURN          reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    WHILE           reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    IF              reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    PASS            reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    S64             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    S32             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    S16             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    S8              reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    U64             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    U32             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    U16             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    U8              reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    LPAR            reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    NOT             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    FROM            reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    DEF             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    BOOLEAN         reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    STRING          reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    INTEGER         reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    FLOAT           reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    HEX             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    $end            reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
-    DEDENT          reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN mapping .)
+    (22) map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .
+    NEWLINE         reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    NAME            reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    RETURN          reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    WHILE           reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    IF              reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    PASS            reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    S64             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    S32             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    S16             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    S8              reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    U64             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    U32             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    U16             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    U8              reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    LPAR            reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    NOT             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    FROM            reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    DEF             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    BOOLEAN         reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    STRING          reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    INTEGER         reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    FLOAT           reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    HEX             reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    $end            reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
+    DEDENT          reduce using rule 22 (map_statement -> NAME LSPAR NAME RSPAR ASSIGN kv_mapping .)
 
 
 state 109
 
-    (23) mapping -> LCPAR . NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR
-    (24) mapping -> LCPAR . key_value_pairs RCPAR
+    (23) kv_mapping -> LCPAR . NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR
+    (24) kv_mapping -> LCPAR . key_value_pairs RCPAR
     (25) key_value_pairs -> .
     (26) key_value_pairs -> . key_value_pair
     (27) key_value_pairs -> . key_value_pair NEWLINE
@@ -3816,7 +3816,7 @@ state 111
     (55) expression -> . expression PLUS expression
     (56) expression -> . NAME DOT NAME LPAR exprlist RPAR
     (57) expression -> . NAME LPAR exprlist RPAR
-    (22) map_statement -> . NAME LSPAR NAME RSPAR ASSIGN mapping
+    (22) map_statement -> . NAME LSPAR NAME RSPAR ASSIGN kv_mapping
     (19) import_statement -> . FROM NAME DOT NAME IMPORT module_list
     (31) chain_statement -> . DEF NAME LPAR arglist RPAR COLON NEWLINE block
     (73) const -> . BOOLEAN
@@ -3981,13 +3981,13 @@ state 117
 
 state 118
 
-    (23) mapping -> LCPAR NEWLINE . INDENT key_value_pairs DEDENT NEWLINE RCPAR
+    (23) kv_mapping -> LCPAR NEWLINE . INDENT key_value_pairs DEDENT NEWLINE RCPAR
     INDENT          shift and go to state 130
 
 
 state 119
 
-    (24) mapping -> LCPAR key_value_pairs . RCPAR
+    (24) kv_mapping -> LCPAR key_value_pairs . RCPAR
     RCPAR           shift and go to state 131
 
 
@@ -4209,7 +4209,7 @@ state 129
 
 state 130
 
-    (23) mapping -> LCPAR NEWLINE INDENT . key_value_pairs DEDENT NEWLINE RCPAR
+    (23) kv_mapping -> LCPAR NEWLINE INDENT . key_value_pairs DEDENT NEWLINE RCPAR
     (25) key_value_pairs -> .
     (26) key_value_pairs -> . key_value_pair
     (27) key_value_pairs -> . key_value_pair NEWLINE
@@ -4224,32 +4224,32 @@ state 130
 
 state 131
 
-    (24) mapping -> LCPAR key_value_pairs RCPAR .
-    NEWLINE         reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    NAME            reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    RETURN          reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    WHILE           reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    IF              reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    PASS            reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    S64             reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    S32             reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    S16             reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    S8              reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    U64             reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    U32             reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    U16             reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    U8              reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    LPAR            reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    NOT             reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    FROM            reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    DEF             reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    BOOLEAN         reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    STRING          reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    INTEGER         reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    FLOAT           reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    HEX             reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    $end            reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
-    DEDENT          reduce using rule 24 (mapping -> LCPAR key_value_pairs RCPAR .)
+    (24) kv_mapping -> LCPAR key_value_pairs RCPAR .
+    NEWLINE         reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    NAME            reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    RETURN          reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    WHILE           reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    IF              reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    PASS            reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    S64             reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    S32             reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    S16             reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    S8              reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    U64             reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    U32             reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    U16             reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    U8              reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    LPAR            reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    NOT             reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    FROM            reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    DEF             reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    BOOLEAN         reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    STRING          reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    INTEGER         reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    FLOAT           reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    HEX             reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    $end            reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
+    DEDENT          reduce using rule 24 (kv_mapping -> LCPAR key_value_pairs RCPAR .)
 
 
 state 132
@@ -4385,7 +4385,7 @@ state 138
 
 state 139
 
-    (23) mapping -> LCPAR NEWLINE INDENT key_value_pairs . DEDENT NEWLINE RCPAR
+    (23) kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs . DEDENT NEWLINE RCPAR
     DEDENT          shift and go to state 145
 
 
@@ -4436,7 +4436,7 @@ state 144
 
 state 145
 
-    (23) mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT . NEWLINE RCPAR
+    (23) kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT . NEWLINE RCPAR
     NEWLINE         shift and go to state 150
 
 
@@ -4495,7 +4495,7 @@ state 149
 
 state 150
 
-    (23) mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE . RCPAR
+    (23) kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE . RCPAR
     RCPAR           shift and go to state 153
 
 
@@ -4553,32 +4553,32 @@ state 152
 
 state 153
 
-    (23) mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .
-    NEWLINE         reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    NAME            reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    RETURN          reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    WHILE           reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    IF              reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    PASS            reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    S64             reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    S32             reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    S16             reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    S8              reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    U64             reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    U32             reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    U16             reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    U8              reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    LPAR            reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    NOT             reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    FROM            reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    DEF             reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    BOOLEAN         reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    STRING          reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    INTEGER         reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    FLOAT           reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    HEX             reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    $end            reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
-    DEDENT          reduce using rule 23 (mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    (23) kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .
+    NEWLINE         reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    NAME            reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    RETURN          reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    WHILE           reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    IF              reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    PASS            reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    S64             reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    S32             reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    S16             reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    S8              reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    U64             reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    U32             reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    U16             reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    U8              reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    LPAR            reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    NOT             reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    FROM            reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    DEF             reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    BOOLEAN         reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    STRING          reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    INTEGER         reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    FLOAT           reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    HEX             reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    $end            reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
+    DEDENT          reduce using rule 23 (kv_mapping -> LCPAR NEWLINE INDENT key_value_pairs DEDENT NEWLINE RCPAR .)
 
 
 state 154
