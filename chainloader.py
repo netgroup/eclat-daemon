@@ -2,6 +2,7 @@ import json
 import cal
 import settings
 import os
+from parser.json_parser import parse_info, flatten
 
 
 class ChainLoader:
@@ -14,7 +15,7 @@ class ChainLoader:
         self.package = package  # can be the (file) name of the script
         self.configuration = configuration
         ###
-        self.maps = []
+        self.maps_info = []
         self.src_file_path = f"{settings.LOADERS_DIR}/{self.package}/{name}.bpf.c"
         self.obj_file_path = f"{settings.BUILD_LOADERS_DIR}/{self.package}/{name}.bpf.o"
         # TODO Andrea
@@ -26,14 +27,11 @@ class ChainLoader:
 
     def _get_maps(self):
         # get the maps
-        # here we should parse 1) map name; 2) list primitive data composing the key; 3) list of primitive data composing the value
-        # e.g.: {'map_name': 'test', 'key_types': ['u8', 'u16']'key_types': ['u8', 'u16']}
-        with open(self.json_file_path) as f:
-            data = json.load(f)
-            for type in data['types']:
-                if type['kind'] == 'STRUCT' and type['name'].startswith("__hike_map_export__"):
-                    map_name = type['members'][1]['name']
-                    self.maps.append(map_name)
+        #[{'map_name': 'ipv6_hset_srcdst_map', 'key_type': [[('byte_array', 16)], [('byte_array', 16)]], 'value_type': [('int', 64), ('int', 64)]}]
+        from parser.json_parser import parse_info, flatten
+        (maps_info, hike_program_info) = parse_info(self.json_file_path)
+        self.maps_info = maps_info
+        return maps_info
 
     def pull(self):
         # TODO
@@ -57,16 +55,30 @@ class ChainLoader:
         self.is_compiled = False
 
     def write_map(self, map_name, key, data):
-        assert(map_name in self.maps)
+        map_info = filter(lambda x: x['map_name'] == map_name, self.maps_info)
+        assert(len(map_info) == 1)
+        key_types = flatten(map_info['key_type'])
+        value_types = flatten(map_info['value_type'])
+        key_bytes = struct.pack(get_type_fmt(key_types), key)
+        val_bytes = struct.pack(get_type_fmt(key_types), key)
+
+        key_data_string = (" ".join(hex(n)
+                           for n in key_bytes)).replace('0x', '')
+        value_data_string = (" ".join(hex(n)
+                             for n in key_bytes)).replace('0x', '')
+
+        # [{'map_name': 'ipv6_hset_srcdst_map', 'key_type': [[('byte_array', 16)], [(
+        #    'byte_array', 16)]], 'value_type': [('int', 64), ('int', 64)]}]
+
         # as for now, key and data are provided as array of hex
         # e.g.
         # bpftool map update pinned /sys/fs/bpf/maps/init/map_ipv6		\
         #    key hex		fc 02 00 00 00 00 00 00 00 00 00 00 00 00 00 02 \
         #    value hex 	4f 00 00 00
 
-        # key and data are tuples of primitive data
         full_map_name = f"{settings.BPF_FS_MAPS_PATH}/{self.package}/{self.name}/{map_name}"
-        cal.bpftool_map_update(full_map_name, key, data)
+        cal.bpftool_map_update(
+            full_map_name, key_data_string, value_data_string)
 
     def read_map(self, map_name, key):
         pass
