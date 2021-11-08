@@ -16,26 +16,22 @@ class EclatController:
         ebpf_system_init()
         hike_system_init()
 
-    # def load_hike_program(self):
-    #     PROG_NAME = 'testprog'
-    #     PROG_PKG = 'testpkg'
-    #     if 'testprog' not in self.hike_programs.keys():
-    #         self.hike_programs['test'] = HikeProgram(PROG_NAME, PROG_PKG)
-    #     p = self.hike_programs['test']
-    #     p.pull()
     def assign_id(self, element):
         # find an available id
         MIN_ID = 0
         MAX_ID = 255
-        taken_id = [el['id'] for el in self.registered_ids]
-        id = max(taken_id) + 1
+        taken_id = [el['id']
+                    for el in self.registered_ids]
+        id = max(taken_id) + 1 if self.registered_ids else 1
         if id > MAX_ID:
             raise Exception("ID overflow")
 
-        if element is HikeChain:
+        if isinstance(element, HikeChain):
             element_type = 'chain'
-        elif element is HikeProgram:
+        elif isinstance(element, HikeProgram):
             element_type = 'program'
+        else:
+            raise Exception(f"Unknown element {element}")
 
         self.registered_ids.append({
             "type": element_type,

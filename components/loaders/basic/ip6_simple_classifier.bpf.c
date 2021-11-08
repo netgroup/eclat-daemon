@@ -13,16 +13,20 @@
 #include "hike_vm.h"
 #include "parse_helpers.h"
 
-#define MAP_IPV6_SIZE 64
-bpf_map(map_ipv6, HASH, struct in6_addr, __u32, MAP_IPV6_SIZE);
+bpf_map(ipv6_simple_classifier_map, ARRAY, __u32, __u32, 1);
 
-static __always_inline int __hvxdp_handle_ipv6(struct xdp_md *ctx, struct hdr_cursor *cur)
+static __always_inline
+int __hvxdp_handle_ipv6(struct xdp_md *ctx, struct pkt_info *info)
 {
-	struct in6_addr *key;
+	struct hdr_cursor *cur = pkt_info_cur(info);
 	struct ipv6hdr *ip6h;
+	const __u32 key = 0;
 	__u32 *chain_id;
 	int nexthdr;
 	int rc;
+
+	if (!unlikely(cur))
+		return XDP_ABORTED;
 
 	nexthdr = parse_ip6hdr(ctx, cur, &ip6h);
 	if (!ip6h || nexthdr < 0)
@@ -30,9 +34,8 @@ static __always_inline int __hvxdp_handle_ipv6(struct xdp_md *ctx, struct hdr_cu
 
 	cur_reset_transport_header(cur);
 
-	/* let's find out the chain id associated with the IPv6 DA */
-	key = &ip6h->daddr;
-	chain_id = bpf_map_lookup_elem(&map_ipv6, key);
+	/* load the Chain-ID directly from the classifier config map */
+	chain_id = bpf_map_lookup_elem(&ipv6_simple_classifier_map, &key);
 	if (!chain_id)
 		/* value not found, deliver the packet to the kernel */
 		return XDP_PASS;
@@ -51,7 +54,8 @@ static __always_inline int __hvxdp_handle_ipv6(struct xdp_md *ctx, struct hdr_cu
 	return XDP_ABORTED;
 }
 
-__section("hike_classifier") int __hike_classifier(struct xdp_md *ctx)
+__section("ipv6_simple_classifier")
+int __ipv6_simple_classifier(struct xdp_md *ctx)
 {
 	struct pkt_info *info = hike_pcpu_shmem();
 	struct hdr_cursor *cur;
@@ -73,20 +77,20 @@ __section("hike_classifier") int __hike_classifier(struct xdp_md *ctx)
 	cur_reset_network_header(cur);
 
 	proto = bpf_htons(eth_type);
-	switch (proto)
-	{
+	switch (proto) {
 	case ETH_P_IPV6:
-		return __hvxdp_handle_ipv6(ctx, cur);
+		return __hvxdp_handle_ipv6(ctx, info);
 	case ETH_P_IP:
 		/* fallthrough */
 	default:
 		DEBUG_PRINT("HIKe VM Classifier passthrough for proto=%x",
-					bpf_htons(eth_type));
+			    bpf_htons(eth_type));
 		break;
 	}
 
 	/* default policy allows any unrecognized packed... */
 	return XDP_PASS;
 }
+EXPORT_HIKE_MAP(__ipv6_simple_classifier, ipv6_simple_classifier_map);
 
 char LICENSE[] SEC("license") = "Dual BSD/GPL";

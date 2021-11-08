@@ -2,7 +2,8 @@ import json
 import cal
 import settings
 import os
-from parser.json_parser import parse_info, flatten
+import struct
+from parser.json_parser import parse_info, flatten, get_type_fmt
 
 
 class ChainLoader:
@@ -54,13 +55,25 @@ class ChainLoader:
             os.remove(self.json_file_path)
         self.is_compiled = False
 
-    def write_map(self, map_name, key, data):
-        map_info = filter(lambda x: x['map_name'] == map_name, self.maps_info)
-        assert(len(map_info) == 1)
-        key_types = flatten(map_info['key_type'])
-        value_types = flatten(map_info['value_type'])
-        key_bytes = struct.pack(get_type_fmt(key_types), key)
-        val_bytes = struct.pack(get_type_fmt(key_types), key)
+    def write_map(self, map_name, key, value):
+        map_info = None
+        for mi in self.maps_info:
+            if mi['map_name'] == map_name:
+                map_info = mi
+        assert(map_info)  # map is not exported by the program
+        # TODO handle nested maps
+        #key_types = flatten(map_info['key_type'])
+        #value_types = flatten(map_info['value_type'])
+
+        key_types = map_info['key_type']
+        value_types = map_info['value_type']
+
+        # transform keys and data element in integers
+        i_key = [int(k) for k in key]
+        i_value = [int(k) for k in value]
+
+        key_bytes = struct.pack(get_type_fmt(key_types), *i_key)
+        val_bytes = struct.pack(get_type_fmt(value_types), *i_value)
 
         key_data_string = (" ".join(hex(n)
                            for n in key_bytes)).replace('0x', '')
