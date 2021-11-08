@@ -26,11 +26,13 @@ def ddos():
     if not rs:
         monitor(1)
         hike_drop()
+        return 0
 
     u64 : ts = lse()
     if ts < 500000000:
         ip6_hset_srcdst(1)
         hike_drop()
+        return 0
     
     monitor(0)
     hike_pass()

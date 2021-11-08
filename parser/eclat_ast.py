@@ -153,7 +153,7 @@ class Return(Statement):
         return self.to_c()
 
     def to_c(self):
-        return f"return {self.expression.to_c()}"
+        return f"return {self.expression.to_c()};"
 
 
 class Pass(Statement):
