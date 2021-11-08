@@ -13,10 +13,9 @@
 #include "hike_vm.h"
 #include "parse_helpers.h"
 
-bpf_map(ipv6_simple_classifier_map, ARRAY, __u32, __u32, 1);
+bpf_map(ipv6_sc_map, ARRAY, __u32, __u32, 1);
 
-static __always_inline
-int __hvxdp_handle_ipv6(struct xdp_md *ctx, struct pkt_info *info)
+static __always_inline int __hvxdp_handle_ipv6(struct xdp_md *ctx, struct pkt_info *info)
 {
 	struct hdr_cursor *cur = pkt_info_cur(info);
 	struct ipv6hdr *ip6h;
@@ -35,7 +34,7 @@ int __hvxdp_handle_ipv6(struct xdp_md *ctx, struct pkt_info *info)
 	cur_reset_transport_header(cur);
 
 	/* load the Chain-ID directly from the classifier config map */
-	chain_id = bpf_map_lookup_elem(&ipv6_simple_classifier_map, &key);
+	chain_id = bpf_map_lookup_elem(&ipv6_sc_map, &key);
 	if (!chain_id)
 		/* value not found, deliver the packet to the kernel */
 		return XDP_PASS;
@@ -54,8 +53,7 @@ int __hvxdp_handle_ipv6(struct xdp_md *ctx, struct pkt_info *info)
 	return XDP_ABORTED;
 }
 
-__section("ipv6_simple_classifier")
-int __ipv6_simple_classifier(struct xdp_md *ctx)
+__section("ipv6_sc") int __ipv6_sc(struct xdp_md *ctx)
 {
 	struct pkt_info *info = hike_pcpu_shmem();
 	struct hdr_cursor *cur;
@@ -77,20 +75,21 @@ int __ipv6_simple_classifier(struct xdp_md *ctx)
 	cur_reset_network_header(cur);
 
 	proto = bpf_htons(eth_type);
-	switch (proto) {
+	switch (proto)
+	{
 	case ETH_P_IPV6:
 		return __hvxdp_handle_ipv6(ctx, info);
 	case ETH_P_IP:
 		/* fallthrough */
 	default:
 		DEBUG_PRINT("HIKe VM Classifier passthrough for proto=%x",
-			    bpf_htons(eth_type));
+					bpf_htons(eth_type));
 		break;
 	}
 
 	/* default policy allows any unrecognized packed... */
 	return XDP_PASS;
 }
-EXPORT_HIKE_MAP(__ipv6_simple_classifier, ipv6_simple_classifier_map);
+EXPORT_HIKE_MAP(__ipv6_sc, ipv6_sc_map);
 
 char LICENSE[] SEC("license") = "Dual BSD/GPL";

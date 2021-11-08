@@ -24,6 +24,7 @@ class Chain():
         return f"""HIKE_CHAIN_{n_args + 1}({flat_c_params})
         {{
             {self.block.to_c()}
+            return 0;
         }}
         """
 
@@ -307,7 +308,7 @@ class FunctionCall(Expression):
             args = self.parameters if self.parameters else []
             flatted_c_args = ",".join(
                 [placeholder, ] + [a.to_c() for a in args])
-            return f"hike_elem_call_{params_n + 1}({flatted_c_args})".upper()
+            return f"hike_elem_call_{params_n + 1}({flatted_c_args})"
 
 
 class Argument():

@@ -1,20 +1,29 @@
 import unittest
 from controller import EclatController
+import cal
 
 
 class TestController(unittest.TestCase):
-    def test_scenario_ddos(self):
-        controller = EclatController()
-        script = """
-from loaders.basic import ip6_simple_classifier
-from programs.net import hike_drop, hike_pass, ip6_hset_srcdst, lse, monitor
+    def setUp(self):
+        cal.ebpf_system_init()
+        cal.hike_system_init()
+        return super().setUp()
 
-ip6_simple_classifier[ipv6_simple_classifier_map] = { (0): (86) }
-ip6_simple_classifier.attach('enp6s0f0', 'xdp')
+    def test_scenario_ddos(self):
+        cal.ebpf_system_init()
+        cal.hike_system_init()
+        controller = EclatController()
+        package = "ddos_pkg"
+        script = """
+from programs.net import hike_drop, hike_pass, ip6_hset_srcdst, lse, monitor
+from loaders.basic import ip6_sc
+
+ip6_sc[ipv6_sc_map] = { (0): (6) }
+ip6_sc.attach('enp6s0f0', 'xdp')
 
 def ddos():
     u64 : rs = ip6_hset_srcdst(2)
-    if !rs:
+    if not rs:
         monitor(1)
         hike_drop()
 
@@ -27,4 +36,4 @@ def ddos():
     hike_pass()
         """
         print(script)
-        controller.load_configuration(script)
+        controller.load_configuration(script, package)

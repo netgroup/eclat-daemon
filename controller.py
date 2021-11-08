@@ -40,7 +40,7 @@ class EclatController:
             "id": id})
         return id
 
-    def load_configuration(self, eclat_script):
+    def load_configuration(self, eclat_script, script_package):
         # Parse the config
         tokens = EclatLexer().tokenize(eclat_script)
         parser = EclatParser()
@@ -65,13 +65,9 @@ class EclatController:
         chains = []
         for chain_name, ast_chain in parser.chains.items():
             # get the package name
-            chain_package = None
-            for package, names in parser.imports['programs'].items():
-                if chain_name in names:
-                    chain_package = package
-
+            chain_package = script_package
             hc = HikeChain(
-                name=ast_chain.name, package=chain_package, code=ast_chain.to_c(), globals=parser.globals)
+                name=ast_chain.name, package=chain_package, code=ast_chain.to_c(chain_package), globals=parser.globals)
             c_id = self.assign_id(hc)
             chains.append((hc, c_id))
 
@@ -83,17 +79,25 @@ class EclatController:
             self.hike_chains[(hc.name, hc.package)] = hc
 
         # set up chain loaders
-        for loader in parser.loaders:
+        for package, names in parser.imports['loaders'].items():
+            print(f"names: {names}")
+            assert(len(names) == 1)  # for now we support just one loader
+            name = names[0]
             # get the package
-            print(loader)
-            name, package, attach_type, dev = loader['name'], loader[
-                'package'], loader['attach_type'], loader['dev']
+            loader_info = None
+            for li in parser.loaders:
+                if li['name'] == name and li['package'] == package:
+                    loader_info = li
+            # we must have information about loader configuration
+            assert(loader_info)
+            attach_type, dev = loader_info['attach_type'], loader_info['dev']
 
             hl = ChainLoader(name, package)
             hl.compile()
             hl.load()
 
             hl.attach(dev, attach_type)
+            print(f"Searching {name} in {parser.maps}")
             for map_configuration in filter(lambda x: x['program_name'] == name, parser.maps):
                 for key, value in map_configuration['data'].items():
                     hl.write_map(map_configuration['map_name'], key, value)

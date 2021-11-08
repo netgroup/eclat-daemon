@@ -78,7 +78,7 @@ class ChainLoader:
         key_data_string = (" ".join(hex(n)
                            for n in key_bytes)).replace('0x', '')
         value_data_string = (" ".join(hex(n)
-                             for n in key_bytes)).replace('0x', '')
+                             for n in val_bytes)).replace('0x', '')
 
         # [{'map_name': 'ipv6_hset_srcdst_map', 'key_type': [[('byte_array', 16)], [(
         #    'byte_array', 16)]], 'value_type': [('int', 64), ('int', 64)]}]
@@ -91,7 +91,7 @@ class ChainLoader:
 
         full_map_name = f"{settings.BPF_FS_MAPS_PATH}/{self.package}/{self.name}/{map_name}"
         cal.bpftool_map_update(
-            full_map_name, key_data_string, value_data_string)
+            full_map_name, key_data_string.split(), value_data_string.split(), value_type="hex")
 
     def read_map(self, map_name, key):
         pass

@@ -154,14 +154,14 @@ def hikecc(name, package):
     # that contains all the HIKe Chains; 3) the path of the load script
     # that is going to be generated.
     ${HIKECC} data/binaries/minimal_chain.hike.o			\
-            /sys/fs/bpf/maps/hike_chain_map 			\
-            data/binaries/minimal_chain.hike.load.sh
+                  /sys/fs/bpf/maps/init/hvm_chain_map 			\
+                  data/binaries/minimal_chain.hike.load.sh
 
     # Load HIKe Chains calling the loader script we just built :-o
     /bin/bash data/binaries/minimal_chain.hike.load.sh
     """
     obj_file_path = f"{settings.BUILD_CHAINS_DIR}/{package}/{name}.hike.o"
-    map_name = f"{settings.BPF_FS_MAPS_SYSTEM_PATH}/hike_chain_map"
+    map_name = f"{settings.BPF_FS_MAPS_SYSTEM_PATH}/hvm_chain_map"
     loader_file_path = f"{settings.BUILD_CHAINS_DIR}/{package}/{name}.hike.load.sh"
     HIKE_CC = f"{settings.HIKE_PATH}/hike-tools/hikecc.sh"
 
@@ -208,7 +208,7 @@ def bpftool_prog_load(name, package,
     program_object_prefix = settings.BUILD_PROGRAMS_DIR if is_loader == False else settings.BUILD_LOADERS_DIR
     program_object = f"{program_object_prefix}/{package}/{name}.bpf.o"
     program_fs_path = f"{settings.BPF_FS_PROGS_PATH}/{package}/{name}"
-    program_maps_fs_path = f"{settings.BPF_FS_MAPS_PATH}/{package}"
+    program_maps_fs_path = f"{settings.BPF_FS_MAPS_PATH}/{package}/{name}" if package != "system" else f"{settings.BPF_FS_MAPS_PATH}/{package}"
 
     mkdir(f"{settings.BPF_FS_PROGS_PATH}/{package}")
     mkdir(program_maps_fs_path)
@@ -256,19 +256,28 @@ def bpftool_net_attach(attach_type, dev_name, pinned_file):
 
 # bpftool map update id <id> key <key> value <new_value>
 # bpftool map update pinned <path> key <key> value <new_value>
-def bpftool_map_update(map_reference, key, value, map_reference_type="pinned"):
+def bpftool_map_update(map_reference, key, value, map_reference_type="pinned", value_type="pinned"):
     """Update a eBPF map
 
     :param map_reference: ID of the map or sys/fs path if reference refers to a pinned map
     :param key: key to update (passed as list of hex)
     :param value: value to be written
     :param map_reference_type: id or pinned, defaults to "pinned"
+    :param value_type: pinned or hex
     """
     if map_reference_type == "pinned":
         key_string = " ".join(key)
-        cmd = f"bpftool map update pinned {map_reference} key hex {key_string} value pinned {value}"
+        if value_type == "pinned":
+            cmd = f"bpftool map update pinned {map_reference} key hex {key_string} value pinned {value}"
+        elif value_type == "hex":
+            value_string = " ".join(value)
+            cmd = f"bpftool map update pinned {map_reference} key hex {key_string} value hex {value_string}"
+        else:
+            raise Exception(
+                "bpftool_map_update: Instruction not implemented (invalid value_type).")
     else:
-        raise Exception("bpftool_map_update: Instruction not implemented.")
+        raise Exception(
+            "bpftool_map_update: Instruction not implemented (invalid map_reference_type).")
 
     print(f"Exec: {cmd}")
     ret = os.system(cmd)

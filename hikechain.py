@@ -32,41 +32,49 @@ class HikeChain:
         Write to a file.
         Programs maps is a tuple of (package, function, id)
         """
-        if not self.is_linked:
-            print("Linking program")
-            mapper_code = []
-            # create the define list with the registered id
-            for el in registered_ids:
-                if el['type'] == 'program':
-                    placeholder = f"hike_ebpf_prog_{el['package']}_{el['name']}".upper(
-                    )
-                    mapper_code.append(f"#define {placeholder} {el['id']}")
-                elif el['type'] == 'chain':
-                    placeholder = f"hike_chain_{el['package']}_{el['name']}".upper(
-                    )
-                    mapper_code.append(f"#define {placeholder} {el['id']}")
-                else:
-                    raise Exception("Invalid mapping entry.")
-            # HIKE_EBPF_PROG_ALLOW_ANY -> 12
-            self.code = "\n".join(mapper_code) + self.code
-            self.is_linked = True
-            with open(self.src_file_path, "w") as f:
-                f.write(self.code)
-            print(f"Linked!\n{self.code}")
-        else:
-            print("Program already linked")
+        print("Linking chain...")
+        mapper_code = []
+        # create the define list with the registered id
+        for el in registered_ids:
+            if el['type'] == 'program':
+                placeholder = f"hike_ebpf_prog_{el['package']}_{el['name']}".upper(
+                )
+                mapper_code.append(f"#define {placeholder} {el['id']}")
+            elif el['type'] == 'chain':
+                placeholder = f"hike_chain_{el['package']}_{el['name']}".upper(
+                )
+                mapper_code.append(f"#define {placeholder} {el['id']}")
+            else:
+                raise Exception("Invalid mapping entry.")
+        headers = """
+#include <linux/errno.h>
+#include "hike_vm.h"
+#include "parse_helpers.h"
+
+        """
+        self.code = headers + "\n".join(mapper_code) + "\n" + self.code
+        self.is_linked = True
+
+        if not os.path.exists(os.path.dirname(self.src_file_path)):
+            # create directory if not exists
+            os.mkdir(os.path.dirname(self.src_file_path))
+
+        with open(self.src_file_path, "w") as f:
+            f.write(self.code)
+        print(f"Linked!\n{self.code}")
 
     def compile(self):
         if not os.path.exists(self.src_file_path):
             raise Exception(
                 f"Compilation failed. File {self.src_file_path} does not exist.")
         if not self.is_linked:
-            self._link()
-        if not self.is_compiled:
-            cal.make_hike_chain(self.src_file_path)
-            self.is_compiled = True
-        else:
-            print(f"Hike chain {self.name} is already compiled")
+            raise Exception(
+                f"Compilation failed. Chain {self.name} must be linked before compilation.")
+        # if not self.is_compiled:
+        cal.make_hike_chain(self.src_file_path)
+        self.is_compiled = True
+        # else:
+        #    print(f"Hike chain {self.name} is already compiled")
 
     def clean(self):
         if os.path.exists(self.obj_file_path):
