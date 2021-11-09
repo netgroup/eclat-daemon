@@ -2,8 +2,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 .vscode
-eclat_pb2_grpc.py
-eclat_pb2.py
 .env
 .venv
 env/
@@ -14,4 +12,3 @@ venv.bak/
 .DS_Store
 parser.out
 build/
-.DS_Store

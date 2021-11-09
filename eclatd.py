@@ -6,11 +6,9 @@ import time
 import eclat_pb2
 import eclat_pb2_grpc
 
-from cas import init_system
+from controller import EclatController
 
-from engine import EclatEngine
-
-engine = EclatEngine()
+engine = EclatController()
 
 
 class EclatServicer(eclat_pb2_grpc.EclatServicer):
