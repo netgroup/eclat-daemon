@@ -7,6 +7,10 @@ from parser.lexer import EclatLexer
 
 
 class EclatController:
+    """Controller is the Eclat main class. 
+    It is responsible of keeping the state and interpret high level commands
+    such as load configuration which interprets an eclat script and apply it.
+    """
     hike_programs = {}
     hike_chains = {}
     chain_loaders = {}
@@ -18,11 +22,11 @@ class EclatController:
 
     def assign_id(self, element):
         # find an available id
-        MIN_ID = 0
+        MIN_ID = 1
         MAX_ID = 255
         taken_id = [el['id']
                     for el in self.registered_ids]
-        id = max(taken_id) + 1 if self.registered_ids else 1
+        id = max(taken_id) + 1 if self.registered_ids else MIN_ID
         if id > MAX_ID:
             raise Exception("ID overflow")
 
@@ -51,8 +55,9 @@ class EclatController:
         # set up hike programs
         for package, names in parser.imports['programs'].items():
             for name in names:
+                # if not already running, launch the hike programs
                 if not (name, package) in self.hike_programs.keys():
-                    if package != 'hike':  # reserved for system
+                    if package != 'hike':  # reserved for system programs
                         hp = HikeProgram(name, package)
                         hp.pull()
                         hp.compile()
@@ -61,11 +66,10 @@ class EclatController:
                         hp.register(p_id)
                         self.hike_programs[(hp.name, hp.package)] = hp
 
-        # pre-register chain ids
+        # pre-register chains ids
         chains = []
         for chain_name, ast_chain in parser.chains.items():
-            # get the package name
-            chain_package = script_package
+            chain_package = script_package  # get the package name
             hc = HikeChain(
                 name=ast_chain.name, package=chain_package, code=ast_chain.to_c(chain_package), globals=parser.globals)
             c_id = self.assign_id(hc)
@@ -80,24 +84,27 @@ class EclatController:
 
         # set up chain loaders
         for package, names in parser.imports['loaders'].items():
-            print(f"names: {names}")
-            assert(len(names) == 1)  # for now we support just one loader
+            assert(len(names) == 1)  # currently we support just one loader
             name = names[0]
-            # get the package
+            # get loader configuration information
             loader_info = None
             for li in parser.loaders:
                 if li['name'] == name and li['package'] == package:
                     loader_info = li
-            # we must have information about loader configuration
-            assert(loader_info)
+            assert(loader_info)  # we need one loader configuration
+
             attach_type, dev = loader_info['attach_type'], loader_info['dev']
 
             hl = ChainLoader(name, package)
             hl.compile()
             hl.load()
-
+            print(f"maps pre parser: {parser.maps}")
+            parser.maps = hl.link(parser.maps, self.registered_ids)
+            print(f"maps post parser: {parser.maps}")
+            return
             hl.attach(dev, attach_type)
-            print(f"Searching {name} in {parser.maps}")
+
+            # configure maps for loaders
             for map_configuration in filter(lambda x: x['program_name'] == name, parser.maps):
                 for key, value in map_configuration['data'].items():
                     hl.write_map(map_configuration['map_name'], key, value)

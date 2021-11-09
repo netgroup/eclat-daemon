@@ -1,5 +1,8 @@
 """
 Command Abstraction Layer
+
+This module implements the abstraction between python functions and commands
+such as bpftools.
 """
 from typing import Coroutine
 import settings
@@ -46,9 +49,6 @@ def hike_system_init():
             settings.PROGRAMS_DIR, 'system/init_hike.bpf.c')  # TODO
 
         make_ebpf_hike_program(bpf_source_file)
-
-        # bpf_output_file = os.path.join(
-        #    settings.BUILD_PROGRAMS_DIR, 'init_hike.bpf.o')
 
         pinned_maps = {}
         bpftool_prog_load("init_hike", "system", pinned_maps,
@@ -120,32 +120,6 @@ def make_ebpf_hike_program(file_path):
     if ret != 0:
         raise Exception(
             f"Hike Program compilation failed\nOffending command is {cmd}")
-
-
-# def make_ebpf_hike_program(makefile, source, hike_dir):
-#     """
-#     Run makefile to create an eBPF/HIKe program.
-#     $ make -f path-to/hike_vm/external/Makefile -j24 prog PROG=prog.bpf.c HIKE_DIR=path-to/hike_vm/src/
-#     """
-#     build_dir = settings.BUILD_DIR
-#     # We just need the name of the object file
-#     source = source.split("/")[-1]
-
-#     # BUILD indicates the path where the compiled file is put and NOT the path of the input file
-#     # In external MakeFile, $(shell pwd) is executed to get the path:
-#     # export OUTPUT := $(abspath $(shell pwd)/$(BUILD))
-#     # do we need to change folder ???
-#     currentDirectory = os.getcwd()
-#     os.chdir(build_dir)
-
-#     #cmd = f"make -f {makefile} prog PROG={source} HIKE_DIR={hike_dir} BUILD={build_dir}"
-#     cmd = f"make -f {makefile} prog PROG={source} HIKE_DIR={hike_dir}"
-#     os.system(cmd)
-
-#     # reset directory
-#     os.chdir(currentDirectory)
-
-#     return True
 
 
 def hikecc(name, package):
@@ -287,45 +261,3 @@ def bpftool_map_update(map_reference, key, value, map_reference_type="pinned", v
 
     # unittest
     return True
-
-
-# # bpftool map update MAP [key DATA] [value VALUE] [UPDATE_FLAGS]
-# # MAP := {id MAP_ID | pinned FILE | name MAP_NAME}
-# # DATA := {[hex] BYTES}
-# # VALUE := {DATA | MAP | PROG}
-# # UPDATE_FLAGS := {any | exist | noexist}
-# def bpftool_map_update(map_map, key_data=None, value=None, update_flags=None):
-#     cmd = ""
-#     if map_map.split(" ")[0] in ["id", "pinned", "tag"]:
-#         cmd = "bpftool map update" + map_map + " "
-#     else:
-#         # Placeholder
-#         raise Exception("bpftool_map_update: Instruction not implemented.")
-
-#     if key_data != None:
-#         cmd += "key"
-#         if key_data.split(" ")[0] == "hex":
-#             try:
-#                 int(key_data.split(" ")[1], 16)
-#                 # Placeholder
-#                 print('That is a valid hex value.')
-#             except:
-#                 # Placeholder
-#                 print('That is an invalid hex value.')
-#             cmd += "hex" + " "
-#         cmd += key_data + " "
-
-#     if value != None:
-#         cmd += "value" + value + " "
-
-#     if update_flags in ["any", "exist", "noexist"]:
-#         cmd += update_flags + " "
-#     else:
-#         # Placeholder
-#         print("ERRORE")
-
-#     print(f"Exec: {cmd}")
-#     ret = os.system(cmd)
-
-#     # unittest
-#     return True

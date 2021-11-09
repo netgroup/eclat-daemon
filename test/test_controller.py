@@ -18,7 +18,7 @@ class TestController(unittest.TestCase):
 from programs.net import hike_drop, hike_pass, ip6_hset_srcdst, lse, monitor
 from loaders.basic import ip6_sc
 
-ip6_sc[ipv6_sc_map] = { (0): (6) }
+ip6_sc[ipv6_sc_map] = { (0): (ddos) }
 ip6_sc.attach('enp6s0f0', 'xdp')
 
 def ddos():

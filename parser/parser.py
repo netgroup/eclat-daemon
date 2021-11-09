@@ -7,7 +7,7 @@ from .lexer import EclatLexer
 
 class EclatParser(Parser):
     tokens = EclatLexer.tokens
-    debugfile = 'parser.out'
+    #debugfile = 'parser.out'
 
     precedence = (
         ('left', 'COLON'),
@@ -39,7 +39,8 @@ class EclatParser(Parser):
         self.chains = {}  # chains code
         self.loaders = []  # chain loader configuration
         self.globals = []  # global variables
-        self.maps = []  #  configure maps
+        #  configure maps - {'program_name': ..., 'map_name': ..., 'data' {k1: v1, k2: v2}}
+        self.maps = []
         # function mapper
         self.mapper = {}  # eye candy for "objects"
 

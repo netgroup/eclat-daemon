@@ -28,11 +28,30 @@ class ChainLoader:
 
     def _get_maps(self):
         # get the maps
-        #[{'map_name': 'ipv6_hset_srcdst_map', 'key_type': [[('byte_array', 16)], [('byte_array', 16)]], 'value_type': [('int', 64), ('int', 64)]}]
+        # [{'map_name': 'ipv6_hset_srcdst_map', 'key_type': [[('byte_array', 16)], [('byte_array', 16)]], 'value_type': [('int', 64), ('int', 64)]}]
         from parser.json_parser import parse_info, flatten
         (maps_info, hike_program_info) = parse_info(self.json_file_path)
         self.maps_info = maps_info
         return maps_info
+
+    def link(self, maps, registered_ids):
+        """Substitute in maps configuration the chain ids
+
+        :param maps: parser maps -> [{'program_name': ..., 'map_name': ..., 'data' {k1: v1, k2: v2}}]
+        :param registered_ids: registered ids -> [{type, package, name, id}]
+        :return: linked maps
+        """
+        chain_ids = [(ri['name'], ri['id'])
+                     for ri in registered_ids if ri['type'] == 'chain']
+
+        for i, map_info in enumerate(maps):
+            for k, vs, in map_info['data'].items():
+                for chain_name, chain_id in chain_ids:
+                    if chain_name in vs:
+                        maps[i]['data'][k] = list(map(
+                            lambda x: chain_id if chain_name in x else x, maps[i]['data'][k]))
+
+        return maps
 
     def pull(self):
         # TODO
@@ -62,8 +81,8 @@ class ChainLoader:
                 map_info = mi
         assert(map_info)  # map is not exported by the program
         # TODO handle nested maps
-        #key_types = flatten(map_info['key_type'])
-        #value_types = flatten(map_info['value_type'])
+        # key_types = flatten(map_info['key_type'])
+        # value_types = flatten(map_info['value_type'])
 
         key_types = map_info['key_type']
         value_types = map_info['value_type']
