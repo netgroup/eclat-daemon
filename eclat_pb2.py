@@ -19,61 +19,29 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0b\x65\x63lat.proto\"!\n\x0f\x45\x63latRunRequest\x12\x0e\n\x06script\x18\x01 \x01(\t\"3\n\x10\x45\x63latRunResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t25\n\x05\x45\x63lat\x12,\n\x03Run\x12\x10.EclatRunRequest\x1a\x11.EclatRunResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x0b\x65\x63lat.proto\"3\n\x10\x45\x63latLoadRequest\x12\x0e\n\x06script\x18\x01 \x01(\t\x12\x0f\n\x07package\x18\x02 \x01(\t\"4\n\x11\x45\x63latLoadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t2E\n\x05\x45\x63lat\x12<\n\x11LoadConfiguration\x12\x11.EclatLoadRequest\x1a\x12.EclatLoadResponse\"\x00\x62\x06proto3'
 )
 
 
 
 
-_ECLATRUNREQUEST = _descriptor.Descriptor(
-  name='EclatRunRequest',
-  full_name='EclatRunRequest',
+_ECLATLOADREQUEST = _descriptor.Descriptor(
+  name='EclatLoadRequest',
+  full_name='EclatLoadRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='script', full_name='EclatRunRequest.script', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=15,
-  serialized_end=48,
-)
-
-
-_ECLATRUNRESPONSE = _descriptor.Descriptor(
-  name='EclatRunResponse',
-  full_name='EclatRunResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='status', full_name='EclatRunResponse.status', index=0,
+      name='script', full_name='EclatLoadRequest.script', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='message', full_name='EclatRunResponse.message', index=1,
+      name='package', full_name='EclatLoadRequest.package', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -91,27 +59,66 @@ _ECLATRUNRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=50,
-  serialized_end=101,
+  serialized_start=15,
+  serialized_end=66,
 )
 
-DESCRIPTOR.message_types_by_name['EclatRunRequest'] = _ECLATRUNREQUEST
-DESCRIPTOR.message_types_by_name['EclatRunResponse'] = _ECLATRUNRESPONSE
+
+_ECLATLOADRESPONSE = _descriptor.Descriptor(
+  name='EclatLoadResponse',
+  full_name='EclatLoadResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='status', full_name='EclatLoadResponse.status', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='message', full_name='EclatLoadResponse.message', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=68,
+  serialized_end=120,
+)
+
+DESCRIPTOR.message_types_by_name['EclatLoadRequest'] = _ECLATLOADREQUEST
+DESCRIPTOR.message_types_by_name['EclatLoadResponse'] = _ECLATLOADRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-EclatRunRequest = _reflection.GeneratedProtocolMessageType('EclatRunRequest', (_message.Message,), {
-  'DESCRIPTOR' : _ECLATRUNREQUEST,
+EclatLoadRequest = _reflection.GeneratedProtocolMessageType('EclatLoadRequest', (_message.Message,), {
+  'DESCRIPTOR' : _ECLATLOADREQUEST,
   '__module__' : 'eclat_pb2'
-  # @@protoc_insertion_point(class_scope:EclatRunRequest)
+  # @@protoc_insertion_point(class_scope:EclatLoadRequest)
   })
-_sym_db.RegisterMessage(EclatRunRequest)
+_sym_db.RegisterMessage(EclatLoadRequest)
 
-EclatRunResponse = _reflection.GeneratedProtocolMessageType('EclatRunResponse', (_message.Message,), {
-  'DESCRIPTOR' : _ECLATRUNRESPONSE,
+EclatLoadResponse = _reflection.GeneratedProtocolMessageType('EclatLoadResponse', (_message.Message,), {
+  'DESCRIPTOR' : _ECLATLOADRESPONSE,
   '__module__' : 'eclat_pb2'
-  # @@protoc_insertion_point(class_scope:EclatRunResponse)
+  # @@protoc_insertion_point(class_scope:EclatLoadResponse)
   })
-_sym_db.RegisterMessage(EclatRunResponse)
+_sym_db.RegisterMessage(EclatLoadResponse)
 
 
 
@@ -122,16 +129,16 @@ _ECLAT = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=103,
-  serialized_end=156,
+  serialized_start=122,
+  serialized_end=191,
   methods=[
   _descriptor.MethodDescriptor(
-    name='Run',
-    full_name='Eclat.Run',
+    name='LoadConfiguration',
+    full_name='Eclat.LoadConfiguration',
     index=0,
     containing_service=None,
-    input_type=_ECLATRUNREQUEST,
-    output_type=_ECLATRUNRESPONSE,
+    input_type=_ECLATLOADREQUEST,
+    output_type=_ECLATLOADRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

@@ -1,14 +1,15 @@
 syntax = "proto3";
 
-message EclatRunRequest {
+message EclatLoadRequest {
     string script = 1;
+    string package = 2;
 }
 
-message EclatRunResponse {
+message EclatLoadResponse {
     string status = 1;
     string message = 2;
 }
 
 service Eclat {
-    rpc Run(EclatRunRequest) returns (EclatRunResponse) {}
+    rpc LoadConfiguration(EclatLoadRequest) returns (EclatLoadResponse) {}
 }

@@ -14,17 +14,17 @@ class EclatStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.Run = channel.unary_unary(
-                '/Eclat/Run',
-                request_serializer=eclat__pb2.EclatRunRequest.SerializeToString,
-                response_deserializer=eclat__pb2.EclatRunResponse.FromString,
+        self.LoadConfiguration = channel.unary_unary(
+                '/Eclat/LoadConfiguration',
+                request_serializer=eclat__pb2.EclatLoadRequest.SerializeToString,
+                response_deserializer=eclat__pb2.EclatLoadResponse.FromString,
                 )
 
 
 class EclatServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def Run(self, request, context):
+    def LoadConfiguration(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,10 +33,10 @@ class EclatServicer(object):
 
 def add_EclatServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'Run': grpc.unary_unary_rpc_method_handler(
-                    servicer.Run,
-                    request_deserializer=eclat__pb2.EclatRunRequest.FromString,
-                    response_serializer=eclat__pb2.EclatRunResponse.SerializeToString,
+            'LoadConfiguration': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoadConfiguration,
+                    request_deserializer=eclat__pb2.EclatLoadRequest.FromString,
+                    response_serializer=eclat__pb2.EclatLoadResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -49,7 +49,7 @@ class Eclat(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def Run(request,
+    def LoadConfiguration(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,8 +59,8 @@ class Eclat(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Eclat/Run',
-            eclat__pb2.EclatRunRequest.SerializeToString,
-            eclat__pb2.EclatRunResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/Eclat/LoadConfiguration',
+            eclat__pb2.EclatLoadRequest.SerializeToString,
+            eclat__pb2.EclatLoadResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -8,17 +8,18 @@ import eclat_pb2_grpc
 
 from controller import EclatController
 
-engine = EclatController()
+controller = EclatController()
 
 
 class EclatServicer(eclat_pb2_grpc.EclatServicer):
     def __init__(self, eclatd):
-        self.engine = engine
+        self.controller = controller
 
-    def Run(self, request, context):
+    def LoadConfiguration(self, request, context):
         print(request.script)
-        response = eclat_pb2.EclatRunResponse()
-        ret = self.engine.run(request.script)
+        response = eclat_pb2.EclatLoadResponse()
+        ret = self.controller.load_configuration(
+            request.script, request.package)
         if ret:
             response.status = "OK"
             response.message = "test ret message for message " + request.script
@@ -32,17 +33,10 @@ server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
 
 
 eclat_pb2_grpc.add_EclatServicer_to_server(
-    EclatServicer(engine), server)
+    EclatServicer(controller), server)
 
 # listen on port 50051
 print('Starting server. Listening on port 50051.')
 server.add_insecure_port('[::]:50051')
 server.start()
-
-# since server.start() will not block,
-# a sleep-loop is added to keep alive
-try:
-    while True:
-        time.sleep(86400)
-except KeyboardInterrupt:
-    server.stop(0)
+server.wait_for_termination()
