@@ -39,4 +39,5 @@ eclat.py --load test/eclat_scripts/ddos.eclat --package test #load a test script
 ```shell
 python -m unittest test.test_grpc
 python -m unittest test.test_parser
+python -m unittest test.test_controller
 ```

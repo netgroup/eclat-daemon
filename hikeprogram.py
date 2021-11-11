@@ -39,26 +39,22 @@ class HikeProgram:
 
     def pull(self):
         """
-        [Temporary] download a package in the appropriate directory
+        Download a package in the appropriate directory
         """
-        return  #  TODO
-        # TODO: handle dependencies. Package manager?
         import requests
         import tarfile
-
         # if there is not a folder, download the package
         if not os.path.isdir(f"{settings.PROGRAMS_DIR}/{self.package}"):
             file_name = f"{self.package}.tar.gz"
-            url = f"{settings.REPOSITORY_URL}/{file_name}"
+            url = f"{settings.PROGRAMS_REPOSITORY_URL}/{file_name}"
             r = requests.get(url, allow_redirects=True)
             file_path = f"{settings.PROGRAMS_DIR}/{file_name}"
             open(file_path, 'wb').write(r.content)
-
             tar = tarfile.open(file_path, "r:gz")
             # this should create the /package_name/ folder
-            tar.extractall()
+            tar.extractall(settings.PROGRAMS_DIR)
             tar.close()
-            # file_name = f"{self.package}.tar.gz"
+            os.remove(file_name)
 
     def compile(self):
         if not os.path.exists(self.src_file_path):
