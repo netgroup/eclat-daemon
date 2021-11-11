@@ -26,7 +26,6 @@ class IndentedLexer(Lexer):
         curr_indentation_level = 0
         indentations = [0, ]
         output = ""
-        print(lines)
         for lineno, line in enumerate(lines):
             # remove spaces at the end and skip white lines
             line = line.rstrip()

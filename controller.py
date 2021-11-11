@@ -49,8 +49,6 @@ class EclatController:
         tokens = EclatLexer().tokenize(eclat_script)
         parser = EclatParser()
         parser.parse(tokens)
-        print(parser.imports)
-        print(parser.chains)
 
         # set up hike programs
         for package, names in parser.imports['programs'].items():
@@ -98,10 +96,7 @@ class EclatController:
             hl = ChainLoader(name, package)
             hl.compile()
             hl.load()
-            print(f"maps pre parser: {parser.maps}")
             parser.maps = hl.link(parser.maps, self.registered_ids)
-            print(f"maps post parser: {parser.maps}")
-            return
             hl.attach(dev, attach_type)
 
             # configure maps for loaders

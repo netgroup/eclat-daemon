@@ -85,7 +85,6 @@ class EclatParser(Parser):
 
     @_('NAME LSPAR NAME RSPAR ASSIGN kv_mapping')
     def map_statement(self, p):
-        print(f"Map {p.NAME1} configuration: ", p.kv_mapping.to_python())
         self.maps.append({
             'program_name': p.NAME0,
             'map_name': p.NAME1,
@@ -114,10 +113,6 @@ class EclatParser(Parser):
     @_('DEF NAME LPAR arglist RPAR COLON NEWLINE block')
     def chain_statement(self, p):
         c = Chain(p.NAME, p.arglist, p.block)
-        print(f"Printing {p.NAME} code:\n")
-        print("------------------------------")
-        print(c.to_c('testing_package'))
-        print("------------------------------")
         if p.NAME in self.chains.keys():
             raise Exception(f"Chain {p.NAME} has already been defined")
         self.chains[p.NAME] = c
@@ -185,7 +180,6 @@ class EclatParser(Parser):
         expression_list = p.exprlist
         if hasattr(p, 'NAME1'):
             # method call
-            print(f"method call {p.NAME0}.{p.NAME1}: {expression_list}")
             return FunctionCall(p.NAME1, expression_list, globals=self.globals, object=p.NAME0, imports=self.imports, mapper=self.mapper, loaders=self.loaders)
         else:
             # function call
