@@ -94,6 +94,7 @@ class EclatController:
             attach_type, dev = loader_info['attach_type'], loader_info['dev']
 
             hl = ChainLoader(name, package)
+            hl.pull()
             hl.compile()
             hl.load()
             parser.maps = hl.link(parser.maps, self.registered_ids)

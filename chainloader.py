@@ -54,8 +54,23 @@ class ChainLoader:
         return maps
 
     def pull(self):
-        # TODO
-        return
+        """
+        Download a package in the appropriate directory
+        """
+        import requests
+        import tarfile
+        # if there is not a folder, download the package
+        if not os.path.isdir(f"{settings.LOADERS_DIR}/{self.package}"):
+            file_name = f"{self.package}.tar.gz"
+            url = f"{settings.LOADERS_REPOSITORY_URL}/{file_name}"
+            r = requests.get(url, allow_redirects=True)
+            file_path = f"{settings.LOADERS_DIR}/{file_name}"
+            open(file_path, 'wb').write(r.content)
+            tar = tarfile.open(file_path, "r:gz")
+            # this should create the /package_name/ folder
+            tar.extractall(settings.LOADERS_DIR)
+            tar.close()
+            os.remove(file_path)
 
     def compile(self):
         if not os.path.exists(self.src_file_path):

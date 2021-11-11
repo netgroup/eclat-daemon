@@ -54,7 +54,7 @@ class HikeProgram:
             # this should create the /package_name/ folder
             tar.extractall(settings.PROGRAMS_DIR)
             tar.close()
-            os.remove(file_name)
+            os.remove(file_path)
 
     def compile(self):
         if not os.path.exists(self.src_file_path):
