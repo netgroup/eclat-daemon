@@ -1,0 +1,5 @@
+# These files are text and should be normalized (convert crlf =&gt; lf)
+*.c    	text
+*.h  	text
+*.eclat     text
+*.sh      text
