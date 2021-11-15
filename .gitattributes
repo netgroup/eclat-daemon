@@ -1,0 +1,5 @@
+# These files are text and should be normalized 
+*.c    	text eol=lf
+*.h  	  text eol=lf
+*.eclat text eol=lf
+*.sh    text eol=lf
