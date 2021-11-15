@@ -105,3 +105,4 @@ class EclatController:
                 for key, value in map_configuration['data'].items():
                     hl.write_map(map_configuration['map_name'], key, value)
             self.chain_loaders[(hl.name, hl.package)] = hl
+        return True

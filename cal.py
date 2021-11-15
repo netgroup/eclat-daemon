@@ -30,6 +30,10 @@ def ebpf_system_init():
     mkdir(settings.BUILD_PROGRAMS_DIR)
     mkdir(settings.BUILD_CHAINS_DIR)
 
+    mkdir(settings.LOADERS_DIR)
+    mkdir(settings.PROGRAMS_DIR)
+    mkdir(settings.CHAINS_DIR)
+
 
 def hike_system_init():
     """
