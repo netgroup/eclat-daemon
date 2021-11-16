@@ -9,7 +9,17 @@ import eclat_pb2
 import eclat_pb2_grpc
 
 
-def run(scriptfile, package):
+def preprocess(script, defines):
+    """
+    Preprocess an eCLAT script, substituting some defines in the script
+    """
+    for var, value in defines:
+        script = script.replace(var, value)
+    print(script)
+    return script
+
+
+def run(scriptfile, package, defines):
     # open a gRPC channel
     channel = grpc.insecure_channel('localhost:50051')
 
@@ -19,7 +29,9 @@ def run(scriptfile, package):
     # create a valid request message
     with open(scriptfile, 'r') as f:
         script = f.read()
+        script = preprocess(script, defines)
         print(f"sending {script} of package {package} to grpc")
+        return
         req = eclat_pb2.EclatLoadRequest(script=script, package=package)
 
     # make the call
@@ -39,12 +51,15 @@ def main():
         '-l', '--load', help="Load an eclat script", required=True)
     parser.add_argument('-p', '--package',
                         help="Package name of the eclat script", required=True)
+    parser.add_argument('-D', '--define', nargs=2, action="append",
+                        help="Define constant for eCLAT preprocessor", required=False)
 
     args = vars(parser.parse_args())
 
     print(args)
 
-    ret = run(scriptfile=args['load'], package=args['package'])
+    ret = run(scriptfile=args['load'],
+              package=args['package'], defines=args['define'])
     print(ret)
     return ret
 

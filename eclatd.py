@@ -25,6 +25,7 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
         except Exception as e:
             print(traceback.format_exc())
             ret = False
+            raise e
 
         if ret:
             response.status = "OK"
