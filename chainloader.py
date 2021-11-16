@@ -3,6 +3,7 @@ import cal
 import settings
 import os
 import struct
+import copy
 from parser.json_parser import parse_info, flatten, get_type_fmt
 
 
@@ -35,7 +36,9 @@ class ChainLoader:
         return maps_info
 
     def link(self, maps, registered_ids):
-        """Substitute in maps configuration the chain ids
+        """
+        Substitute in the map configuration parsed by the parser, the real chain ids
+        CHAIN_NAME -> chain_id
 
         :param maps: parser maps -> [{'program_name': ..., 'map_name': ..., 'data' {k1: v1, k2: v2}}]
         :param registered_ids: registered ids -> [{type, package, name, id}]
@@ -44,14 +47,16 @@ class ChainLoader:
         chain_ids = [(ri['name'], ri['id'])
                      for ri in registered_ids if ri['type'] == 'chain']
 
+        ret_map = copy.deepcopy(maps)
         for i, map_info in enumerate(maps):
             for k, vs, in map_info['data'].items():
                 for chain_name, chain_id in chain_ids:
                     if chain_name in vs:
-                        maps[i]['data'][k] = list(map(
-                            lambda x: chain_id if chain_name in x else x, maps[i]['data'][k]))
-
-        return maps
+                        print(f"maps data: {maps[i]['data'][k]}")
+                        print(f"chain name {chain_name} in values {vs}")
+                        ret_map[i]['data'][k] = list(map(
+                            lambda x: chain_id if chain_name == x else x, maps[i]['data'][k]))
+        return ret_map
 
     def pull(self):
         """

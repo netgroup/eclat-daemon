@@ -1,6 +1,7 @@
 import grpc
 from concurrent import futures
 import time
+import traceback
 
 # import the generated classes
 import eclat_pb2
@@ -18,8 +19,13 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
     def LoadConfiguration(self, request, context):
         print(request.script)
         response = eclat_pb2.EclatLoadResponse()
-        ret = self.controller.load_configuration(
-            request.script, request.package)
+        try:
+            ret = self.controller.load_configuration(
+                request.script, request.package)
+        except Exception as e:
+            print(traceback.format_exc())
+            ret = False
+
         if ret:
             response.status = "OK"
             response.message = "test ret message for message " + request.script
