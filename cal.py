@@ -220,7 +220,7 @@ def bpftool_net_attach(attach_type, dev_name, pinned_file):
     ret = os.system(cmd)
     if ret != 0:
         raise Exception(
-            f"Bpftool net attach of {pinned_file} on dev {dev_name} failed.")
+            f"Bpftool net attach of {pinned_file} on dev {dev_name} failed.\n Offending command is: {cmd}")
 
 # bpftool map update MAP [key DATA] [value VALUE] [UPDATE_FLAGS]
 # MAP := {id MAP_ID | pinned FILE | name MAP_NAME}
