@@ -32,6 +32,7 @@ python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. eclat.proto
 ```shell
 python eclatd.py #start the daemon
 python eclat.py --load test/eclat_scripts/ddos.eclat --package test #load a test script
+python eclat.py --load test/eclat_scripts/ddos2.eclat --define DEVNAME enp6s0f0 --package test
 ```
 
 ## Unit tests

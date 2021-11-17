@@ -21,8 +21,9 @@ def preprocess(script, defines):
 
 def run(scriptfile, package, defines):
     # open a gRPC channel
+    #channel = grpc.insecure_channel('[::1]:50051')
     channel = grpc.insecure_channel('localhost:50051')
-
+    
     # create a stub (client)
     stub = eclat_pb2_grpc.EclatStub(channel)
 
@@ -31,7 +32,6 @@ def run(scriptfile, package, defines):
         script = f.read()
         script = preprocess(script, defines)
         print(f"sending {script} of package {package} to grpc")
-        return
         req = eclat_pb2.EclatLoadRequest(script=script, package=package)
 
     # make the call
