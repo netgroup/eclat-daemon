@@ -31,7 +31,7 @@ class EclatController:
             chain_taken_id = [el['id']
                               for el in self.registered_ids if el['type'] == 'chain']
             id = max(chain_taken_id) + \
-                1 if self.registered_ids else MIN_CHAIN_ID
+                1 if (self.registered_ids and chain_taken_id) else MIN_CHAIN_ID
             if id > MAX_CHAIN_ID:
                 raise Exception("ID overflow")
             element_type = 'chain'
@@ -39,7 +39,7 @@ class EclatController:
             program_taken_id = [el['id']
                                 for el in self.registered_ids if el['type'] == 'program']
             id = max(program_taken_id) + \
-                1 if self.registered_ids else MIN_PROGRAM_ID
+                1 if (self.registered_ids and program_taken_id) else MIN_PROGRAM_ID
             if id > MAX_PROGRAM_ID:
                 raise Exception("ID overflow")
             element_type = 'program'

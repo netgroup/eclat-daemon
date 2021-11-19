@@ -116,9 +116,11 @@ EOF
 ## Create a new tmux session
 sleep 1
 
-tmux new-session -d -s $TMUX -n TG ip netns exec tg bash -c "${tg_env}"
+tmux new-session -d -s $TMUX -n MAIN bash
+tmux new-window -t $TMUX -n TG ip netns exec tg bash -c "${tg_env}"
 tmux new-window -t $TMUX -n SUT ip netns exec sut bash -c "${sut_env}"
+tmux new-window -t $TMUX -n SUTDA ip netns exec sut bash 
 
-tmux select-window -t :1
+tmux select-window -t :0
 tmux set-option -g mouse on
 tmux attach -t $TMUX
