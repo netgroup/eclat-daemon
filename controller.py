@@ -115,3 +115,15 @@ class EclatController:
                     hl.write_map(map_configuration['map_name'], key, value)
             self.chain_loaders[(hl.name, hl.package)] = hl
         return True
+
+    def get_map_value(self, mapname, key):
+        """
+        Returns the value corresponding to a given key in a specific map
+        """
+        print(f"TODO {mapname} {key}")
+
+    def dump_map(self, mapname):
+        """
+        Dumps the content of a specific map
+        """
+        print(f"TODO {mapname}")

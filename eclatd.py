@@ -34,6 +34,30 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
             response.status = "FAIL"
         return response
 
+    def DumpMap(self, request, context):
+        response = eclat_pb2.EclatDumpMapResponse()
+        try:
+            ret = self.controller.dump_map(
+                request.mapname)
+        except Exception as e:
+            print(traceback.format_exc())
+            ret = False
+            raise e
+        response.status = "OK" if ret else "FAIL"
+        return response
+
+    def GetMapValue(self, request, context):
+        response = eclat_pb2.EclatGetMapValueResponse()
+        try:
+            ret = self.controller.get_map_value(
+                request.mapname, request.key)
+        except Exception as e:
+            print(traceback.format_exc())
+            ret = False
+            raise e
+        response.status = "OK" if ret else "FAIL"
+        return response
+
 
 # create a gRPC server
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
