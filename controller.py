@@ -22,17 +22,26 @@ class EclatController:
 
     def assign_id(self, element):
         # find an available id
-        MIN_ID = 1
-        MAX_ID = 255
-        taken_id = [el['id']
-                    for el in self.registered_ids]
-        id = max(taken_id) + 1 if self.registered_ids else MIN_ID
-        if id > MAX_ID:
-            raise Exception("ID overflow")
+        MIN_CHAIN_ID = 64
+        MAX_CHAIN_ID = 255
+        MIN_PROGRAM_ID = 1
+        MAX_PROGRAM_ID = 63
 
         if isinstance(element, HikeChain):
+            chain_taken_id = [el['id']
+                              for el in self.registered_ids if el['type'] == 'chain']
+            id = max(chain_taken_id) + \
+                1 if self.registered_ids else MIN_CHAIN_ID
+            if id > MAX_CHAIN_ID:
+                raise Exception("ID overflow")
             element_type = 'chain'
         elif isinstance(element, HikeProgram):
+            program_taken_id = [el['id']
+                                for el in self.registered_ids if el['type'] == 'program']
+            id = max(program_taken_id) + \
+                1 if self.registered_ids else MIN_PROGRAM_ID
+            if id > MAX_PROGRAM_ID:
+                raise Exception("ID overflow")
             element_type = 'program'
         else:
             raise Exception(f"Unknown element {element}")

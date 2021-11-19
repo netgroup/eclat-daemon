@@ -13,6 +13,8 @@ def preprocess(script, defines):
     """
     Preprocess an eCLAT script, substituting some defines in the script
     """
+    if not defines:
+        return script
     for var, value in defines:
         script = script.replace(var, value)
     print(script)
