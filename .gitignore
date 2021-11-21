@@ -15,3 +15,4 @@ build/
 components/
 !components/programs/system
 hike_v3/
+/scripts/temp_credentials/*
