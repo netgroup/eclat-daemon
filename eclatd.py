@@ -18,6 +18,7 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
 
     def LoadConfiguration(self, request, context):
         print(request.script)
+        print("PACKAGE:",request.package)
         response = eclat_pb2.EclatLoadResponse()
         try:
             ret = self.controller.load_configuration(
