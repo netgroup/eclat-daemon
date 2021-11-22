@@ -119,8 +119,8 @@ sleep 1
 tmux new-session -d -s $TMUX -n MAIN bash
 tmux new-window -t $TMUX -n TG ip netns exec tg bash -c "${tg_env}"
 tmux new-window -t $TMUX -n SUT ip netns exec sut bash -c "${sut_env}"
-tmux new-window -t $TMUX -n SUTDA ip netns exec sut bash 
+tmux new-window -t $TMUX -n SUTDA ip netns exec sut bash -c "python eclatd.py"
 
-tmux select-window -t :0
+tmux select-window -t :2
 tmux set-option -g mouse on
 tmux attach -t $TMUX
