@@ -39,6 +39,7 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
         try:
             ret = self.controller.dump_map(
                 request.mapname)
+            response.message = ret
         except Exception as e:
             print(traceback.format_exc())
             ret = False
@@ -51,6 +52,7 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
         try:
             ret = self.controller.get_map_value(
                 request.mapname, request.key)
+            response.message = ret
         except Exception as e:
             print(traceback.format_exc())
             ret = False

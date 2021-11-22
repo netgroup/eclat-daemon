@@ -1,4 +1,4 @@
-from cal import ebpf_system_init, hike_system_init
+import cal
 from chainloader import ChainLoader
 from hikechain import HikeChain
 from hikeprogram import HikeProgram
@@ -17,8 +17,8 @@ class EclatController:
     registered_ids = []  # {type, package, name, id}
 
     def __init__(self):
-        ebpf_system_init()
-        hike_system_init()
+        cal.ebpf_system_init()
+        cal.hike_system_init()
 
     def assign_id(self, element):
         # find an available id
@@ -120,10 +120,10 @@ class EclatController:
         """
         Returns the value corresponding to a given key in a specific map
         """
-        print(f"TODO {mapname} {key}")
+        return cal.bpftool_map_lookup(mapname, int(key))
 
     def dump_map(self, mapname):
         """
         Dumps the content of a specific map
         """
-        print(f"TODO {mapname}")
+        return cal.bpftool_map_dump(mapname)

@@ -3,6 +3,7 @@ Eclat CLI
 """
 import grpc
 import argparse
+import json
 
 # import the generated classes
 import eclat_pb2
@@ -61,7 +62,7 @@ def dump_map(mapname):
     response = stub.DumpMap(req)
     print(response.status)
     print(response.message)
-    return response
+    return json.loads(response.message)
 
 
 def main():
@@ -74,7 +75,7 @@ def main():
                         help="Package name of the eclat script", required=False)
     parser.add_argument('-D', '--define', nargs=2, action="append",
                         help="Define constant for eCLAT preprocessor", required=False)
-    parser.add_argument('-m', '--getmapvalue', nargs=2, action="append",
+    parser.add_argument('-m', '--lookup', nargs=2, action="append",
                         help="Get the map value corresponding to a given key", required=False)
     parser.add_argument('-M', '--dumpmap', action="append",
                         help="Dump the content of a given map", required=False)
@@ -87,8 +88,8 @@ def main():
             parser.error('Missing package name. Use --package argument')
         ret = run(scriptfile=args['load'],
                   package=args['package'], defines=args['define'])
-    elif args['getmapvalue'] is not None:
-        ret = get_map_value(*args['getmapvalue'][0])
+    elif args['lookup'] is not None:
+        ret = get_map_value(*args['lookup'][0])
     elif args['dumpmap'] is not None:
         ret = dump_map(*args['dumpmap'])
     else:
