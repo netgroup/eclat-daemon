@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import ipaddress
+import cal
 
 BASE_PATH =  '/sys/fs/bpf/maps'
 
@@ -14,6 +15,9 @@ def ipv6_int128_from_int8(input_list):
     #print (ipv6_int128)
     return ipv6_int128
 
+def out_ip6_sd(src_ip6, dst_ip6):
+    return f"{src_ip6}".ljust(25)+"- "+f"{dst_ip6}".ljust(25)
+
 def out_ns(value):
     intero = int(value/1000000000)
     vstring=str(value)
@@ -21,7 +25,6 @@ def out_ns(value):
     return f"{intero}.{vstring[len(str(intero)):]}"
 
 class ProcessMap:
-
 
     def __init__(self, map_name, package='system', program=None):
 
@@ -36,21 +39,19 @@ class ProcessMap:
 
     def read(self):
         
-        self.map_as_array = []
-        #map_path = f"{BASE_PATH}/{self.package}/{self.program}/{self.map_name}"
-        if os.path.exists(self.map_path):
-            my_command = f"bpftool map dump pinned {self.map_path}".split()
-            result = subprocess.run(my_command, stdout=subprocess.PIPE)
-            if self.package == 'system':
-                print(result.stdout.decode('utf-8'))
-            self.map_as_array = json.loads(result.stdout.decode('utf-8'))
-            return 0
-        else:
-            print ("Error: map_path does not exists")
-            print (self.map_path)
-
-        return -1
         
+        self.map_as_array = []
+        
+        try :
+
+            self.map_as_array = json.loads(cal.bpftool_map_dump(self.map_path))
+
+        except Exception as e:
+            print (e)
+            print (self.map_path)
+            return -1
+
+        return 0
 
 if __name__ == "__main__":
 
@@ -61,16 +62,18 @@ if __name__ == "__main__":
         if result != 0 :
             exit(-1)
         #print (pm.map_as_array)
+        output_rows = []
         for my_obj in pm.map_as_array :
             #print (my_obj['key']['saddr']['in6_u']['u6_addr8'],my_obj['key']['daddr']['in6_u']['u6_addr8'])
             src_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['saddr']['in6_u']['u6_addr8']))
-            if src_ip6 == ipaddress.IPv6Address('fc01::1'):  
-                dst_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['daddr']['in6_u']['u6_addr8']))
-                if dst_ip6 == ipaddress.IPv6Address('fc01::2'):
-                    for v in my_obj['values']:
-                        if v['value']['last_time'] != 0:
-                            print (f"cpu: {v['cpu']} time: {out_ns(v['value']['last_time'])}")
-
+            dst_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['daddr']['in6_u']['u6_addr8']))
+            for v in my_obj['values']:
+                if v['value']['last_time'] != 0:
+                    output_rows.append (out_ip6_sd(src_ip6, dst_ip6) + 
+                        f" cpu: {v['cpu']} time: {out_ns(v['value']['last_time'])} tokens: {v['value']['last_tokens']}")
+        output_rows.sort()
+        for element in output_rows:
+            print (element)
     if False:    
         pm3 = ProcessMap('map_pcpu_lse','net','lse')
         
@@ -79,16 +82,10 @@ if __name__ == "__main__":
             exit(-1)
         #print (pm.map_as_array)
         for my_obj in pm3.map_as_array :
-            #print (my_obj)
-            #break
-            #print (my_obj['key']['saddr']['in6_u']['u6_addr8'],my_obj['key']['daddr']['in6_u']['u6_addr8'])
             src_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['saddr']['in6_u']['u6_addr8']))
-            if src_ip6 == ipaddress.IPv6Address('fc01::1'):  
-                dst_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['daddr']['in6_u']['u6_addr8']))
-                if dst_ip6 == ipaddress.IPv6Address('fc01::2'):
-                    for v in my_obj['values']:
-                        print (f"cts: {out_ns(v['value']['cts_ns'])} timeout: {out_ns(v['value']['timeout_ns'])}")
-
+            dst_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['daddr']['in6_u']['u6_addr8']))
+            for v in my_obj['values']:
+                print (out_ip6_sd(src_ip6, dst_ip6) + f" cts: {out_ns(v['value']['cts_ns'])} timeout: {out_ns(v['value']['timeout_ns'])}")
 
                     
     pm2 = ProcessMap('ipv6_hset_sd_map','mynet','ip6_hset_srcdst')
@@ -100,5 +97,21 @@ if __name__ == "__main__":
         #print (my_obj)
         src_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['saddr']['in6_u']['u6_addr8']))
         dst_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['daddr']['in6_u']['u6_addr8']))
-        print (src_ip6, dst_ip6,f"cts: {out_ns(my_obj['value']['cts_ns'])} timeout: {out_ns(my_obj['value']['timeout_ns'])}")
+        print (out_ip6_sd(src_ip6, dst_ip6) + f" cts: {out_ns(my_obj['value']['cts_ns'])} timeout: {out_ns(my_obj['value']['timeout_ns'])}")
 
+
+
+    pm5 = ProcessMap('map_pcpu_mon','mynet','monitor')
+    #pm2 = ProcessMap('ipv6_hset_srcdst_map','net','ip6_hset_srcdst')
+    result = pm5.read()
+    if result != 0 :
+        exit(-1)
+    for my_obj in pm5.map_as_array :
+        val_array = my_obj['values']
+        num_val_array = []
+        out_str = ""
+        for val in val_array:
+            num_val_array.append(val['value'])
+            out_str=out_str+str(val['value']).rjust(7)+':'
+
+        print (f"{my_obj['key']}".rjust(3)+" : "+f"{sum(num_val_array)}".rjust(8)+" "+out_str)
