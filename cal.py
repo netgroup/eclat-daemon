@@ -8,6 +8,7 @@ from typing import Coroutine
 import settings
 import subprocess
 import os
+import json
 
 # References:
 # - https://manpages.ubuntu.com/manpages/focal/man8/bpftool-prog.8.html
@@ -265,3 +266,48 @@ def bpftool_map_update(map_reference, key, value, map_reference_type="pinned", v
 
     # unittest
     return True
+
+
+def bpftool_map_dump(map_reference, map_reference_type="pinned"):
+    """Call bpftool map dump and return the result
+    """
+    # bpftool map dump --json pinned /sys/fs/bpf/maps/system/hvm_chain_map
+
+    if map_reference_type == "pinned":
+
+        cmd = f"bpftool map dump --json pinned {map_reference}"
+    else:
+        raise Exception(
+            "bpftool_map_dump: Instruction not implemented (invalid map_reference_type).")
+
+    print(f"Exec: {cmd}")
+    result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
+
+    if result.returncode != 0:
+        raise Exception(f"Map dump {map_reference} failed.")
+    else:
+        return result.stdout.decode("utf-8")
+
+
+def bpftool_map_lookup(map_reference, key, map_reference_type="pinned"):
+    """Call bpftool map lookup and return the result
+    """
+    # bpftool map lookup --json pinned /sys/fs/bpf/maps/system/hvm_chain_map key 0x40 0x00 0x00 0x00
+    import struct
+    key_bytes = struct.pack("<I", key)
+    key_data_string = (" ".join(hex(n)
+                                for n in key_bytes))
+
+    if map_reference_type == "pinned":
+        cmd = f"bpftool map lookup --json pinned {map_reference} key {key_data_string}"
+    else:
+        raise Exception(
+            "bpftool_map_lookup: Instruction not implemented (invalid map_reference_type).")
+
+    print(f"Exec: {cmd}")
+    result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
+
+    if result.returncode != 0:
+        raise Exception(f"Map lookup {map_reference} failed.")
+    else:
+        return result.stdout.decode("utf-8")

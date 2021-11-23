@@ -33,6 +33,9 @@ python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. eclat.proto
 python eclatd.py #start the daemon
 python eclat.py --load test/eclat_scripts/ddos.eclat --package test #load a test script
 python eclat.py --load test/eclat_scripts/ddos2.eclat --define DEVNAME enp6s0f0 --package test
+
+python eclat.py --dumpmap /sys/fs/bpf/maps/system/hvm_chain_map
+python eclat.py --lookup /sys/fs/bpf/maps/system/hvm_chain_map 64
 ```
 
 ## Unit tests

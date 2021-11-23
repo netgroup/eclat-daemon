@@ -10,6 +10,27 @@ message EclatLoadResponse {
     string message = 2;
 }
 
+message EclatDumpMapRequest {
+    string mapname = 1;
+}
+
+message EclatDumpMapResponse {
+    string status = 1;
+    string message = 2;
+}
+
+message EclatGetMapValueRequest {
+    string mapname = 1;
+    string key = 2;
+}
+
+message EclatGetMapValueResponse {
+    string status = 1;
+    string message = 2;
+}
+
 service Eclat {
     rpc LoadConfiguration(EclatLoadRequest) returns (EclatLoadResponse) {}
+    rpc DumpMap(EclatDumpMapRequest) returns (EclatDumpMapResponse) {}
+    rpc GetMapValue(EclatGetMapValueRequest) returns (EclatGetMapValueResponse) {}
 }
