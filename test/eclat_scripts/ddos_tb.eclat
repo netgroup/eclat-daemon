@@ -15,6 +15,7 @@ def ddos_tb():
     u64 : ts = ip6_sd_tbmon()
     if ts != 0:
         ip6_hset_srcdst(1)
+        monitor(1)
         hike_drop()
         return 0
     

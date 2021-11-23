@@ -24,6 +24,24 @@ def out_ns(value):
 
     return f"{intero}.{vstring[len(str(intero)):]}"
 
+
+def process_pcpu_values_u64(val_array):
+    num_val_array = []
+    str_details = ""
+    for val in val_array:
+        num_val_array.append(val['value'])
+        str_details=str_details+str(val['value']).rjust(7)+':'
+    return (num_val_array, str_details)
+
+def process_pcpu_values_struct_count(val_array):
+    num_val_array = []
+    str_details = ""
+    for val in val_array:
+        num_val_array.append(val['value']['count'])
+        str_details=str_details+str(val['value']['count']).rjust(7)+':'
+    return (num_val_array, str_details)
+
+
 class ProcessMap:
 
     def __init__(self, map_name, package='system', program=None):
@@ -38,12 +56,10 @@ class ProcessMap:
             self.map_path = f"{BASE_PATH}/{self.package}/{self.program}/{self.map_name}" 
 
     def read(self):
-        
-        
+         
         self.map_as_array = []
         
         try :
-
             self.map_as_array = json.loads(cal.bpftool_map_dump(self.map_path))
 
         except Exception as e:
@@ -70,7 +86,8 @@ if __name__ == "__main__":
             for v in my_obj['values']:
                 if v['value']['last_time'] != 0:
                     output_rows.append (out_ip6_sd(src_ip6, dst_ip6) + 
-                        f" cpu: {v['cpu']} time: {out_ns(v['value']['last_time'])} tokens: {v['value']['last_tokens']}")
+                        f" cpu: {v['cpu']} time: {out_ns(v['value']['last_time'])} "+
+                        f"tokens: "+f"{v['value']['last_tokens']}".rjust(8))
         output_rows.sort()
         for element in output_rows:
             print (element)
@@ -85,7 +102,8 @@ if __name__ == "__main__":
             src_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['saddr']['in6_u']['u6_addr8']))
             dst_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['daddr']['in6_u']['u6_addr8']))
             for v in my_obj['values']:
-                print (out_ip6_sd(src_ip6, dst_ip6) + f" cts: {out_ns(v['value']['cts_ns'])} timeout: {out_ns(v['value']['timeout_ns'])}")
+                print (out_ip6_sd(src_ip6, dst_ip6) + 
+                    f" cts: {out_ns(v['value']['cts_ns'])} timeout: {out_ns(v['value']['timeout_ns'])}")
 
                     
     pm2 = ProcessMap('ipv6_hset_sd_map','mynet','ip6_hset_srcdst')
@@ -97,8 +115,8 @@ if __name__ == "__main__":
         #print (my_obj)
         src_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['saddr']['in6_u']['u6_addr8']))
         dst_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['daddr']['in6_u']['u6_addr8']))
-        print (out_ip6_sd(src_ip6, dst_ip6) + f" cts: {out_ns(my_obj['value']['cts_ns'])} timeout: {out_ns(my_obj['value']['timeout_ns'])}")
-
+        print (out_ip6_sd(src_ip6, dst_ip6) + 
+            f" cts: {out_ns(my_obj['value']['cts_ns'])} timeout: {out_ns(my_obj['value']['timeout_ns'])}")
 
 
     pm5 = ProcessMap('map_pcpu_mon','mynet','monitor')
@@ -107,11 +125,20 @@ if __name__ == "__main__":
     if result != 0 :
         exit(-1)
     for my_obj in pm5.map_as_array :
-        val_array = my_obj['values']
-        num_val_array = []
-        out_str = ""
-        for val in val_array:
-            num_val_array.append(val['value'])
-            out_str=out_str+str(val['value']).rjust(7)+':'
 
-        print (f"{my_obj['key']}".rjust(3)+" : "+f"{sum(num_val_array)}".rjust(8)+" "+out_str)
+        (num_val_array,str_details) = process_pcpu_values_u64(my_obj['values'])
+
+        print (f"{my_obj['key']}".rjust(3)+" : "+f"{sum(num_val_array)}".rjust(8)+" "+str_details)
+
+
+    pm6 = ProcessMap('pcpu_meter','mynet','ip6_sd_meter')
+    #pm2 = ProcessMap('ipv6_hset_srcdst_map','net','ip6_hset_srcdst')
+    result = pm6.read()
+    if result != 0 :
+        exit(-1)
+    for my_obj in pm6.map_as_array :
+        src_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['saddr']['in6_u']['u6_addr8']))
+        dst_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(my_obj['key']['daddr']['in6_u']['u6_addr8']))
+        (num_val_array,str_details) = process_pcpu_values_struct_count(my_obj['values'])
+        print (out_ip6_sd(src_ip6, dst_ip6)+f"{sum(num_val_array)}".rjust(8)+str_details)
+
