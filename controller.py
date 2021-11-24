@@ -84,10 +84,10 @@ class EclatController:
 
         # set up chains
         for chain, chain_id in chains:
-            hc.link(self.registered_ids)
-            hc.compile()
-            hc.load()
-            self.hike_chains[(hc.name, hc.package)] = hc
+            chain.link(self.registered_ids)
+            chain.compile()
+            chain.load()
+            self.hike_chains[(chain.name, chain.package)] = hc
 
         # set up chain loaders
         for package, names in parser.imports['loaders'].items():
