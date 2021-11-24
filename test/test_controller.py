@@ -39,3 +39,24 @@ def ddos():
         """
         print(script)
         controller.load_configuration(script, package)
+
+    def test_two_chains(self):
+        cal.ebpf_system_init()
+        cal.hike_system_init()
+        controller = EclatController()
+        package = "twochains_pkg"
+        script = """
+from programs.net import hike_drop, hike_pass
+from loaders.basic import ip6_sc
+
+ip6_sc[ipv6_sc_map] = { (0): (ddos) }
+ip6_sc.attach('lo', 'xdp')
+
+def packet_drop():
+        hike_drop()
+
+def packet_pass():
+    hike_pass()
+        """
+        print(script)
+        controller.load_configuration(script, package)
