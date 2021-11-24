@@ -1,4 +1,4 @@
-from programs.mynet import hike_drop, hike_pass, ip6_hset_srcdst, ip6_sd_tbmon, monitor, ip6_sd_meter
+from programs.mynet import hike_drop, hike_pass, ip6_hset_srcdst, ip6_sd_tbmon, monitor, ip6_sd_meter, ip6_dst_meter, ip6_dst_tbmon
 from loaders.basic import ip6_sc
 
 ip6_sc[ipv6_sc_map] = { (0): (ddos_tb_and_mon) }
@@ -42,3 +42,23 @@ def ddos_tb_and_mon():
     hike_pass()
     return 0
 
+def ddos_tb_mon_2_step():
+    u64 : count = ip6_dst_meter()
+    u64 : rs = ip6_hset_srcdst(2)
+    if not rs: 
+        monitor(1)
+        hike_drop()
+        return 0
+
+    u64 : ts = ip6_dst_tbmon()
+    if ts != 0:
+        ts = ip6_sd_tbmon()
+        if ts != 0:
+            ip6_hset_srcdst(1)
+            monitor(1)
+            hike_drop()
+            return 0
+    
+    monitor(0)
+    hike_pass()
+    return 0
