@@ -33,3 +33,11 @@
 # token bucket parameters (rate, bucket) are defined in tb_defs.h
 
 
+#
+# ddos_tb_2_levels
+#
+# # token bucket monitor per ip6 dst 
+# the out-profile packets are processed by a token bucket per src,dst
+# -> black lists the (src,dst) out-profile
+# for a time interval (e.g. 10 s) which is defined in ip6_hset.h: HIKE_IPV6_HSET_EXP_TIMEOUT_NS
+# token bucket parameters (rate, bucket) are defined in tb_defs.h
