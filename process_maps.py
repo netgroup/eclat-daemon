@@ -69,94 +69,91 @@ class ProcessMap:
          
         self.map_as_array = []
         
-        try :
-            self.map_as_array = json.loads(cal.bpftool_map_dump(self.map_path))
+        if os.path.exists(self.map_path):
+            try :
+                self.map_as_array = json.loads(cal.bpftool_map_dump(self.map_path))
 
-        except Exception as e:
-            print (e)
-            print (self.map_path)
+            except Exception as e:
+                print (e)
+                print (self.map_path)
+                return -1
+        else:
             return -1
-
         return 0
 
 if __name__ == "__main__":
 
-    if True:
-        pm = ProcessMap('pcpu_sd_tbmon','mynet','ip6_sd_tbmon')
-        
-        result = pm.read()
-        if result == 0 :
-            #print (pm.map_as_array)
-            output_rows = []
-            for my_obj in pm.map_as_array :
-                (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
-                for v in my_obj['values']:
-                    if v['value']['last_time'] != 0:
-                        output_rows.append (out_ip6_sd(src_ip6, dst_ip6) + 
-                            f" cpu: {v['cpu']} time: {out_ns(v['value']['last_time'])} "+
-                            f"tokens: "+f"{v['value']['last_tokens']}".rjust(8))
-            output_rows.sort()
-            for element in output_rows:
-                print (element)
+    pm = ProcessMap('pcpu_sd_tbmon','mynet','ip6_sd_tbmon')
+    
+    result = pm.read()
+    if result == 0 :
+        #print (pm.map_as_array)
+        output_rows = []
+        for my_obj in pm.map_as_array :
+            (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
+            for v in my_obj['values']:
+                if v['value']['last_time'] != 0:
+                    output_rows.append (out_ip6_sd(src_ip6, dst_ip6) + 
+                        f" cpu: {v['cpu']} time: {out_ns(v['value']['last_time'])} "+
+                        f"tokens: "+f"{v['value']['last_tokens']}".rjust(8))
+        output_rows.sort()
+        for element in output_rows:
+            print (element)
 
-    if False:    
-        pm3 = ProcessMap('map_pcpu_lse','net','lse')
-        
-        result = pm3.read()
-        if result == 0 :
-            #print (pm.map_as_array)
-            for my_obj in pm3.map_as_array :
-                (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
-                for v in my_obj['values']:
-                    print (out_ip6_sd(src_ip6, dst_ip6) + 
-                        f" cts: {out_ns(v['value']['cts_ns'])} timeout: {out_ns(v['value']['timeout_ns'])}")
+    pm = ProcessMap('map_pcpu_lse','net','lse')
+    
+    result = pm.read()
+    if result == 0 :
+        #print (pm.map_as_array)
+        for my_obj in pm.map_as_array :
+            (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
+            for v in my_obj['values']:
+                print (out_ip6_sd(src_ip6, dst_ip6) + 
+                    f" cts: {out_ns(v['value']['cts_ns'])} timeout: {out_ns(v['value']['timeout_ns'])}")
 
                     
-    pm2 = ProcessMap('ipv6_hset_sd_map','mynet','ip6_hset_srcdst')
-    #pm2 = ProcessMap('ipv6_hset_srcdst_map','net','ip6_hset_srcdst')
-    result = pm2.read()
+    pm = ProcessMap('ipv6_hset_sd_map','mynet','ip6_hset_srcdst')
+    result = pm.read()
     if result == 0 :
-        for my_obj in pm2.map_as_array :
+        for my_obj in pm.map_as_array :
             #print (my_obj)
             (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
             print (out_ip6_sd(src_ip6, dst_ip6) + 
                 f" cts: {out_ns(my_obj['value']['cts_ns'])} timeout: {out_ns(my_obj['value']['timeout_ns'])}")
 
 
-    pm5 = ProcessMap('map_pcpu_mon','mynet','monitor')
-    #pm2 = ProcessMap('ipv6_hset_srcdst_map','net','ip6_hset_srcdst')
-    result = pm5.read()
+    pm = ProcessMap('map_pcpu_mon','mynet','monitor')
+    result = pm.read()
     if result == 0 :
-        for my_obj in pm5.map_as_array :
+        for my_obj in pm.map_as_array :
 
             (num_val_array,str_details) = process_pcpu_values_u64(my_obj['values'])
 
             print (f"{my_obj['key']}".rjust(3)+" : "+f"{sum(num_val_array)}".rjust(8)+" "+str_details)
 
 
-    if True:  
-        pm6 = ProcessMap('pcpu_meter','mynet','ip6_sd_meter')
-        result = pm6.read()
-        if result == 0 :
-            for my_obj in pm6.map_as_array :
-                (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
-                (num_val_array,str_details) = process_pcpu_values_struct_count(my_obj['values'])
-                print (out_ip6_sd(src_ip6, dst_ip6)+f"{sum(num_val_array)}".rjust(8)+str_details)
-
-    pm7 = ProcessMap('pcpu_dst_meter','mynet','ip6_dst_meter')
-    result = pm7.read()
+    pm = ProcessMap('pcpu_meter','mynet','ip6_sd_meter')
+    result = pm.read()
     if result == 0 :
-        for my_obj in pm7.map_as_array :
+        for my_obj in pm.map_as_array :
+            (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
+            (num_val_array,str_details) = process_pcpu_values_struct_count(my_obj['values'])
+            print (out_ip6_sd(src_ip6, dst_ip6)+f"{sum(num_val_array)}".rjust(8)+str_details)
+
+    pm = ProcessMap('pcpu_dst_meter','mynet','ip6_dst_meter')
+    result = pm.read()
+    if result == 0 :
+        for my_obj in pm.map_as_array :
             (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
             (num_val_array,str_details) = process_pcpu_values_struct_count(my_obj['values'])
             print (out_ip6_sd(src_ip6, dst_ip6)+f"{sum(num_val_array)}".rjust(8)+str_details)
 
 
-    pm8 = ProcessMap('pcpu_tb_dst','mynet','ip6_dst_tbmon')
-    result = pm8.read()
+    pm = ProcessMap('pcpu_tb_dst','mynet','ip6_dst_tbmon')
+    result = pm.read()
     if result == 0 :
         output_rows = []
-        for my_obj in pm8.map_as_array :
+        for my_obj in pm.map_as_array :
             (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
             for v in my_obj['values']:
                 if v['value']['last_time'] != 0:

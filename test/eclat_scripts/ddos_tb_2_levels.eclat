@@ -1,0 +1,36 @@
+#
+# ddos_tb_2_levels
+#
+# provides overall counter per ip6 dst
+# token bucket monitor per ip6 dst 
+# the out-profile packets are processed by a token bucket per src,dst
+# -> black lists the (src,dst) out-profile
+# for a time interval (e.g. 10 s) which is defined in ip6_hset.h: HIKE_IPV6_HSET_EXP_TIMEOUT_NS
+# token bucket parameters (rate, bucket) are defined in tb_defs.h
+
+from programs.mynet import hike_drop, hike_pass, ip6_hset_srcdst, ip6_sd_tbmon, monitor, ip6_sd_meter, ip6_dst_meter, ip6_dst_tbmon
+from loaders.basic import ip6_sc
+
+ip6_sc[ipv6_sc_map] = { (0): (ddos_tb_2_levels) }
+ip6_sc.attach('DEVNAME', 'xdp')
+
+
+def ddos_tb_2_levels():
+    u64 : rs = ip6_hset_srcdst(2)
+    if not rs: 
+        monitor(1)
+        hike_drop()
+        return 0
+
+    u64 : ts = ip6_dst_tbmon()
+    if ts != 0:
+        ts = ip6_sd_tbmon()
+        if ts != 0:
+            ip6_hset_srcdst(1)
+            monitor(1)
+            hike_drop()
+            return 0
+    
+    monitor(0)
+    hike_pass()
+    return 0
