@@ -275,7 +275,7 @@ def bpftool_map_dump(map_reference, map_reference_type="pinned"):
 
     if map_reference_type == "pinned":
 
-        cmd = f"bpftool map dump --json pinned {map_reference}"
+        cmd = f"bpftool map dump pinned {map_reference}"
     else:
         raise Exception(
             "bpftool_map_dump: Instruction not implemented (invalid map_reference_type).")

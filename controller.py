@@ -22,10 +22,15 @@ class EclatController:
 
     def assign_id(self, element):
         # find an available id
-        MIN_CHAIN_ID = 64
-        MAX_CHAIN_ID = 255
+        MIN_CHAIN_ID = 1073741824+1
+        # MIN_CHAIN_ID = 1073741824+86
+        MAX_CHAIN_ID = 1073741824+255
         MIN_PROGRAM_ID = 1
-        MAX_PROGRAM_ID = 63
+        MAX_PROGRAM_ID = 255
+        # MIN_CHAIN_ID = 64
+        # MAX_CHAIN_ID = 255
+        # MIN_PROGRAM_ID = 1
+        # MAX_PROGRAM_ID = 63
 
         if isinstance(element, HikeChain):
             chain_taken_id = [el['id']
@@ -72,6 +77,8 @@ class EclatController:
                         p_id = self.assign_id(hp)
                         hp.register(p_id)
                         self.hike_programs[(hp.name, hp.package)] = hp
+                else:
+                    print ((name, package),' is ALREADY RUNNING')
 
         # pre-register chains ids
         chains = []
