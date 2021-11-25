@@ -22,7 +22,7 @@ def preprocess(script, defines):
     return script
 
 
-def run(scriptfile, package, defines):
+def run(scriptfile, package, defines=None):
     # open a gRPC channel
     #channel = grpc.insecure_channel('[::1]:50051')
     channel = grpc.insecure_channel('localhost:50051')
