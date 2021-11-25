@@ -1,9 +1,6 @@
 #!/bin/bash
 
-tmux kill-window -t 0
-tmux kill-window -t 1
-tmux kill-window -t 2
-tmux kill-window -t 3
-tmux kill-window -t 4
-tmux kill-window -t 5
-tmux kill-window -t 6
+for i in $(tmux ls | awk '{print $1}' | sed 's/://g'); do tmux kill-session -t ${i}; done
+
+#signle session kill:
+#tmux kill-session -t $(ps aux | grep -o "[t]mux attach -t .*" | awk '{print $4}')
