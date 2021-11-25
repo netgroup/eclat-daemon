@@ -163,3 +163,11 @@ if __name__ == "__main__":
         output_rows.sort()
         for element in output_rows:
             print (element)
+
+    pm = ProcessMap('pcpu_sd_dec2zero','mynet','ip6_sd_dec2zero')
+    result = pm.read()
+    if result == 0 :
+        for my_obj in pm.map_as_array :
+            (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
+            (num_val_array,str_details) = process_pcpu_values_struct_count(my_obj['values'])
+            print (out_ip6_sd(src_ip6, dst_ip6)+f"{sum(num_val_array)}".rjust(8)+str_details)

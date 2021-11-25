@@ -1,0 +1,34 @@
+#
+# ddos_sd_dec2zero.eclat
+#
+# provide overall counter per ip6 (src,dst)
+# token bucket monitor per ip6 (src,dst) -> black lists the (src,dst) out-profile
+# for a time interval (e.g. 10 s) which is defined in ip6_hset.h: HIKE_IPV6_HSET_EXP_TIMEOUT_NS
+# token bucket parameters (rate, bucket) are defined in tb_defs.h
+
+from programs.mynet import hike_drop, hike_pass, ip6_hset_srcdst, monitor, ip6_sd_tbmon, ip6_sd_meter, ip6_sd_dec2zero
+from loaders.basic import ip6_sc
+
+ip6_sc[ipv6_sc_map] = { (0): (ddos_sd_dec2zero) }
+ip6_sc.attach('DEVNAME', 'xdp')
+
+def ddos_sd_dec2zero():
+    u64 : rs = ip6_hset_srcdst(2)
+    if not rs:
+        rs = ip6_sd_dec2zero(10)
+        if rs == 0:
+            monitor (2)
+        monitor(1)
+        hike_drop()
+        return 0
+
+    u64 : ts = ip6_sd_tbmon()
+    if ts != 0:
+        ip6_hset_srcdst(1)
+        monitor(1)
+        hike_drop()
+        return 0
+    
+    monitor(0)
+    hike_pass()
+    return 0
