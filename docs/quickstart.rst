@@ -9,7 +9,7 @@ Working with offline and preinstalled doker image, on LINUX
 
 #. Create and execute container: ``docker run --rm -t -i --privileged --name eclat eclat:testbed  /sbin/my_init -- bash -l``
 
-#. Inside the container: ``cd /opt/eclat-daemon && testbed/ddos_double_token_bucket_with_sampler.sh``
+#. Inside the container: ``cd /opt/eclat-daemon && sh testbed/ddos_double_token_bucket_with_sampler.sh``
 
 A tmux will start, implementing the topology depicted below.
 There are three namespaces:
