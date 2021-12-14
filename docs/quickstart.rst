@@ -1,9 +1,10 @@
 Quick Start
 ===========
 
-Working with offline and preinstalled doker image, on LINUX
+Make sure having Docker installed on your machine
+Working with offline and preinstalled doker image, on LINUX/MAC.
 
-#. Download the docker image eclat.tar.gz
+#. Open a terminal in the current folder
 
 #. Load the image: ``docker load < eclat.tar.gz``
 
