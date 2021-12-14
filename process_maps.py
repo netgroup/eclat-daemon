@@ -5,6 +5,7 @@ import ipaddress
 import cal
 
 BASE_PATH =  '/sys/fs/bpf/maps'
+EXCLUDE_ADDRS = "fe80::", "ff02::"
 
 def ipv6_int128_from_int8(input_list):
     ipv6_int128 = 0
@@ -97,6 +98,7 @@ if __name__ == "__main__":
                         f" cpu: {v['cpu']} time: {out_ns(v['value']['last_time'])} "+
                         f"tokens: "+f"{v['value']['last_tokens']}".rjust(8))
         output_rows.sort()
+        output_rows = filter(lambda line : not any([el in line for el in EXCLUDE_ADDRS]), output_rows)
         for element in output_rows:
             print (element)
 
@@ -161,6 +163,7 @@ if __name__ == "__main__":
                         f" cpu: {v['cpu']} time: {out_ns(v['value']['last_time'])} "+
                         f"tokens: "+f"{v['value']['last_tokens']}".rjust(8))
         output_rows.sort()
+        output_rows = filter(lambda line : not any([el in line for el in EXCLUDE_ADDRS]), output_rows)
         for element in output_rows:
             print (element)
 
