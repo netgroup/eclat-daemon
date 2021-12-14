@@ -15,6 +15,7 @@ class IndentedLexer(Lexer):
         """
         # convert tab in spaces
         text = text.replace('\t', '    ')
+
         # remove comments
         text = re.sub(re.compile("#.*?\n"), "\n", text)
         # text = re.sub(re.compile("\s*?\n"), "", text)
@@ -63,7 +64,10 @@ class IndentedLexer(Lexer):
             indentation = indentations.pop()
             output += DEDENT + '\n'
         # output += ' ' + END
-        print("Preprocessing output:", output)
+
+        # convert ; in newlines
+        output = output.replace(';', '\n')
+        print("Preprocessed output:", output)
         return output
 
     def tokenize(self, text):
@@ -106,6 +110,7 @@ class EclatLexer(IndentedLexer):
         LCPAR,
         RCPAR,
         COLON,
+        SEMICOLON,
         DOT,
         AND,
         OR,
@@ -152,6 +157,7 @@ class EclatLexer(IndentedLexer):
     INDENT = r'_INDENT'
     DEDENT = r'_DEDENT'
     COLON = r':'
+    SEMICOLON = r';'
     AND = r'and'
     OR = r'or'
     NOT = r'not'

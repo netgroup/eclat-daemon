@@ -7,7 +7,7 @@ from .lexer import EclatLexer
 
 class EclatParser(Parser):
     tokens = EclatLexer.tokens
-    #debugfile = 'parser.out'
+    # debugfile = 'parser.out'
 
     precedence = (
         ('left', 'COLON'),
@@ -225,9 +225,18 @@ class EclatParser(Parser):
     def argument(self, p):
         return Argument(p.NAME, p.type)
 
+    @ _('NAME ASSIGN const')
+    def statement(self, p):
+        if p.NAME.isupper():
+            return Define(p.NAME, p.const)
+        else:
+            return Assigment(p.NAME, p.const)
+
     @ _('const', 'NAME')
     def expression(self, p):
         return Expression(p[0])
+
+    # here
 
     @ _('expression COMMA exprlist', 'expression', '')
     def exprlist(self, p):
