@@ -343,6 +343,18 @@ class Type():
         return f"__{self.type.lower()}"
 
 
+class Define():
+    def __init__(self, name, const):
+        self.name = name
+        self.const = const
+
+    def __repr__(self):
+        return self.to_c()
+
+    def to_c(self):
+        return f"#define {self.name} {self.const}"
+
+
 class Dictionary():
     def __init__(self, key_value_pairs):
         self.key_value_pairs = key_value_pairs

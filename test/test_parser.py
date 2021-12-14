@@ -345,28 +345,46 @@ ipv6_simple_classifier[ipv6_simple_classifier_map3] = {
         self.assertIn({'program_name': 'ipv6_simple_classifier',
                       'map_name': 'ipv6_simple_classifier_map3', 'data': {('192', '168', '1', '1'): ['mychain2'], ('192', '168', '1', '2'): ['mychain10']}}, parser.maps)
 
-    #     def test_indentation(self):
-    #         # indentation and multiple newlines OK
-    #         # argumentlist and expressionlist
-    #         # globals variable OK
-    #         # constants -> CONST_NAME = "Name"
-        # https://clang.llvm.org/docs/pip.html
+    def test_constant(self):
+        lexer = EclatLexer()
+        parser = EclatParser()
+        prog = """
+from programs.hike import Packet, Loader
+from programs.net import drop, allow
+from programs.test import funzione1, fun_funzion1
+from loaders.pippo import ipv6_classifier
 
-# import
-#from programs.programs.net import drop, allow
-#from programs.classifiers.basic import ipv6_classifier
-# configure classifier
+ipv6_classifier.attach('enp6s0f0', 'xdp')
 
 
-# ipv6_classifier.attach('enp6s0f0', 'xdp') #<------------------
+def mychain0():
+    CONST1 = 10;CONST2 = 0x800;CONST4=1
+    
+    NONConst3 = 10
+    eth_type = Packet.readU16(12)
+    if eth_type == 0x86dd :
+        ttl = Packet.readU8(21)
+        if ttl == 64:
+            Packet.writeU8(17,21) 
+            funzione1(pippo)
+            fun_funzion1(par1, pippo)
+        
+    
+    if eth_type == CONST2 :
+        drop(CONST1)
+        pass
+        return
+        
 
-# set/get map
-# ipv6_classifier.mapname[key] = value
-# ipv6_classifier.map[mapname][key] = value
-# ipv6_classifier.setmap(mapname, key, value)
-
-# ipv6_classifier[mapname] = {'key': value} #write #<------------------
-# ipv6_classifier[mapname][key] #read
-
-# ipv6_classifier[mapname].set(key, value) #write
-# ipv6_classifier[mapname].get(key) #read
+    allow(eth_type)
+    return
+        """
+        tokens = lexer.tokenize(prog)
+        for tok in tokens:
+            print(tok)
+        tokens = lexer.tokenize(prog)
+        p = parser.parse(tokens)
+        print("p=", p)
+        print(p['chains']['mychain0'].to_c("mypackage"))
+        print(parser.globals)
+        print("parsed constants")
