@@ -7,6 +7,7 @@ SOURCE_CONTRIB=hike_v3/contrib-src
 TARGET_DIR=components/programs 
 
 #cp $SOURCE_DIR/allow_any.bpf.c           $TARGET_DIR/$PACKAGE_NAME
+cp $SOURCE_DIR/l2red.bpf.c                $TARGET_DIR/$PACKAGE_NAME
 cp $SOURCE_DIR/hike_drop.bpf.c            $TARGET_DIR/$PACKAGE_NAME
 cp $SOURCE_DIR/hike_pass.bpf.c            $TARGET_DIR/$PACKAGE_NAME
 cp $SOURCE_DIR/ip6_hset_srcdst.bpf.c      $TARGET_DIR/$PACKAGE_NAME
