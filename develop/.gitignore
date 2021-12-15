@@ -2,3 +2,5 @@
 !.gitignore
 !*.c
 !*.h
+!temp-util
+!temp-util/*
