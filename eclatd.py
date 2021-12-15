@@ -70,7 +70,7 @@ eclat_pb2_grpc.add_EclatServicer_to_server(
     EclatServicer(controller), server)
 
 # listen on port 50051
-print('Starting server. Listening on port 50051.')
 server.add_insecure_port('[::]:50051')
 server.start()
+print('Server started. Listening on port 50051.')
 server.wait_for_termination()

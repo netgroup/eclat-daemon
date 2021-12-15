@@ -177,14 +177,15 @@ tmux new-window -t $TMUX -n CLT ip netns exec clt bash -c "${clt_env}"
 
 #tmux select-window -t :4
 
-echo "making sure that the eCLAT daemon is running..."
-sleep 3
-
-echo "making sure that the eCLAT daemon is running..."
-sleep 3
-
-echo "making sure that the eCLAT daemon is running..."
-sleep 3
+while :
+do
+  OUTPUT=$(tmux capture-pane -pJ -S-100 -t $TMUX:SUTDA | grep 'Server started.')
+  sleep 2
+  if [[ $OUTPUT ]] ; then
+    break
+  fi
+  echo "making sure that the eCLAT daemon is running..."
+done
 
 tmux send-keys -t $TMUX:SUT "scripts/run-eclat.sh test/eclat_scripts/ddos_tb_2_levels_sample.eclat enp6s0f0" C-m
 
