@@ -1,0 +1,47 @@
+#
+# time stamp twamp
+#
+
+from programs.mynet import hike_drop, hike_pass,  ip6_hset_srcdst, monitor, ip6_dst_tbmon, l2_redirect, udp_port
+from loaders.basic import ip6_sc
+
+# send all IPv6 packets to our chain
+ip6_sc[ipv6_sc_map] = { (0): (tstamp_twamp) }
+ip6_sc.attach('DEVNAME', 'xdp')
+
+def tstamp_twamp():
+    PASS=0; DROP=1; REDIRECT=2;
+    ADD=1; LOOKUP=2;
+    BLACKLISTED = O;
+    REDIRECT_IF_INDEX = 6;
+    IN_PROFILE = 0;
+    
+    # (src,dest) in blacklist ?
+    u64 : res = ip6_hset_srcdst(LOOKUP)
+    if res == BLACKLISTED:
+        # redirect one packet out of 500
+        res = ip6_sd_dec2zero(500)
+        if res == 0:
+            monitor(REDIRECT)
+            l2_redirect(REDIRECT_IF_INDEX) 
+            return 0
+
+        monitor(DROP)
+        hike_drop()
+        return 0
+    
+    # check the rate per (dst)
+    res = ip6_dst_tbmon()
+    if res != IN_PROFILE:
+        # check the rate per (src,dst)
+        res = ip6_sd_tbmon()
+        if res != IN_PROFILE:
+            # add (src,dest) to blacklist
+            ip6_hset_srcdst(ADD)
+            monitor(DROP)
+            hike_drop()
+            return 0
+            
+    monitor(PASS)
+    hike_pass()
+    return 0
