@@ -105,7 +105,7 @@ def make_hike_chain(file_path):
     $ make -f path-to/hike_vm/external/Makefile -j24 chain CHAIN=chain.hike.c HIKE_DIR=path-to/hike_vm/src/
     """
     makefile = f"{settings.HIKE_PATH}/external/Makefile"
-    cmd = f"make -f {makefile} chain CHAIN={file_path} HIKE_DIR={settings.HIKE_SOURCE_PATH}"
+    cmd = f"make -f {makefile} chain CHAIN={file_path} HIKE_DIR={settings.HIKE_SOURCE_PATH} HIKE_CFLAGS='-D__HIKE_CFLAGS_EXTMAKE'"
     print(f"Exec: {cmd}")
     ret = os.system(cmd)
     if ret != 0:
