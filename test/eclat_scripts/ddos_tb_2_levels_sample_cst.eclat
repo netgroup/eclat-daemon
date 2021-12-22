@@ -1,5 +1,6 @@
 #
 # ddos_tb_2_levels
+# (ddos_tb_2_levels_sample_cst.eclat)
 #
 # # token bucket monitor per ip6 dst 
 # the out-profile packets are processed by a token bucket per src,dst
@@ -16,11 +17,11 @@ ip6_sc[ipv6_sc_map] = { (0): (ddos_tb_2_lev) }
 ip6_sc.attach('DEVNAME', 'xdp')
 
 def ddos_tb_2_lev():
-    PASS=0; DROP=1; REDIRECT=2;
-    ADD=1; LOOKUP=2;
-    BLACKLISTED = O;
-    REDIRECT_IF_INDEX = 6;
-    IN_PROFILE = 0;
+    PASS=0; DROP=1; REDIRECT=2
+    ADD=1; LOOKUP=2
+    BLACKLISTED = 0
+    REDIRECT_IF_INDEX = 6
+    IN_PROFILE = 0
     
     # (src,dest) in blacklist ?
     u64 : res = ip6_hset_srcdst(LOOKUP)
