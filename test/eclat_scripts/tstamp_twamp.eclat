@@ -30,7 +30,11 @@ def tstamp_twamp():
         hike_drop()
         return 0
 
-    udp_port(666)
+    res = udp_port(666)
+    if (res == 100000 ):
+        monitor(DROP)
+        hike_drop()
+        return 0
     
     # check the rate per (dst)
     res = ip6_dst_tbmon()
