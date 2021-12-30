@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# this script needs to be executed from the eclat-daemon folder
+# by calling: 
+# testbed/ddos_double_token_bucket_with_sampler.sh
+
 #                     +------------------+      +------------------+
 #                     |        TG        |      |       SUT        |
 #                     |                  |      |                  |
@@ -18,6 +22,9 @@
 
 TMUX=ebpf
 IPP=ip
+
+#build the hike vm bpf.c files if needed
+scripts/initial_setup.sh
 
 # Kill tmux previous session
 tmux kill-session -t $TMUX 2>/dev/null
@@ -187,7 +194,7 @@ do
   echo "making sure that the eCLAT daemon is running..."
 done
 
-tmux send-keys -t $TMUX:SUT "scripts/run-eclat.sh test/eclat_scripts/ddos_tb_2_levels_sample.eclat enp6s0f0" C-m
+tmux send-keys -t $TMUX:SUT "scripts/run-eclat.sh test/eclat_scripts/ddos_tb_2_levels_sample_constants.eclat enp6s0f0" C-m
 
 while :
 do

@@ -1,9 +1,8 @@
+# ddos_tb_2_levels with packet samples redirected to collector
 #
-# ddos_tb_2_levels
-#
-# # token bucket monitor per ip6 dst 
-# the out-profile packets are processed by a token bucket per src,dst
-# -> black lists the (src,dst) out-profile
+# first token bucket monitor per ip6 dst 
+# the out-profile packets are processed by a second token bucket per src,dst
+# the out-profile (src,dst) are blacklisted
 # for a time interval (e.g. 10 s) which is defined in ip6_hset.h: HIKE_IPV6_HSET_EXP_TIMEOUT_NS
 # token bucket parameters (rate, bucket) are defined in tb_defs.h
 # redirects a packet every 500 packets to an interface
