@@ -132,6 +132,10 @@ if __name__ == "__main__":
             (num_val_array,str_details) = process_pcpu_values_u64(my_obj['values'])
 
             print (f"{my_obj['key']}".rjust(3)+" : "+f"{sum(num_val_array)}".rjust(8)+" "+str_details)
+    
+    #experiment to update a key value pair
+    #print (pm.map_path)
+    #cal.bpftool_map_update(pm.map_path, ["01","00","00", "00"], ["01", "00", "00", "00","00", "00","00", "00"], map_reference_type="pinned", value_type="hex")
 
 
     pm = ProcessMap('pcpu_meter','mynet','ip6_sd_meter')

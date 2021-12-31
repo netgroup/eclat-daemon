@@ -1,0 +1,28 @@
+# alternate marking
+# 
+# (alt_mark.eclat)
+#
+
+from programs.mynet import hike_drop, hike_pass,  ip6_hset_srcdst, ip6_sd_tbmon, monitor, ip6_dst_tbmon, ip6_sd_dec2zero, l2_redirect, ip6_alt_mark
+from loaders.basic import ip6_sc
+
+# send all IPv6 packets to our chain
+ip6_sc[ipv6_sc_map] = { (0): (alt_mark) }
+ip6_sc.attach('DEVNAME', 'xdp')
+
+def alt_mark():
+    PASS=0; DROP=1; REDIRECT=2
+    ADD=1; LOOKUP=2
+    BLACKLISTED = 0
+    REDIRECT_IF_INDEX = 6
+    IN_PROFILE = 0
+    
+
+    u64 : res = ip6_alt_mark()
+    if res == 1:
+
+        monitor(DROP)
+    
+    monitor(PASS)
+    hike_pass()
+    return 0
