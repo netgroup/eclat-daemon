@@ -80,7 +80,7 @@ if __name__ == "__main__":
     
     result = pm.read()
     if result == 0 :
-        #print (pm.map_as_array)
+        #print (json.dumps(pm.map_as_array))
         output_rows = []
         for my_obj in pm.map_as_array :
             (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
@@ -93,6 +93,12 @@ if __name__ == "__main__":
         output_rows = filter(lambda line : not any([el in line for el in EXCLUDE_ADDRS]), output_rows)
         for element in output_rows:
             print (element)
+
+        #experiment to add an entry to the map    
+        #ipa = ipaddress.IPv6Address('::74')
+        #ipb = ipaddress.IPv6Address('cafe::')
+        #v = [ht.u64(100),ht.u64(100),ht.u64(1000),ht.u64(1000),ht.u64(100),ht.u64(100)]
+        #cal.cal_map_update(pm.map_path, [ipa,ipb], v)
 
     pm = ProcessMap('map_pcpu_lse','net','lse')
     
@@ -125,10 +131,10 @@ if __name__ == "__main__":
 
             print (f"{my_obj['key']}".rjust(3)+" : "+f"{sum(num_val_array)}".rjust(8)+" "+str_details)
     
-    #experiment to update a key value pair
-    #print (pm.map_path)
-    #cal.bpftool_map_update(pm.map_path, ["01","00","00", "00"], ["01", "00", "00", "00","00", "00","00", "00"], map_reference_type="pinned", value_type="hex")
-    cal.cal_map_update(pm.map_path, ht.u32(256), 256)
+        #experiment to update a key value pair
+        #print (pm.map_path)
+        #cal.bpftool_map_update(pm.map_path, ["01","00","00", "00"], ["01", "00", "00", "00","00", "00","00", "00"], map_reference_type="pinned", value_type="hex")
+        cal.cal_map_update(pm.map_path, ht.u32(256), 256)
 
 
     pm = ProcessMap('pcpu_meter','mynet','ip6_sd_meter')
