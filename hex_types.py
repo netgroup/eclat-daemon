@@ -21,7 +21,13 @@ class uGeneric:
   def __call__(self):
     return self.get()
   def set(self,data):
-    self.v = data % 2**self.size
+    if data < 0:
+      raise OverflowError
+    elif data < 2**(self.size):
+      #self.v = data % 2**self.size
+      self.v = data
+    else:
+      raise OverflowError
   def get(self):
     return self.v 
   def toHex(self):
