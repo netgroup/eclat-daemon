@@ -24,5 +24,6 @@ def alt_mark():
         monitor(DROP)
     
     monitor(PASS)
+    #ip6_sd_tbmon()
     hike_pass()
     return 0

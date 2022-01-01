@@ -1,4 +1,18 @@
+"""
+hex_types.to_hex(data)
+convert data into a list of strings with the hex representation of data
+to be used inside a BPF map as key or value
+
+data can be:
+- a list
+- an object that supports a to_hex() method
+- an int (converted to 8 bytes little-endian)
+- an ipaddress.IPv6Address (converted in big-endian)
+
+"""
+
 import math
+import ipaddress
 
 class uGeneric:
   def __init__(self, size, data):
@@ -10,7 +24,7 @@ class uGeneric:
     self.v = data % 2**self.size
   def get(self):
     return self.v 
-  def to_hex(self):
+  def toHex(self):
     tmp = self.v
     hex_list = []
     for i in range (0,math.ceil(self.size/8)):
@@ -31,6 +45,10 @@ class sGeneric(uGeneric):
     else:
       raise OverflowError
 
+class u128(uGeneric):
+  def __init__(self, data):
+    super().__init__(128, data) 
+
 class u64(uGeneric):
   def __init__(self, data):
     super().__init__(64, data) 
@@ -46,6 +64,10 @@ class u16(uGeneric):
 class u8(uGeneric):
   def __init__(self, data):
     super().__init__(8, data) 
+
+class s128(sGeneric):
+  def __init__(self, data):
+    super().__init__(128, data) 
 
 class s64(sGeneric):
   def __init__(self, data):
@@ -69,8 +91,23 @@ def to_hex (data):
   if type(data) == type([]):
     for e in data:
       hex_list.extend(to_hex(e))
+  elif type(data) == type(ipaddress.IPv6Address('::1')):
+    hex_list = to_hex(u128(int(data)))
+    hex_list.reverse()
   elif type(data) == type(0):
     hex_list = to_hex(u64(data))
   else:
-    hex_list = data.to_hex()
+    hex_list = data.toHex()
   return hex_list
+
+"""
+converts a list of 16 integers 0-255 (big-endian) to an integer (128 bit equivalent)
+"""
+def ipv6_int128_from_int8(input_list):
+    ipv6_int128 = 0
+    i = 15
+    for int8 in input_list:
+        ipv6_int128 = ipv6_int128 | (int8 << (i*8))
+        i = i - 1
+    #print (ipv6_int128)
+    return ipv6_int128

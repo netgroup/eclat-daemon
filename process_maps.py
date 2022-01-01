@@ -8,15 +8,6 @@ import hex_types as ht
 BASE_PATH =  '/sys/fs/bpf/maps'
 EXCLUDE_ADDRS = "fe80::", "ff02::"
 
-def ipv6_int128_from_int8(input_list):
-    ipv6_int128 = 0
-    i = 15
-    for int8 in input_list:
-        ipv6_int128 = ipv6_int128 | (int8 << (i*8))
-        i = i - 1
-    #print (ipv6_int128)
-    return ipv6_int128
-
 def out_ip6_sd(src_ip6, dst_ip6):
     return f"{src_ip6}".ljust(25)+"- "+f"{dst_ip6}".ljust(25)
 
@@ -28,11 +19,11 @@ def out_ns(value):
 
 def get_ip6_sd_from_key(key):
     if 'saddr' in key:
-        src_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(key['saddr']['in6_u']['u6_addr8']))
+        src_ip6 = ipaddress.IPv6Address(ht.ipv6_int128_from_int8(key['saddr']['in6_u']['u6_addr8']))
     else:
         src_ip6 = '*'
     if 'daddr' in key:
-        dst_ip6 = ipaddress.IPv6Address(ipv6_int128_from_int8(key['daddr']['in6_u']['u6_addr8']))
+        dst_ip6 = ipaddress.IPv6Address(ht.ipv6_int128_from_int8(key['daddr']['in6_u']['u6_addr8']))
     else:
         src_ip6 = '*'
     return (src_ip6,dst_ip6)

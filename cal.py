@@ -279,7 +279,7 @@ def cal_map_update(map_reference, key, value):
 def bpftool_map_dump(map_reference, map_reference_type="pinned"):
     """Call bpftool map dump and return the result
     """
-    # bpftool map dump --json pinned /sys/fs/bpf/maps/system/hvm_chain_map
+    # bpftool map dump pinned /sys/fs/bpf/maps/system/hvm_chain_map
 
     if map_reference_type == "pinned":
 
