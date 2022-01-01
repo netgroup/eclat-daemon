@@ -3,6 +3,7 @@ import os
 import subprocess
 import ipaddress
 import cal
+import hex_types as ht
 
 BASE_PATH =  '/sys/fs/bpf/maps'
 EXCLUDE_ADDRS = "fe80::", "ff02::"
@@ -136,6 +137,7 @@ if __name__ == "__main__":
     #experiment to update a key value pair
     #print (pm.map_path)
     #cal.bpftool_map_update(pm.map_path, ["01","00","00", "00"], ["01", "00", "00", "00","00", "00","00", "00"], map_reference_type="pinned", value_type="hex")
+    cal.cal_map_update(pm.map_path, ht.u32(256), 256)
 
 
     pm = ProcessMap('pcpu_meter','mynet','ip6_sd_meter')

@@ -9,6 +9,7 @@ import settings
 import subprocess
 import os
 import json
+from hex_types import u64, u32, u16, u8, s8, to_hex
 
 # References:
 # - https://manpages.ubuntu.com/manpages/focal/man8/bpftool-prog.8.html
@@ -266,6 +267,13 @@ def bpftool_map_update(map_reference, key, value, map_reference_type="pinned", v
 
     # unittest
     return True
+
+def cal_map_update(map_reference, key, value):
+    key_list = to_hex(key)
+    value_list = to_hex(value)
+    #print (key_list)
+    #print (value_list)
+    bpftool_map_update(map_reference, key_list, value_list, map_reference_type="pinned", value_type="hex")    
 
 
 def bpftool_map_dump(map_reference, map_reference_type="pinned"):
