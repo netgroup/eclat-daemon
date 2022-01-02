@@ -14,6 +14,17 @@ configure ip_sd_tbmon(RATE 10995116, BUCKET_SIZE 102400, BASE_TIME_BITS 30, SHIF
 
 configure ip_sd_tbmon(RATE=10995116, BUCKET_SIZE=102400, BASE_TIME_BITS=30, SHIFT_TOKENS=10)
 
+configure ip_sd_tbmon({RATE:10995116, BUCKET_SIZE:102400, BASE_TIME_BITS:30, SHIFT_TOKENS:10})
+
+configure ip_sd_tbmon{RATE:10995116, BUCKET_SIZE:102400, BASE_TIME_BITS:30, SHIFT_TOKENS:10}
+
+ip6_sd_tbmon[__conf__] = {RATE:10995116, BUCKET_SIZE:102400, BASE_TIME_BITS:30, SHIFT_TOKENS:10}
+
+ip6_sd_tbmon.__conf__ = {RATE:10995116, BUCKET_SIZE:102400, BASE_TIME_BITS:30, SHIFT_TOKENS:10}
+
+ip6_sd_tbmon.config({RATE:10995116, BUCKET_SIZE:102400, BASE_TIME_BITS:30, SHIFT_TOKENS:10})
+
+ip6_sd_tbmon.config(RATE:10995116, BUCKET_SIZE:102400, BASE_TIME_BITS:30, SHIFT_TOKENS:10)
 
 
 from programs.mynet import hike_drop, hike_pass,  ip6_hset_srcdst, ip6_sd_tbmon, monitor, ip6_dst_tbmon, ip6_sd_dec2zero, l2_redirect

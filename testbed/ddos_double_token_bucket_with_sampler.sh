@@ -20,10 +20,10 @@
 #                                               |    COLLECTOR   |
 #                                               +----------------+
 
+ECLAT_SCRIPT=test/eclat_scripts/ddos_tb_2_levels_sample_constants.eclat
+
 TMUX=ebpf
 IPP=ip
-
-ECLAT_SCRIPT=test/eclat_scripts/ddos_tb_2_levels_sample_constants.eclat
 
 SUT_DEV0=enp6s0f0
 SUT_DEV1=enp6s0f1
@@ -185,6 +185,7 @@ sleep 1
 
 tmux new-session -d -s $TMUX -n MAIN bash
 tmux new-window -t $TMUX -n MAPS bash
+tmux new-window -t $TMUX -n DEBUG bash
 tmux new-window -t $TMUX -n TG1 ip netns exec tg bash -c "${tg_env}"
 tmux new-window -t $TMUX -n TG2 ip netns exec tg bash 
 tmux new-window -t $TMUX -n SUT ip netns exec sut bash -c "${sut_env}"
@@ -216,12 +217,18 @@ do
   echo "registering HIKe eBPF Programs and eCLAT Chains..."
 done
 
-tmux send-keys -t $TMUX:SUT "clear" C-m
-tmux send-keys -t $TMUX:MAIN "scripts/enter-namespace-xdp-raw-pass.sh" C-m
-tmux send-keys -t $TMUX:MAPS "scripts/enter-namespace-watchmap.sh" C-m
-tmux send-keys -t $TMUX:CLT "tcpdump -i veth0" C-m
-tmux send-keys -t $TMUX:TG1 "ping -i 0.01 fc01::2"
-tmux send-keys -t $TMUX:TG2 "ping -i 0.5 fc01::3" 
+tmux send-keys -t $TMUX:SUT   "clear" C-m
+
+#the following is needed to enable raw-pass for l2-redirect in the SUT 
+tmux send-keys -t $TMUX:MAIN  "scripts/enter-namespace-xdp-raw-pass.sh" C-m
+
+sleep 1
+
+tmux send-keys -t $TMUX:DEBUG "scripts/enter-namespace-debug-no-vm.sh" C-m
+tmux send-keys -t $TMUX:MAPS  "scripts/enter-namespace-watchmap.sh" C-m
+tmux send-keys -t $TMUX:CLT   "tcpdump -i veth0" C-m
+tmux send-keys -t $TMUX:TG1   "ping -i 0.01 fc01::2"
+tmux send-keys -t $TMUX:TG2   "ping -i 0.5 fc01::3" 
 
 tmux select-window -t $TMUX:TG2
 tmux set-option -g mouse on
