@@ -23,6 +23,15 @@
 TMUX=ebpf
 IPP=ip
 
+ECLAT_SCRIPT=test/eclat_scripts/ddos_tb_2_levels_sample_constants.eclat
+
+SUT_DEV0=enp6s0f0
+SUT_DEV1=enp6s0f1
+
+TG_DEV0=enp6s0f0
+TG_DEV1=enp6s0f1
+
+
 #build the hike vm bpf.c files if needed
 scripts/initial_setup.sh
 
@@ -36,8 +45,8 @@ ip netns add tg
 ip netns add sut
 ip netns add clt
 
-ip -netns tg link add enp6s0f0 type veth peer name enp6s0f0 netns sut
-ip -netns tg link add enp6s0f1 type veth peer name enp6s0f1 netns sut
+ip -netns tg link add $TG_DEV0 type veth peer name $SUT_DEV0 netns sut
+ip -netns tg link add $TG_DEV1 type veth peer name $SUT_DEV1 netns sut
 
 ip -netns sut link add cl0 type veth peer name veth0 netns clt
 
@@ -48,25 +57,25 @@ echo -e "\nNode: TG"
 
 ip -netns tg link set dev lo up
 
-ip -netns tg link set dev enp6s0f0 address 00:00:00:00:01:00
-ip -netns tg link set dev enp6s0f1 address 00:00:00:00:01:01
+ip -netns tg link set dev $TG_DEV0 address 00:00:00:00:01:00
+ip -netns tg link set dev $TG_DEV1 address 00:00:00:00:01:01
 
-ip -netns tg link set dev enp6s0f0 up
-ip -netns tg link set dev enp6s0f1 up
+ip -netns tg link set dev $TG_DEV0 up
+ip -netns tg link set dev $TG_DEV1 up
 
-ip -netns tg addr add 12:1::1/64 dev enp6s0f0
-ip -netns tg addr add fc01::1/64 dev enp6s0f0
-ip -netns tg addr add fc02::1/64 dev enp6s0f0
-ip -netns tg addr add 10.12.1.1/24 dev enp6s0f0
+ip -netns tg addr add 12:1::1/64 dev $TG_DEV0
+ip -netns tg addr add fc01::1/64 dev $TG_DEV0
+ip -netns tg addr add fc02::1/64 dev $TG_DEV0
+ip -netns tg addr add 10.12.1.1/24 dev $TG_DEV0
 
-ip -netns tg addr add 12:2::1/64 dev enp6s0f1
-ip -netns tg addr add 10.12.2.1/24 dev enp6s0f1
+ip -netns tg addr add 12:2::1/64 dev $TG_DEV1
+ip -netns tg addr add 10.12.2.1/24 dev $TG_DEV1
 
-ip -netns tg -6 neigh add 12:1::2 lladdr 00:00:00:00:02:00 dev enp6s0f0
-ip -netns tg -6 neigh add fc00::2 lladdr 00:00:00:00:02:00 dev enp6s0f0
-ip -netns tg -6 neigh add fc02::2 lladdr 00:00:00:00:02:00 dev enp6s0f0
+ip -netns tg -6 neigh add 12:1::2 lladdr 00:00:00:00:02:00 dev $TG_DEV0
+ip -netns tg -6 neigh add fc00::2 lladdr 00:00:00:00:02:00 dev $TG_DEV0
+ip -netns tg -6 neigh add fc02::2 lladdr 00:00:00:00:02:00 dev $TG_DEV0
 
-ip -netns tg -6 neigh add 12:2::2 lladdr 00:00:00:00:02:01 dev enp6s0f1
+ip -netns tg -6 neigh add 12:2::2 lladdr 00:00:00:00:02:01 dev $TG_DEV1
 
 read -r -d '' tg_env <<-EOF
 	# Everything that is private to the bash process that will be launch
@@ -93,30 +102,30 @@ ip netns exec sut sysctl -w net.ipv6.conf.all.forwarding=1
 
 ip -netns sut link set dev lo up
 
-ip -netns sut link set dev enp6s0f0 address 00:00:00:00:02:00
-ip -netns sut link set dev enp6s0f1 address 00:00:00:00:02:01
+ip -netns sut link set dev $SUT_DEV0 address 00:00:00:00:02:00
+ip -netns sut link set dev $SUT_DEV1 address 00:00:00:00:02:01
 
-ip -netns sut link set dev enp6s0f0 up
-ip -netns sut link set dev enp6s0f1 up
+ip -netns sut link set dev $SUT_DEV0 up
+ip -netns sut link set dev $SUT_DEV1 up
 
 # Sink interface (dummy)
 ip -netns sut link set dev cl0 up
 ip -netns sut addr add cafe::1/64 dev cl0
 
-ip -netns sut addr add 12:1::2/64 dev enp6s0f0
-ip -netns sut addr add fc01::2/64 dev enp6s0f0
-ip -netns sut addr add fc01::3/64 dev enp6s0f0
-ip -netns sut addr add fc02::2/64 dev enp6s0f0
-ip -netns sut addr add 10.12.1.2/24 dev enp6s0f0
+ip -netns sut addr add 12:1::2/64 dev $SUT_DEV0
+ip -netns sut addr add fc01::2/64 dev $SUT_DEV0
+ip -netns sut addr add fc01::3/64 dev $SUT_DEV0
+ip -netns sut addr add fc02::2/64 dev $SUT_DEV0
+ip -netns sut addr add 10.12.1.2/24 dev $SUT_DEV0
 
-ip -netns sut addr add 12:2::2/64 dev enp6s0f1
-ip -netns sut addr add 10.12.2.2/24 dev enp6s0f1
+ip -netns sut addr add 12:2::2/64 dev $SUT_DEV1
+ip -netns sut addr add 10.12.2.2/24 dev $SUT_DEV1
 
-ip -netns sut -6 neigh add 12:1::1 lladdr 00:00:00:00:01:00 dev enp6s0f0
-ip -netns sut -6 neigh add fc00::1 lladdr 00:00:00:00:01:00 dev enp6s0f0
-ip -netns sut -6 neigh add fc02::1 lladdr 00:00:00:00:01:00 dev enp6s0f0
+ip -netns sut -6 neigh add 12:1::1 lladdr 00:00:00:00:01:00 dev $SUT_DEV0
+ip -netns sut -6 neigh add fc00::1 lladdr 00:00:00:00:01:00 dev $SUT_DEV0
+ip -netns sut -6 neigh add fc02::1 lladdr 00:00:00:00:01:00 dev $SUT_DEV0
 
-ip -netns sut -6 neigh add 12:2::1 lladdr 00:00:00:00:01:01 dev enp6s0f1
+ip -netns sut -6 neigh add 12:2::1 lladdr 00:00:00:00:01:01 dev $SUT_DEV1
 
 #export HIKECC="../hike-tools/hikecc.sh"
 
@@ -194,7 +203,7 @@ do
   echo "making sure that the eCLAT daemon is running..."
 done
 
-tmux send-keys -t $TMUX:SUT "scripts/run-eclat.sh test/eclat_scripts/ddos_tb_2_levels_sample_constants.eclat enp6s0f0" C-m
+tmux send-keys -t $TMUX:SUT "scripts/run-eclat.sh $ECLAT_SCRIPT $SUT_DEV0" C-m
 
 while :
 do
