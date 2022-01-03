@@ -19,6 +19,7 @@ def alt_mark():
     
 
     u64 : res = ip6_alt_mark()
+    monitor(res)
     if res == 1:
 
         monitor(DROP)

@@ -31,7 +31,7 @@ MAPS_EXEC=YES
 CLT_COMMAND="tcpdump -i veth0"
 CLT_EXEC=YES
 
-TG1_COMMAND="ping -i 0.01 fc01::2"
+TG1_COMMAND="tcpreplay -i enp6s0f0 hike_v3/testbed/pkts/alt_mark_01.pcap"
 TG1_EXEC=NO
 
 TG2_COMMAND="ping -i 0.5 fc01::3"
