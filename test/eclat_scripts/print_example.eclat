@@ -14,7 +14,7 @@ def print_example():
 
     LAYER_2=1; NET_LAYER=2; TRANSP_LAYER=4
 
-    show_pkt_info(TRANSP_LAYER+NET_LAYER+LAYER_2, 484)
+    show_pkt_info(TRANSP_LAYER+NET_LAYER+LAYER_2,484)
 
     hike_pass()
     return 0
