@@ -1,0 +1,20 @@
+# print example
+# 
+# (print_example.eclat)
+#
+
+from programs.mynet import hike_drop, hike_pass, monitor, show_pkt_info
+from loaders.basic import ip6_sc
+
+# send all IPv6 packets to our chain
+ip6_sc[ipv6_sc_map] = { (0): (print_example) }
+ip6_sc.attach('DEVNAME', 'xdp')
+
+def print_example():
+
+    LAYER_2=1; NET_LAYER=2; TRANSP_LAYER=4
+
+    show_pkt_info(NET_LAYER+LAYER_2, 484)
+
+    hike_pass()
+    return 0
