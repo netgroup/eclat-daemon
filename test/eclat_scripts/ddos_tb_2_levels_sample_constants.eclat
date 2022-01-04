@@ -10,7 +10,13 @@
 # a packet every 500 blacklisted packets is redirected to an interface
 # the script is also counting the accepted, dropped and redirected packets
 
-from programs.mynet import hike_drop, hike_pass,  ip6_hset_srcdst, ip6_sd_tbmon, monitor, ip6_dst_tbmon, ip6_sd_dec2zero, l2_redirect
+#from programs.mynet import hike_pass,  ip6_hset_srcdst, ip6_sd_tbmon, monitor, ip6_dst_tbmon, l2_redirect, ip6_sd_dec2zero
+
+from programs.hike_default import hike_drop, hike_pass, ip6_hset_srcdst, monitor, l2_redirect
+from programs.meter import ip6_sd_tbmon, ip6_dst_tbmon
+from programs.sampler import ip6_sd_dec2zero
+
+
 from loaders.basic import ip6_sc
 
 # send all IPv6 packets to our chain

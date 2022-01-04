@@ -3,7 +3,13 @@
 # (alt_mark.eclat)
 #
 
-from programs.mynet import hike_drop, hike_pass,  ip6_hset_srcdst, ip6_sd_tbmon, monitor, ip6_dst_tbmon, ip6_sd_dec2zero, l2_redirect, ip6_alt_mark
+#from programs.mynet import hike_drop, hike_pass,  ip6_hset_srcdst, ip6_sd_tbmon, monitor, ip6_dst_tbmon, ip6_sd_dec2zero, l2_redirect, ip6_alt_mark
+
+from programs.hike_default import hike_drop, hike_pass, monitor
+#from programs.meter import ip6_sd_tbmon, ip6_dst_tbmon
+from programs.alt_mark import ip6_alt_mark
+
+
 from loaders.basic import ip6_sc
 
 # send all IPv6 packets to our chain

@@ -3,7 +3,9 @@
 # (print_example.eclat)
 #
 
-from programs.mynet import hike_drop, hike_pass, monitor, show_pkt_info
+#from programs.mynet import hike_drop, hike_pass, monitor, show_pkt_info
+from programs.hike_default import hike_drop, hike_pass, monitor
+from programs.info import show_pkt_info
 from loaders.basic import ip6_sc
 
 # send all IPv6 packets to our chain

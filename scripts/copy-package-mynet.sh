@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# DEPRECATED AND REPLACED BY copy_hike_packages.py
+
 PACKAGE_NAME=mynet
 
 SOURCE_DIR=hike_v3/src
