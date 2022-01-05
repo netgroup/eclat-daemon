@@ -68,50 +68,50 @@ class Copy_hike_packages:
             ]
         } )
 
-        self.packages.append( {
-            'package_name' : PNAME_METER,
-            'package_files' : [
-                {'source_folder' : self.hike_contrib_source_path, 
-                'file_list' : METER_FILELIST
-                }
-            ]
-        } )
+        # self.packages.append( {
+        #     'package_name' : PNAME_METER,
+        #     'package_files' : [
+        #         {'source_folder' : self.hike_contrib_source_path, 
+        #         'file_list' : METER_FILELIST
+        #         }
+        #     ]
+        # } )
 
-        self.packages.append( {
-            'package_name' : PNAME_SAMPLER,
-            'package_files' : [
-                {'source_folder' : self.hike_contrib_source_path, 
-                'file_list' : SAMPLER_FILELIST
-                }
-            ]
-        } )
+        # self.packages.append( {
+        #     'package_name' : PNAME_SAMPLER,
+        #     'package_files' : [
+        #         {'source_folder' : self.hike_contrib_source_path, 
+        #         'file_list' : SAMPLER_FILELIST
+        #         }
+        #     ]
+        # } )
 
-        self.packages.append( {
-            'package_name' : PNAME_ALTMARK,
-            'package_files' : [
-                {'source_folder' : self.hike_contrib_source_path, 
-                'file_list' : ALTMARK_FILELIST
-                }
-            ]
-        } )        
+        # self.packages.append( {
+        #     'package_name' : PNAME_ALTMARK,
+        #     'package_files' : [
+        #         {'source_folder' : self.hike_contrib_source_path, 
+        #         'file_list' : ALTMARK_FILELIST
+        #         }
+        #     ]
+        # } )        
 
-        self.packages.append( {
-            'package_name' : PNAME_INFO,
-            'package_files' : [
-                {'source_folder' : self.hike_contrib_source_path, 
-                'file_list' : INFO_FILELIST
-                }
-            ]
-        } )
+        # self.packages.append( {
+        #     'package_name' : PNAME_INFO,
+        #     'package_files' : [
+        #         {'source_folder' : self.hike_contrib_source_path, 
+        #         'file_list' : INFO_FILELIST
+        #         }
+        #     ]
+        # } )
 
-        self.packages.append( {
-            'package_name' : PNAME_MISC,
-            'package_files' : [
-                {'source_folder' : self.hike_contrib_source_path, 
-                'file_list' : MISC_FILELIST
-                }
-            ]
-        } )
+        # self.packages.append( {
+        #     'package_name' : PNAME_MISC,
+        #     'package_files' : [
+        #         {'source_folder' : self.hike_contrib_source_path, 
+        #         'file_list' : MISC_FILELIST
+        #         }
+        #     ]
+        # } )
 
     def __init__(self):
 

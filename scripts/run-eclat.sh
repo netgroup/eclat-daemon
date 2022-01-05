@@ -5,5 +5,5 @@
 #source scripts/copy-package-mynet.sh
 python copy_hike_packages.py
 
-python clean.py
+#python clean.py
 python eclat.py --load $1 --define DEVNAME $2 --package test

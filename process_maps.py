@@ -76,7 +76,7 @@ class ProcessMap:
 
 if __name__ == "__main__":
 
-    pm = ProcessMap('pcpu_sd_tbmon','mynet','ip6_sd_tbmon')
+    pm = ProcessMap('pcpu_sd_tbmon','meter','ip6_sd_tbmon')
     
     result = pm.read()
     if result == 0 :
@@ -100,7 +100,7 @@ if __name__ == "__main__":
         #v = [ht.u64(100),ht.u64(100),ht.u64(1000),ht.u64(1000),ht.u64(100),ht.u64(100)]
         #cal.cal_map_update(pm.map_path, [ipa,ipb], v)
 
-    pm = ProcessMap('map_pcpu_lse','net','lse')
+    pm = ProcessMap('map_pcpu_lse','hike_default','lse')
     
     result = pm.read()
     if result == 0 :
@@ -112,7 +112,7 @@ if __name__ == "__main__":
                     f" cts: {out_ns(v['value']['cts_ns'])} timeout: {out_ns(v['value']['timeout_ns'])}")
 
                     
-    pm = ProcessMap('ipv6_hset_sd_map','mynet','ip6_hset_srcdst')
+    pm = ProcessMap('ipv6_hset_sd_map','hike_default','ip6_hset_srcdst')
     result = pm.read()
     if result == 0 :
         for my_obj in pm.map_as_array :
@@ -122,7 +122,7 @@ if __name__ == "__main__":
                 f" cts: {out_ns(my_obj['value']['cts_ns'])} timeout: {out_ns(my_obj['value']['timeout_ns'])}")
 
 
-    pm = ProcessMap('map_pcpu_mon','mynet','monitor')
+    pm = ProcessMap('map_pcpu_mon','hike_default','monitor')
     result = pm.read()
     if result == 0 :
         for my_obj in pm.map_as_array :
@@ -137,7 +137,7 @@ if __name__ == "__main__":
         #cal.cal_map_update(pm.map_path, ht.u32(256), 256)
 
 
-    pm = ProcessMap('pcpu_meter','mynet','ip6_sd_meter')
+    pm = ProcessMap('pcpu_meter','meter','ip6_sd_meter')
     result = pm.read()
     if result == 0 :
         for my_obj in pm.map_as_array :
@@ -145,7 +145,7 @@ if __name__ == "__main__":
             (num_val_array,str_details) = process_pcpu_values_struct_count(my_obj['values'])
             print (out_ip6_sd(src_ip6, dst_ip6)+f"{sum(num_val_array)}".rjust(8)+str_details)
 
-    pm = ProcessMap('pcpu_dst_meter','mynet','ip6_dst_meter')
+    pm = ProcessMap('pcpu_dst_meter','meter','ip6_dst_meter')
     result = pm.read()
     if result == 0 :
         for my_obj in pm.map_as_array :
@@ -154,7 +154,7 @@ if __name__ == "__main__":
             print (out_ip6_sd(src_ip6, dst_ip6)+f"{sum(num_val_array)}".rjust(8)+str_details)
 
 
-    pm = ProcessMap('pcpu_tb_dst','mynet','ip6_dst_tbmon')
+    pm = ProcessMap('pcpu_tb_dst','meter','ip6_dst_tbmon')
     result = pm.read()
     if result == 0 :
         output_rows = []
@@ -170,7 +170,7 @@ if __name__ == "__main__":
         for element in output_rows:
             print (element)
 
-    pm = ProcessMap('pcpu_sd_dec2zero','mynet','ip6_sd_dec2zero')
+    pm = ProcessMap('pcpu_sd_dec2zero','sampler','ip6_sd_dec2zero')
     result = pm.read()
     if result == 0 :
         for my_obj in pm.map_as_array :
