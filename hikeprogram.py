@@ -60,11 +60,10 @@ class HikeProgram:
         if not os.path.exists(self.src_file_path):
             raise Exception(
                 f"Compilation failed. File {self.src_file_path} does not exist.")
-        if not self.is_compiled:
-            cal.make_ebpf_hike_program(self.src_file_path)
-            self.is_compiled = True
-        else:
-            print(f"Hike program {self.name} is already compiled")
+        cal.make_ebpf_hike_program(self.src_file_path)
+        self.is_compiled = True
+        # else:
+        #    print(f"Hike program {self.name} is already compiled")
 
     def clean(self):
         if os.path.exists(self.obj_file_path):
