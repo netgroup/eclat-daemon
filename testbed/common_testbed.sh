@@ -244,7 +244,7 @@ tmux send-keys -t $TMUX:CLT   "$CLT_COMMAND" $CM
 if [[ "$TG1_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
 tmux send-keys -t $TMUX:TG1   "$TG1_COMMAND" $CM
 
-if [[ "$TG2_EXEC" == "YES" ]] ; then CM="C-m" ; else cM="" ; fi
+if [[ "$TG2_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
 tmux send-keys -t $TMUX:TG2   "$TG2_COMMAND" $CM
 
 tmux select-window -t $TMUX:TG2
