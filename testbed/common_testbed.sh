@@ -204,7 +204,7 @@ tmux send-keys -t $TMUX:SUT "scripts/run-eclat.sh $ECLAT_SCRIPT $SUT_DEV0" C-m
 
 while :
 do
-  OUTPUT=$(tmux capture-pane -pJ -S-100 -t $TMUX:SUT | grep -E 'status: "OK"|Offending command is|Compilation failed')
+  OUTPUT=$(tmux capture-pane -pJ -S -100 -t $TMUX:SUT | grep -E 'status: "OK"|Offending command is|Compilation failed|debug_error_string')
   sleep 2
   #tmux send-keys -t $TMUX:TG2 $OUTPUT
   if [[ $OUTPUT ]] ; then
@@ -220,6 +220,12 @@ if grep -q "Offending command is" <<< "$OUTPUT"; then
 fi
 
 if grep -q "Compilation failed" <<< "$OUTPUT"; then
+	echo "ERROR !!!"
+	echo "$OUTPUT"
+	exit 1
+fi
+
+if grep -q "debug_error_string" <<< "$OUTPUT"; then
 	echo "ERROR !!!"
 	echo "$OUTPUT"
 	exit 1
