@@ -19,13 +19,14 @@ def test_operations():
     #s64 : pluto = 12  #COMPILATION ERROR!!!
     u64 : myvar = 1000
 
-    #myvar = - myvar   #ERROR!!!
+    #myvar = - myvar   #COMPILATION ERROR!!!
     myvar = myvar
     myvar = ~ myvar    #BAD TRANSPILING
 
     u64 : v2 = 500
 
     u64 : res = myvar or v2 #OK myvar || v2
+	res = myvar and v2 #OK myvar || v2
 
     res = myvar & v2  #BAD TRANSPILING
     res = myvar | v2  #BAD TRANSPILING
