@@ -1,0 +1,16 @@
+# broken_bit_shift from basic example
+# 
+# (basic_example.eclat)
+#
+
+#from programs.mynet import hike_drop, hike_pass, monitor, show_pkt_info
+
+
+#def subchain(u64: first, u64: second):
+def subchain():
+
+    #u64 : ret = first + second
+    u64 : ret = 123
+    return ret 
+
+    

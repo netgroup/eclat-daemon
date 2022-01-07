@@ -23,4 +23,4 @@ read -r -d '' sut_env <<-EOF
 
 EOF
 
-nsenter -t $(ps ax | grep e[c]lat | awk '{ print $1 }') -m -n -- bash -c "${sut_env}"
+nsenter -t $(ps ax | grep e[c]lat | grep -v '\.eclat' | awk '{ print $1 }') -m -n -- bash -c "${sut_env}"

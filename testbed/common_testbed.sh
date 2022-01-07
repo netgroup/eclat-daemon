@@ -202,6 +202,7 @@ done
 
 tmux send-keys -t $TMUX:SUT "scripts/run-eclat.sh $ECLAT_SCRIPT $SUT_DEV0" C-m
 
+
 while :
 do
   OUTPUT=$(tmux capture-pane -pJ -S -100 -t $TMUX:SUT | grep -E 'status: "OK"|Offending command is|Compilation failed|debug_error_string')
@@ -232,6 +233,8 @@ if grep -q "debug_error_string" <<< "$OUTPUT"; then
 fi
 
 tmux send-keys -t $TMUX:SUT   "clear" C-m
+
+sleep 2
 
 #the following is needed to enable raw-pass for l2-redirect in the SUT 
 tmux send-keys -t $TMUX:MAIN  "scripts/enter-namespace-xdp-raw-pass.sh" C-m
