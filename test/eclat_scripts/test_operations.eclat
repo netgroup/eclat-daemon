@@ -1,0 +1,39 @@
+# basic example
+# 
+# (basic_example.eclat)
+#
+
+#from programs.mynet import hike_drop, hike_pass, monitor, show_pkt_info
+from programs.hike_default import hike_drop, hike_pass, monitor
+from programs.info import show_pkt_info
+from loaders.basic import ip6_sc
+
+# send all IPv6 packets to our chain
+ip6_sc[ipv6_sc_map] = { (0): (test_operations) }
+ip6_sc.attach('DEVNAME', 'xdp')
+
+def test_operations():
+
+    LAYER_2=1; NET_LAYER=2; TRANSP_LAYER=4
+
+    #s64 : pluto = 12  #COMPILATION ERROR!!!
+    u64 : myvar = 1000
+
+    #myvar = - myvar   #ERROR!!!
+    myvar = myvar
+    myvar = ~ myvar    #BAD TRANSPILING
+
+    u64 : v2 = 500
+
+    u64 : res = myvar or v2 #OK myvar || v2
+
+    res = myvar & v2  #BAD TRANSPILING
+    res = myvar | v2  #BAD TRANSPILING
+    
+	res = myvar ^ v2  #BAD TRANSPILING
+    
+
+    show_pkt_info(TRANSP_LAYER, res)
+
+    hike_pass()
+    return 0
