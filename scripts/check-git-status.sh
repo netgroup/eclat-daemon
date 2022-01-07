@@ -23,6 +23,11 @@ echo
 echo components/programs/alt_mark
 git status
 cd ..
+cd tutorial
+echo
+echo components/programs/tutorial
+git status
+cd ..
 cd ../..
 cd hike_v3
 echo
