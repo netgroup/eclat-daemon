@@ -26,7 +26,7 @@ def test_operations():
     u64 : v2 = 500
 
     u64 : res = myvar or v2 #OK myvar || v2
-	res = myvar and v2 #OK myvar || v2
+	res = myvar and v2 #OK myvar && v2
 
     res = myvar & v2  #BAD TRANSPILING
     res = myvar | v2  #BAD TRANSPILING
