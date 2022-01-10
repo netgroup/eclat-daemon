@@ -23,6 +23,11 @@ echo
 echo components/programs/alt_mark
 git status
 cd ..
+cd stamp
+echo
+echo components/programs/stamp
+git status
+cd ..
 cd tutorial
 echo
 echo components/programs/tutorial
