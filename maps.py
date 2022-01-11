@@ -28,5 +28,8 @@ print (map_as_array)
 ret = subprocess.run("./t2", capture_output=True)
 delta = int(ret.stdout)
 print(f"delta: {delta}")
-cal.cal_map_update(map_path, ht.u32(2**32-1), delta)
+cal.cal_map_update(map_path, ht.u32(0), delta)
 # cal.bpftool_map_update(map_path, ["00", "00", "00", "00"], to_hex(delta), value_type="hex")
+
+# create new map
+cal.bpftool_map_create("map_time_2", f"{BASE_PATH}/{PACKAGE}/{PROGRAM}/map_time_2", 8, 8, 1)
