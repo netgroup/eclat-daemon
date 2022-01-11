@@ -6,7 +6,7 @@
 int main()
 {
     struct timespec mono_raw, boottime, realtime, boottime_inv, realtime_inv;
-    long long delta, delta_inv;
+    long long delta, delta_inv, min_delta_avg;
     //clock_gettime(CLOCK_MONOTONIC_RAW, &mono_raw);
     int i;
     //long long array_delta[10];
@@ -43,12 +43,13 @@ int main()
         }
       }
     }
+    min_delta_avg = (min_delta + min_delta_inv) / 2;
     //printf("min_delta: %lld\n", min_delta);
     //printf("min_delta s: %lld\n", min_delta/1000000000);
-    printf("min_delta ns    : %lld\n", min_delta%1000000000);
+   //  printf("min_delta ns    : %lld\n", min_delta%1000000000);
     //printf("min_delta_inv: %lld\n", min_delta_inv);
     //printf("min_delta_inv s: %lld\n", min_delta_inv/1000000000);
-    printf("min_delta_inv ns: %lld\n", min_delta_inv%1000000000);
-
+   //  printf("min_delta_inv ns: %lld\n", min_delta_inv%1000000000);
+    printf("%lld\n", min_delta_avg);
 
 }
