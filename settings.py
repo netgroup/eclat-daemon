@@ -24,7 +24,7 @@ HIKE_PATH = "hike_v3"
 HIKE_SOURCE_PATH = f"{HIKE_PATH}/src"
 HIKE_CONTRIB_SOURCE_PATH = f"{HIKE_PATH}/contrib-src"
 
-REPOSITORY_URL = "http://eclat.netgroup.uniroma2.it/packages"
+REPOSITORY_URL = "http://eclat.netgroup.uniroma2.it:3000/v1/package"
 PROGRAMS_REPOSITORY_URL = f"{REPOSITORY_URL}/programs"
 LOADERS_REPOSITORY_URL = f"{REPOSITORY_URL}/loaders"
 CHAINS_REPOSITORY_URL = f"{REPOSITORY_URL}/chains"

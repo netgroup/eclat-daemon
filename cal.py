@@ -268,12 +268,14 @@ def bpftool_map_update(map_reference, key, value, map_reference_type="pinned", v
     # unittest
     return True
 
+
 def cal_map_update(map_reference, key, value):
     key_list = to_hex(key)
     value_list = to_hex(value)
     #print (key_list)
     #print (value_list)
-    bpftool_map_update(map_reference, key_list, value_list, map_reference_type="pinned", value_type="hex")    
+    bpftool_map_update(map_reference, key_list, value_list,
+                       map_reference_type="pinned", value_type="hex")
 
 
 def bpftool_map_dump(map_reference, map_reference_type="pinned"):
@@ -334,3 +336,15 @@ def bpftool_map_create(map_name, map_path, key_size, value_size, max_entries, ty
         raise Exception(f"Map create {map_path} failed.")
     else:
         return result.stdout.decode("utf-8")
+
+
+def clone_repo(git_url, path, branch="main"):
+    """ 
+    Clone a git repository in a given path.
+    """
+    import subprocess
+
+    def git(*args):
+        return subprocess.check_call(['git'] + list(args))
+
+    git("clone", git_url, "-b", branch, path)
