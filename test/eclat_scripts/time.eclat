@@ -4,14 +4,14 @@
 #
 
 from programs.hike_default import hike_pass
-from programs.misc import time
+from programs.stamp import stamp
 from loaders.basic import ip6_sc
 
 # send all IPv6 packets to our chain
-ip6_sc[ipv6_sc_map] = { (0): (print_example) }
+ip6_sc[ipv6_sc_map] = { (0): (stamp) }
 ip6_sc.attach('DEVNAME', 'xdp')
 
-def print_example():
-    time()
+def stamp():
+    stamp()
     hike_pass()
     return 0
