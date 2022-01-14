@@ -28,6 +28,11 @@ echo
 echo components/programs/tutorial
 git status
 cd ..
+cd stamp
+echo
+echo components/programs/stamp
+git status
+cd ..
 cd ../..
 cd hike_v3
 echo
