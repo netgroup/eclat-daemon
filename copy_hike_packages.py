@@ -51,6 +51,7 @@ INFO_FILELIST=[
 PNAME_MISC='misc'
 MISC_FILELIST=[
                 'udp_port.bpf.c',
+                'time.bpf.c',
 ]
 
 

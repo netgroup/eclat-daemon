@@ -319,3 +319,18 @@ def bpftool_map_lookup(map_reference, key, map_reference_type="pinned"):
         raise Exception(f"Map lookup {map_reference} failed.")
     else:
         return result.stdout.decode("utf-8")
+
+
+def bpftool_map_create(map_name, map_path, key_size, value_size, max_entries, type="hash"):
+    '''Call bpftool map create and return the result
+    '''
+    # bpftool map create <map_path> type <type> key <key_size> value <value_size> entries <max_entries> name <map_name>
+    cmd = f"bpftool map create {map_path} type {type} key {key_size} value {value_size} entries {max_entries} name {map_name}"
+
+    print(f"Exec: {cmd}")
+    result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
+
+    if result.returncode != 0:
+        raise Exception(f"Map create {map_path} failed.")
+    else:
+        return result.stdout.decode("utf-8")
