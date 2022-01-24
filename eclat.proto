@@ -52,4 +52,5 @@ service Eclat {
     rpc FetchConfiguration(EclatFetchRequest) returns (EclatFetchResponse) {}
     rpc DumpMap(EclatDumpMapRequest) returns (EclatDumpMapResponse) {}
     rpc GetMapValue(EclatGetMapValueRequest) returns (EclatGetMapValueResponse) {}
+    rpc Quit(EclatQuitRequest) returns (EclatQuitResponse) {}
 }

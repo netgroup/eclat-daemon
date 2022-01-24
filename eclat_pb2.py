@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0b\x65\x63lat.proto\"3\n\x10\x45\x63latLoadRequest\x12\x0e\n\x06script\x18\x01 \x01(\t\x12\x0f\n\x07package\x18\x02 \x01(\t\"4\n\x11\x45\x63latLoadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"4\n\x11\x45\x63latFetchRequest\x12\x0e\n\x06script\x18\x01 \x01(\t\x12\x0f\n\x07package\x18\x02 \x01(\t\"5\n\x12\x45\x63latFetchResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"\x12\n\x10\x45\x63latQuitRequest\"4\n\x11\x45\x63latQuitResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"&\n\x13\x45\x63latDumpMapRequest\x12\x0f\n\x07mapname\x18\x01 \x01(\t\"7\n\x14\x45\x63latDumpMapResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"7\n\x17\x45\x63latGetMapValueRequest\x12\x0f\n\x07mapname\x18\x01 \x01(\t\x12\x0b\n\x03key\x18\x02 \x01(\t\";\n\x18\x45\x63latGetMapValueResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t2\x86\x02\n\x05\x45\x63lat\x12<\n\x11LoadConfiguration\x12\x11.EclatLoadRequest\x1a\x12.EclatLoadResponse\"\x00\x12?\n\x12\x46\x65tchConfiguration\x12\x12.EclatFetchRequest\x1a\x13.EclatFetchResponse\"\x00\x12\x38\n\x07\x44umpMap\x12\x14.EclatDumpMapRequest\x1a\x15.EclatDumpMapResponse\"\x00\x12\x44\n\x0bGetMapValue\x12\x18.EclatGetMapValueRequest\x1a\x19.EclatGetMapValueResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x0b\x65\x63lat.proto\"3\n\x10\x45\x63latLoadRequest\x12\x0e\n\x06script\x18\x01 \x01(\t\x12\x0f\n\x07package\x18\x02 \x01(\t\"4\n\x11\x45\x63latLoadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"4\n\x11\x45\x63latFetchRequest\x12\x0e\n\x06script\x18\x01 \x01(\t\x12\x0f\n\x07package\x18\x02 \x01(\t\"5\n\x12\x45\x63latFetchResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"\x12\n\x10\x45\x63latQuitRequest\"4\n\x11\x45\x63latQuitResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"&\n\x13\x45\x63latDumpMapRequest\x12\x0f\n\x07mapname\x18\x01 \x01(\t\"7\n\x14\x45\x63latDumpMapResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"7\n\x17\x45\x63latGetMapValueRequest\x12\x0f\n\x07mapname\x18\x01 \x01(\t\x12\x0b\n\x03key\x18\x02 \x01(\t\";\n\x18\x45\x63latGetMapValueResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t2\xb7\x02\n\x05\x45\x63lat\x12<\n\x11LoadConfiguration\x12\x11.EclatLoadRequest\x1a\x12.EclatLoadResponse\"\x00\x12?\n\x12\x46\x65tchConfiguration\x12\x12.EclatFetchRequest\x1a\x13.EclatFetchResponse\"\x00\x12\x38\n\x07\x44umpMap\x12\x14.EclatDumpMapRequest\x1a\x15.EclatDumpMapResponse\"\x00\x12\x44\n\x0bGetMapValue\x12\x18.EclatGetMapValueRequest\x1a\x19.EclatGetMapValueResponse\"\x00\x12/\n\x04Quit\x12\x11.EclatQuitRequest\x1a\x12.EclatQuitResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -485,7 +485,7 @@ _ECLAT = _descriptor.ServiceDescriptor(
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
   serialized_start=521,
-  serialized_end=783,
+  serialized_end=832,
   methods=[
   _descriptor.MethodDescriptor(
     name='LoadConfiguration',
@@ -524,6 +524,16 @@ _ECLAT = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_ECLATGETMAPVALUEREQUEST,
     output_type=_ECLATGETMAPVALUERESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Quit',
+    full_name='Eclat.Quit',
+    index=4,
+    containing_service=None,
+    input_type=_ECLATQUITREQUEST,
+    output_type=_ECLATQUITRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

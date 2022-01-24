@@ -34,6 +34,11 @@ class EclatStub(object):
                 request_serializer=eclat__pb2.EclatGetMapValueRequest.SerializeToString,
                 response_deserializer=eclat__pb2.EclatGetMapValueResponse.FromString,
                 )
+        self.Quit = channel.unary_unary(
+                '/Eclat/Quit',
+                request_serializer=eclat__pb2.EclatQuitRequest.SerializeToString,
+                response_deserializer=eclat__pb2.EclatQuitResponse.FromString,
+                )
 
 
 class EclatServicer(object):
@@ -63,6 +68,12 @@ class EclatServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Quit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_EclatServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -85,6 +96,11 @@ def add_EclatServicer_to_server(servicer, server):
                     servicer.GetMapValue,
                     request_deserializer=eclat__pb2.EclatGetMapValueRequest.FromString,
                     response_serializer=eclat__pb2.EclatGetMapValueResponse.SerializeToString,
+            ),
+            'Quit': grpc.unary_unary_rpc_method_handler(
+                    servicer.Quit,
+                    request_deserializer=eclat__pb2.EclatQuitRequest.FromString,
+                    response_serializer=eclat__pb2.EclatQuitResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -161,5 +177,22 @@ class Eclat(object):
         return grpc.experimental.unary_unary(request, target, '/Eclat/GetMapValue',
             eclat__pb2.EclatGetMapValueRequest.SerializeToString,
             eclat__pb2.EclatGetMapValueResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Quit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Eclat/Quit',
+            eclat__pb2.EclatQuitRequest.SerializeToString,
+            eclat__pb2.EclatQuitResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

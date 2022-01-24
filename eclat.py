@@ -107,7 +107,7 @@ def main():
     parser.add_argument(
         '-f', '--fetch', help="Fetch the packages for an eclat script", required=False)
     parser.add_argument(
-        '-q', '--quit', help="Close eCLATd", required=False)
+        '-q', '--quit', action="store_true", help="Close eCLATd", required=False)
     parser.add_argument('-p', '--package',
                         help="Package name of the eclat script", required=False)
     parser.add_argument('-D', '--define', nargs=2, action="append",
@@ -135,6 +135,8 @@ def main():
         ret = get_map_value(*args['lookup'][0])
     elif args['dumpmap'] is not None:
         ret = dump_map(*args['dumpmap'])
+    elif args['quit'] is not None:
+        ret = quit()
     else:
         parser.error('No command specified.')
     print(ret)
