@@ -18,7 +18,7 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
 
     def LoadConfiguration(self, request, context):
         print(request.script)
-        print("PACKAGE:",request.package)
+        print("PACKAGE:", request.package)
         response = eclat_pb2.EclatLoadResponse()
         try:
             ret = self.controller.load_configuration(
@@ -28,6 +28,22 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
             ret = False
             raise e
 
+        if ret:
+            response.status = "OK"
+            response.message = "test ret message for message " + request.script
+        else:
+            response.status = "FAIL"
+        return response
+
+    def FetchConfiguration(self, request, context):
+        response = eclat_pb2.EclatFetchResponse()
+        try:
+            ret = self.controller.fetch_configuration(
+                request.script, request.package)
+        except Exception as e:
+            print(traceback.format_exc())
+            ret = False
+            raise e
         if ret:
             response.status = "OK"
             response.message = "test ret message for message " + request.script

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0b\x65\x63lat.proto\"3\n\x10\x45\x63latLoadRequest\x12\x0e\n\x06script\x18\x01 \x01(\t\x12\x0f\n\x07package\x18\x02 \x01(\t\"4\n\x11\x45\x63latLoadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"&\n\x13\x45\x63latDumpMapRequest\x12\x0f\n\x07mapname\x18\x01 \x01(\t\"7\n\x14\x45\x63latDumpMapResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"7\n\x17\x45\x63latGetMapValueRequest\x12\x0f\n\x07mapname\x18\x01 \x01(\t\x12\x0b\n\x03key\x18\x02 \x01(\t\";\n\x18\x45\x63latGetMapValueResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t2\xc5\x01\n\x05\x45\x63lat\x12<\n\x11LoadConfiguration\x12\x11.EclatLoadRequest\x1a\x12.EclatLoadResponse\"\x00\x12\x38\n\x07\x44umpMap\x12\x14.EclatDumpMapRequest\x1a\x15.EclatDumpMapResponse\"\x00\x12\x44\n\x0bGetMapValue\x12\x18.EclatGetMapValueRequest\x1a\x19.EclatGetMapValueResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x0b\x65\x63lat.proto\"3\n\x10\x45\x63latLoadRequest\x12\x0e\n\x06script\x18\x01 \x01(\t\x12\x0f\n\x07package\x18\x02 \x01(\t\"4\n\x11\x45\x63latLoadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"4\n\x11\x45\x63latFetchRequest\x12\x0e\n\x06script\x18\x01 \x01(\t\x12\x0f\n\x07package\x18\x02 \x01(\t\"5\n\x12\x45\x63latFetchResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"&\n\x13\x45\x63latDumpMapRequest\x12\x0f\n\x07mapname\x18\x01 \x01(\t\"7\n\x14\x45\x63latDumpMapResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\"7\n\x17\x45\x63latGetMapValueRequest\x12\x0f\n\x07mapname\x18\x01 \x01(\t\x12\x0b\n\x03key\x18\x02 \x01(\t\";\n\x18\x45\x63latGetMapValueResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n\x07message\x18\x02 \x01(\t2\x86\x02\n\x05\x45\x63lat\x12<\n\x11LoadConfiguration\x12\x11.EclatLoadRequest\x1a\x12.EclatLoadResponse\"\x00\x12?\n\x12\x46\x65tchConfiguration\x12\x12.EclatFetchRequest\x1a\x13.EclatFetchResponse\"\x00\x12\x38\n\x07\x44umpMap\x12\x14.EclatDumpMapRequest\x1a\x15.EclatDumpMapResponse\"\x00\x12\x44\n\x0bGetMapValue\x12\x18.EclatGetMapValueRequest\x1a\x19.EclatGetMapValueResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -103,6 +103,84 @@ _ECLATLOADRESPONSE = _descriptor.Descriptor(
 )
 
 
+_ECLATFETCHREQUEST = _descriptor.Descriptor(
+  name='EclatFetchRequest',
+  full_name='EclatFetchRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='script', full_name='EclatFetchRequest.script', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='package', full_name='EclatFetchRequest.package', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=122,
+  serialized_end=174,
+)
+
+
+_ECLATFETCHRESPONSE = _descriptor.Descriptor(
+  name='EclatFetchResponse',
+  full_name='EclatFetchResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='status', full_name='EclatFetchResponse.status', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='message', full_name='EclatFetchResponse.message', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=176,
+  serialized_end=229,
+)
+
+
 _ECLATDUMPMAPREQUEST = _descriptor.Descriptor(
   name='EclatDumpMapRequest',
   full_name='EclatDumpMapRequest',
@@ -130,8 +208,8 @@ _ECLATDUMPMAPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=122,
-  serialized_end=160,
+  serialized_start=231,
+  serialized_end=269,
 )
 
 
@@ -169,8 +247,8 @@ _ECLATDUMPMAPRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=162,
-  serialized_end=217,
+  serialized_start=271,
+  serialized_end=326,
 )
 
 
@@ -208,8 +286,8 @@ _ECLATGETMAPVALUEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=219,
-  serialized_end=274,
+  serialized_start=328,
+  serialized_end=383,
 )
 
 
@@ -247,12 +325,14 @@ _ECLATGETMAPVALUERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=276,
-  serialized_end=335,
+  serialized_start=385,
+  serialized_end=444,
 )
 
 DESCRIPTOR.message_types_by_name['EclatLoadRequest'] = _ECLATLOADREQUEST
 DESCRIPTOR.message_types_by_name['EclatLoadResponse'] = _ECLATLOADRESPONSE
+DESCRIPTOR.message_types_by_name['EclatFetchRequest'] = _ECLATFETCHREQUEST
+DESCRIPTOR.message_types_by_name['EclatFetchResponse'] = _ECLATFETCHRESPONSE
 DESCRIPTOR.message_types_by_name['EclatDumpMapRequest'] = _ECLATDUMPMAPREQUEST
 DESCRIPTOR.message_types_by_name['EclatDumpMapResponse'] = _ECLATDUMPMAPRESPONSE
 DESCRIPTOR.message_types_by_name['EclatGetMapValueRequest'] = _ECLATGETMAPVALUEREQUEST
@@ -272,6 +352,20 @@ EclatLoadResponse = _reflection.GeneratedProtocolMessageType('EclatLoadResponse'
   # @@protoc_insertion_point(class_scope:EclatLoadResponse)
   })
 _sym_db.RegisterMessage(EclatLoadResponse)
+
+EclatFetchRequest = _reflection.GeneratedProtocolMessageType('EclatFetchRequest', (_message.Message,), {
+  'DESCRIPTOR' : _ECLATFETCHREQUEST,
+  '__module__' : 'eclat_pb2'
+  # @@protoc_insertion_point(class_scope:EclatFetchRequest)
+  })
+_sym_db.RegisterMessage(EclatFetchRequest)
+
+EclatFetchResponse = _reflection.GeneratedProtocolMessageType('EclatFetchResponse', (_message.Message,), {
+  'DESCRIPTOR' : _ECLATFETCHRESPONSE,
+  '__module__' : 'eclat_pb2'
+  # @@protoc_insertion_point(class_scope:EclatFetchResponse)
+  })
+_sym_db.RegisterMessage(EclatFetchResponse)
 
 EclatDumpMapRequest = _reflection.GeneratedProtocolMessageType('EclatDumpMapRequest', (_message.Message,), {
   'DESCRIPTOR' : _ECLATDUMPMAPREQUEST,
@@ -310,8 +404,8 @@ _ECLAT = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=338,
-  serialized_end=535,
+  serialized_start=447,
+  serialized_end=709,
   methods=[
   _descriptor.MethodDescriptor(
     name='LoadConfiguration',
@@ -324,9 +418,19 @@ _ECLAT = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
+    name='FetchConfiguration',
+    full_name='Eclat.FetchConfiguration',
+    index=1,
+    containing_service=None,
+    input_type=_ECLATFETCHREQUEST,
+    output_type=_ECLATFETCHRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
     name='DumpMap',
     full_name='Eclat.DumpMap',
-    index=1,
+    index=2,
     containing_service=None,
     input_type=_ECLATDUMPMAPREQUEST,
     output_type=_ECLATDUMPMAPRESPONSE,
@@ -336,7 +440,7 @@ _ECLAT = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetMapValue',
     full_name='Eclat.GetMapValue',
-    index=2,
+    index=3,
     containing_service=None,
     input_type=_ECLATGETMAPVALUEREQUEST,
     output_type=_ECLATGETMAPVALUERESPONSE,
