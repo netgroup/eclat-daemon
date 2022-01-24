@@ -68,6 +68,16 @@ def fetch(scriptfile, package, defines=None):
     return response
 
 
+def quit():
+    channel = grpc.insecure_channel('localhost:50051')
+    stub = eclat_pb2_grpc.EclatStub(channel)
+    req = eclat_pb2.EclatQuitRequest()
+    response = stub.Quit(req)
+    print(response.status)
+    print(response.message)
+    return response
+
+
 def get_map_value(mapname, key):
     channel = grpc.insecure_channel('localhost:50051')
     stub = eclat_pb2_grpc.EclatStub(channel)
@@ -96,6 +106,8 @@ def main():
         '-l', '--load', help="Load an eclat script", required=False)
     parser.add_argument(
         '-f', '--fetch', help="Fetch the packages for an eclat script", required=False)
+    parser.add_argument(
+        '-q', '--quit', help="Close eCLATd", required=False)
     parser.add_argument('-p', '--package',
                         help="Package name of the eclat script", required=False)
     parser.add_argument('-D', '--define', nargs=2, action="append",
@@ -119,6 +131,8 @@ def main():
             parser.error('Missing package name. Use --package argument')
         ret = fetch(scriptfile=args['load'],
                     package=args['package'], defines=args['define'], fetch=True)
+    elif args['quit'] is not None:
+        ret = quit()
     elif args['lookup'] is not None:
         ret = get_map_value(*args['lookup'][0])
     elif args['dumpmap'] is not None:

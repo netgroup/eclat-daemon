@@ -51,6 +51,19 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
             response.status = "FAIL"
         return response
 
+    def Quit(self, request, context):
+        response = eclat_pb2.EclatQuitResponse()
+        try:
+            ret = "OK"
+            # TODO
+            response.message = ret
+        except Exception as e:
+            print(traceback.format_exc())
+            ret = False
+            raise e
+        response.status = "OK" if ret else "FAIL"
+        return response
+
     def DumpMap(self, request, context):
         response = eclat_pb2.EclatDumpMapResponse()
         try:

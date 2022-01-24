@@ -20,6 +20,14 @@ message EclatFetchResponse {
     string message = 2;
 }
 
+message EclatQuitRequest {
+}
+
+message EclatQuitResponse {
+    string status = 1;
+    string message = 2;
+}
+
 message EclatDumpMapRequest {
     string mapname = 1;
 }
