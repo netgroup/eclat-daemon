@@ -54,8 +54,7 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
     def Quit(self, request, context):
         response = eclat_pb2.EclatQuitResponse()
         try:
-            ret = "OK"
-            # TODO
+            ret = server.stop()
             response.message = ret
         except Exception as e:
             print(traceback.format_exc())

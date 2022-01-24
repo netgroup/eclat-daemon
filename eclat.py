@@ -125,14 +125,12 @@ def main():
             parser.error('Missing package name. Use --package argument')
         ret = run(scriptfile=args['load'],
                   package=args['package'], defines=args['define'])
-    if args['fetch'] is not None:
+    elif args['fetch'] is not None:
         # fetch the packages related to a script
         if not "package" in args:
             parser.error('Missing package name. Use --package argument')
-        ret = fetch(scriptfile=args['load'],
-                    package=args['package'], defines=args['define'], fetch=True)
-    elif args['quit'] is not None:
-        ret = quit()
+        ret = fetch(scriptfile=args['fetch'],
+                    package=args['package'], defines=args['define'])
     elif args['lookup'] is not None:
         ret = get_map_value(*args['lookup'][0])
     elif args['dumpmap'] is not None:
