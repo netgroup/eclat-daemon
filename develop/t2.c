@@ -1,19 +1,21 @@
 #include <time.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /* https://linux.die.net/man/2/clock_gettime */
 
-int main()
+int main(int argc, char **argv)
 {
     struct timespec mono_raw, boottime, realtime, boottime_inv, realtime_inv;
     long long delta, delta_inv, min_delta_avg;
-    //clock_gettime(CLOCK_MONOTONIC_RAW, &mono_raw);
-    int i;
-    //long long array_delta[10];
-    long long min_delta = 0;
     long long min_delta_inv = 0;
-    //long long max_delta;
-    for (i=0;i<9;i++) {
+    long long min_delta = 0;
+    int loopsize = 10;
+    int i;
+
+    if(argv[1])
+      loopsize = atoi(argv[1]);
+    for (i=0;i<loopsize;i++) {
       clock_gettime(CLOCK_BOOTTIME, &boottime);
       clock_gettime(CLOCK_REALTIME, &realtime);
 
