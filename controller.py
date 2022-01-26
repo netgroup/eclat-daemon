@@ -58,6 +58,38 @@ class EclatController:
             "id": id})
         return id
 
+    def fetch_configuration(self, eclat_script, script_package):
+        """
+        Download the necessary packages for an eclat script without loading anything.
+        """
+        # Parse the config
+        tokens = EclatLexer().tokenize(eclat_script)
+        parser = EclatParser()
+        parser.parse(tokens)
+
+        # set up hike programs
+        for package, names in parser.imports['programs'].items():
+            for name in names:
+                if package != 'hike':  # reserved for system programs
+                    hp = HikeProgram(name, package)
+                    hp.pull()
+
+        # set up chain loaders
+        for package, names in parser.imports['loaders'].items():
+            assert(len(names) == 1)  # currently we support just one loader
+            name = names[0]
+            # get loader configuration information
+            loader_info = None
+            for li in parser.loaders:
+                if li['name'] == name and li['package'] == package:
+                    loader_info = li
+            assert(loader_info)  # we need one loader configuration
+
+            hl = ChainLoader(name, package)
+            hl.pull()
+
+        return True
+
     def load_configuration(self, eclat_script, script_package):
         # Parse the config
         tokens = EclatLexer().tokenize(eclat_script)
@@ -78,7 +110,7 @@ class EclatController:
                         hp.register(p_id)
                         self.hike_programs[(hp.name, hp.package)] = hp
                 else:
-                    print ((name, package),' is ALREADY RUNNING')
+                    print((name, package), ' is ALREADY RUNNING')
 
         # pre-register chains ids
         chains = []

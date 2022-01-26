@@ -17,7 +17,10 @@ class HikeProgram:
         self.package = package
         ###
         self.maps = []
-        self.src_file_path = f"{settings.PROGRAMS_DIR}/{self.package}/{name}.bpf.c"
+        if self.package == 'hike_default':
+            self.src_file_path = f"{settings.HIKE_SOURCE_PATH}/{name}.bpf.c"
+        else:
+            self.src_file_path = f"{settings.PROGRAMS_DIR}/{self.package}/{name}.bpf.c"
         self.obj_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{name}.bpf.o"
         self.json_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{name}.bpf.json"
         self.program_path = f"{settings.BPF_FS_PROGS_PATH}/{self.package}/{self.name}"
@@ -42,19 +45,37 @@ class HikeProgram:
         Download a package in the appropriate directory
         """
         import requests
-        import tarfile
+
         # if there is not a folder, download the package
-        if not os.path.isdir(f"{settings.PROGRAMS_DIR}/{self.package}"):
-            file_name = f"{self.package}.tar.gz"
-            url = f"{settings.PROGRAMS_REPOSITORY_URL}/{file_name}"
+        if not os.path.isdir(f"{settings.PROGRAMS_DIR}/{self.package}") and self.package != 'hike_default':
+            url = f"{settings.PROGRAMS_REPOSITORY_URL}"
             r = requests.get(url, allow_redirects=True)
-            file_path = f"{settings.PROGRAMS_DIR}/{file_name}"
-            open(file_path, 'wb').write(r.content)
-            tar = tarfile.open(file_path, "r:gz")
+            data = r.json()['data']
+            is_found = False
+            for d in data:
+                if d['name'] == self.package:
+                    print ('*******PACKAGE******', self.package)
+                    print (d)
+                    is_found=True
+                    cal.clone_repo(
+                        d['git_url'], f"{settings.PROGRAMS_DIR}/{self.package}", d['tag'])
+
+            if not is_found:
+                raise Exception(
+                    f"package {self.package} not found in the repository")
+
+            #import tarfile
+            # requests.get()
+            #file_name = f"{self.package}.tar.gz"
+            #url = f"{settings.PROGRAMS_REPOSITORY_URL}/{file_name}"
+            #r = requests.get(url, allow_redirects=True)
+            #file_path = f"{settings.PROGRAMS_DIR}/{file_name}"
+            #open(file_path, 'wb').write(r.content)
+            #tar = tarfile.open(file_path, "r:gz")
             # this should create the /package_name/ folder
-            tar.extractall(settings.PROGRAMS_DIR)
-            tar.close()
-            os.remove(file_path)
+            # tar.extractall(settings.PROGRAMS_DIR)
+            # tar.close()
+            # os.remove(file_path)
 
     def compile(self):
         if not os.path.exists(self.src_file_path):

@@ -45,6 +45,39 @@ def run(scriptfile, package, defines=None):
     return response
 
 
+def fetch(scriptfile, package, defines=None):
+    # open a gRPC channel
+    #channel = grpc.insecure_channel('[::1]:50051')
+    channel = grpc.insecure_channel('localhost:50051')
+
+    # create a stub (client)
+    stub = eclat_pb2_grpc.EclatStub(channel)
+
+    # create a valid request message
+    with open(scriptfile, 'r') as f:
+        script = f.read()
+        script = preprocess(script, defines)
+        print(f"sending {script} of package {package} to grpc")
+        req = eclat_pb2.EclatFetchRequest(script=script, package=package)
+
+    # make the call
+    response = stub.FetchConfiguration(req)
+
+    print(response.status)
+    print(response.message)
+    return response
+
+
+def quit():
+    channel = grpc.insecure_channel('localhost:50051')
+    stub = eclat_pb2_grpc.EclatStub(channel)
+    req = eclat_pb2.EclatQuitRequest()
+    response = stub.Quit(req)
+    print(response.status)
+    print(response.message)
+    return response
+
+
 def get_map_value(mapname, key):
     channel = grpc.insecure_channel('localhost:50051')
     stub = eclat_pb2_grpc.EclatStub(channel)
@@ -71,6 +104,10 @@ def main():
         description='Eclat CLI.')
     parser.add_argument(
         '-l', '--load', help="Load an eclat script", required=False)
+    parser.add_argument(
+        '-f', '--fetch', help="Fetch the packages for an eclat script", required=False)
+    parser.add_argument(
+        '-q', '--quit', action="store_true", help="Close eCLATd", required=False)
     parser.add_argument('-p', '--package',
                         help="Package name of the eclat script", required=False)
     parser.add_argument('-D', '--define', nargs=2, action="append",
@@ -88,10 +125,18 @@ def main():
             parser.error('Missing package name. Use --package argument')
         ret = run(scriptfile=args['load'],
                   package=args['package'], defines=args['define'])
+    elif args['fetch'] is not None:
+        # fetch the packages related to a script
+        if not "package" in args:
+            parser.error('Missing package name. Use --package argument')
+        ret = fetch(scriptfile=args['fetch'],
+                    package=args['package'], defines=args['define'])
     elif args['lookup'] is not None:
         ret = get_map_value(*args['lookup'][0])
     elif args['dumpmap'] is not None:
         ret = dump_map(*args['dumpmap'])
+    elif args['quit'] is not None:
+        ret = quit()
     else:
         parser.error('No command specified.')
     print(ret)

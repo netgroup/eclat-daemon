@@ -10,6 +10,24 @@ message EclatLoadResponse {
     string message = 2;
 }
 
+message EclatFetchRequest {
+    string script = 1;
+    string package = 2;
+}
+
+message EclatFetchResponse {
+    string status = 1;
+    string message = 2;
+}
+
+message EclatQuitRequest {
+}
+
+message EclatQuitResponse {
+    string status = 1;
+    string message = 2;
+}
+
 message EclatDumpMapRequest {
     string mapname = 1;
 }
@@ -31,6 +49,8 @@ message EclatGetMapValueResponse {
 
 service Eclat {
     rpc LoadConfiguration(EclatLoadRequest) returns (EclatLoadResponse) {}
+    rpc FetchConfiguration(EclatFetchRequest) returns (EclatFetchResponse) {}
     rpc DumpMap(EclatDumpMapRequest) returns (EclatDumpMapResponse) {}
     rpc GetMapValue(EclatGetMapValueRequest) returns (EclatGetMapValueResponse) {}
+    rpc Quit(EclatQuitRequest) returns (EclatQuitResponse) {}
 }

@@ -19,6 +19,11 @@ class EclatStub(object):
                 request_serializer=eclat__pb2.EclatLoadRequest.SerializeToString,
                 response_deserializer=eclat__pb2.EclatLoadResponse.FromString,
                 )
+        self.FetchConfiguration = channel.unary_unary(
+                '/Eclat/FetchConfiguration',
+                request_serializer=eclat__pb2.EclatFetchRequest.SerializeToString,
+                response_deserializer=eclat__pb2.EclatFetchResponse.FromString,
+                )
         self.DumpMap = channel.unary_unary(
                 '/Eclat/DumpMap',
                 request_serializer=eclat__pb2.EclatDumpMapRequest.SerializeToString,
@@ -29,12 +34,23 @@ class EclatStub(object):
                 request_serializer=eclat__pb2.EclatGetMapValueRequest.SerializeToString,
                 response_deserializer=eclat__pb2.EclatGetMapValueResponse.FromString,
                 )
+        self.Quit = channel.unary_unary(
+                '/Eclat/Quit',
+                request_serializer=eclat__pb2.EclatQuitRequest.SerializeToString,
+                response_deserializer=eclat__pb2.EclatQuitResponse.FromString,
+                )
 
 
 class EclatServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def LoadConfiguration(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def FetchConfiguration(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -52,6 +68,12 @@ class EclatServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Quit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_EclatServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -59,6 +81,11 @@ def add_EclatServicer_to_server(servicer, server):
                     servicer.LoadConfiguration,
                     request_deserializer=eclat__pb2.EclatLoadRequest.FromString,
                     response_serializer=eclat__pb2.EclatLoadResponse.SerializeToString,
+            ),
+            'FetchConfiguration': grpc.unary_unary_rpc_method_handler(
+                    servicer.FetchConfiguration,
+                    request_deserializer=eclat__pb2.EclatFetchRequest.FromString,
+                    response_serializer=eclat__pb2.EclatFetchResponse.SerializeToString,
             ),
             'DumpMap': grpc.unary_unary_rpc_method_handler(
                     servicer.DumpMap,
@@ -69,6 +96,11 @@ def add_EclatServicer_to_server(servicer, server):
                     servicer.GetMapValue,
                     request_deserializer=eclat__pb2.EclatGetMapValueRequest.FromString,
                     response_serializer=eclat__pb2.EclatGetMapValueResponse.SerializeToString,
+            ),
+            'Quit': grpc.unary_unary_rpc_method_handler(
+                    servicer.Quit,
+                    request_deserializer=eclat__pb2.EclatQuitRequest.FromString,
+                    response_serializer=eclat__pb2.EclatQuitResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -94,6 +126,23 @@ class Eclat(object):
         return grpc.experimental.unary_unary(request, target, '/Eclat/LoadConfiguration',
             eclat__pb2.EclatLoadRequest.SerializeToString,
             eclat__pb2.EclatLoadResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def FetchConfiguration(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Eclat/FetchConfiguration',
+            eclat__pb2.EclatFetchRequest.SerializeToString,
+            eclat__pb2.EclatFetchResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -128,5 +177,22 @@ class Eclat(object):
         return grpc.experimental.unary_unary(request, target, '/Eclat/GetMapValue',
             eclat__pb2.EclatGetMapValueRequest.SerializeToString,
             eclat__pb2.EclatGetMapValueResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Quit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Eclat/Quit',
+            eclat__pb2.EclatQuitRequest.SerializeToString,
+            eclat__pb2.EclatQuitResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
