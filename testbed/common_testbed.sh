@@ -32,7 +32,7 @@ TG_DEV1=enp6s0f1
 scripts/initial_setup.sh
 
 #clones the packages repositories if needed
-python eclatd.py 
+python eclatd.py &
 sleep 3
 python eclat.py --fetch $ECLAT_SCRIPT --define DEVNAME $SUT_DEV0 --package test
 python eclat.py -q
