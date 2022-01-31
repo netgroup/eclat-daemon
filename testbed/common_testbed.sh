@@ -262,6 +262,12 @@ tmux send-keys -t $TMUX:TG1   "$TG1_COMMAND" $CM
 if [[ "$TG2_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
 tmux send-keys -t $TMUX:TG2   "$TG2_COMMAND" $CM
 
+if [[ "$MAIN_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
+tmux send-keys -t $TMUX:MAIN   "$MAIN_COMMAND" $CM
+
+if [[ "$SUT_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
+tmux send-keys -t $TMUX:SUT   "$SUT_COMMAND" $CM
+
 tmux select-window -t $TMUX:TG2
 tmux set-option -g mouse on
 tmux attach -t $TMUX
