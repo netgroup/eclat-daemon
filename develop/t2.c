@@ -46,6 +46,13 @@ int main(int argc, char **argv)
       }
     }
     min_delta_avg = (min_delta + min_delta_inv) / 2;
+
+    /* adjust delta relative to linux epoch time to NTP
+     * difference is (70*365 + 17)*86400 = 2208988800 seconds
+     * 1970 -> 1900
+     */
+
+    min_delta_avg = min_delta_avg + 2208988800 * 1000000000;
     //printf("min_delta: %lld\n", min_delta);
     //printf("min_delta s: %lld\n", min_delta/1000000000);
    //  printf("min_delta ns    : %lld\n", min_delta%1000000000);
