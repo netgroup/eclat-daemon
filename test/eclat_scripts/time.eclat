@@ -4,7 +4,7 @@
 #
 
 from programs.hike_default import hike_pass
-from programs.stamp import stamp
+from programs.stamp import stamp, l234_addr_swap
 from loaders.basic import ip6_sc
 
 #TODO swap eth and IPv6 src and dst, decrement TTL, l2redirect on same interface
@@ -15,5 +15,6 @@ ip6_sc.attach('DEVNAME', 'xdp')
 
 def stamp():
     stamp()
+    l234_addr_swap()
     hike_pass()
     return 0
