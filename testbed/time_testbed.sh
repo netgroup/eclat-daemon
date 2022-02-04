@@ -31,8 +31,9 @@ MAPS_EXEC=YES
 CLT_COMMAND="tcpdump -i veth0"
 CLT_EXEC=YES
 
-TG1_COMMAND="ping -i 0.5 fc01::3"
-TG1_EXEC=NO
+TG1_COMMAND="scripts/enter-namespace-xdp-raw-pass-tg.sh"
+# TG1_COMMAND=""
+TG1_EXEC=YES
 
 TG2_COMMAND="tcpreplay -i enp6s0f0 hike_v3/testbed/pkts/stamp-srh-sender.pcap"
 TG2_EXEC=NO

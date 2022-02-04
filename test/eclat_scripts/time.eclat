@@ -4,17 +4,20 @@
 #
 
 from programs.hike_default import hike_pass
-from programs.stamp import stamp, l234_addr_swap
+from programs.stamp import stamp, l234_addr_swap, l2_get_iif
 from loaders.basic import ip6_sc
+from programs.mynet import l2_redirect, l2xcon
 
 #TODO swap eth and IPv6 src and dst, decrement TTL, l2redirect on same interface
-# ctx->ingress_ifindex;
 # send all IPv6 packets to our chain
 ip6_sc[ipv6_sc_map] = { (0): (stamp) }
 ip6_sc.attach('DEVNAME', 'xdp')
 
 def stamp():
-    stamp()
-    l234_addr_swap()
+    u64 : res = stamp()
+    if res == 0:
+        l234_addr_swap()
+        l2xcon()
+
     hike_pass()
     return 0
