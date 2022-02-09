@@ -165,14 +165,14 @@ def load_chain(loader_file):
 
 
 def bpftool_prog_load(name, package,
-                      pinned_maps, attach_type="xdp", load_system_maps=True, is_loader=False):
+                      pinned_maps, attach_type="xdp", load_system_maps=True, obj_file=None):
     """Use BPF tool to load one section
 
     :param name: name of the program
     :param package: package name
     :param pinned_maps: dictionary of map (name and sys/fs dir) other than the SYSTEM_MAPS_NAMES
     :param attach_type: interface name, defaults to "xdp"
-    :param is_loader: whether referring to the load of a program or of a chain loader
+    :param obj_file: whether referring to the load of a program or of a chain loader
     """
     # bpftool prog loadall net.o /sys/fs/bpf/progs/net type xdp	\
     #             map name gen_jmp_table					\
@@ -185,8 +185,13 @@ def bpftool_prog_load(name, package,
     #                     pinned /sys/fs/bpf/maps/init/hike_pcpu_shmem_map \
     #             pinmaps /sys/fs/bpf/maps/net
 
-    program_object_prefix = settings.BUILD_PROGRAMS_DIR if is_loader == False else settings.BUILD_LOADERS_DIR
-    program_object = f"{program_object_prefix}/{package}/{name}.bpf.o"
+    if obj_file:
+        program_object = obj_file
+    else:
+        # if is_loader == False else settings.BUILD_LOADERS_DIR
+        program_object_prefix = settings.BUILD_PROGRAMS_DIR
+        program_object = f"{program_object_prefix}/{package}/{name}.bpf.o"
+
     program_fs_path = f"{settings.BPF_FS_PROGS_PATH}/{package}/{name}"
     program_maps_fs_path = f"{settings.BPF_FS_MAPS_PATH}/{package}/{name}" if package != "system" else f"{settings.BPF_FS_MAPS_PATH}/{package}"
 

@@ -104,7 +104,7 @@ class HikeProgram:
 
         map_dir = f"{settings.BPF_FS_MAPS_PATH}/{self.package}"
         cal.bpftool_prog_load(name=self.name, package=self.package,
-                              pinned_maps=pinned_maps)
+                              pinned_maps=pinned_maps, obj_file=self.obj_file_path)
         self._get_maps()
 
     def unload(self):
