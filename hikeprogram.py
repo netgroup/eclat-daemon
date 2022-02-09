@@ -20,12 +20,13 @@ class HikeProgram:
         if self.package == 'hike_default':
             # this is an exception to keep the repo with the basic set of hike programs untouched
             self.src_file_path = f"{settings.HIKE_SOURCE_PATH}/{name}.bpf.c"
-            self.obj_file_path = f"{settings.HIKE_SOURCE_PATH}/{name}.bpf.o"
-            self.json_file_path = f"{settings.HIKE_SOURCE_PATH}/{name}.bpf.json"
+            self.obj_file_path = f"{settings.HIKE_SOURCE_PATH}/.output/{name}.bpf.o"
+            self.json_file_path = f"{settings.HIKE_SOURCE_PATH}/.output/{name}.bpf.json"
         else:
             self.src_file_path = f"{settings.PROGRAMS_DIR}/{self.package}/{name}.bpf.c"
             self.obj_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{name}.bpf.o"
             self.json_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{name}.bpf.json"
+
         self.program_path = f"{settings.BPF_FS_PROGS_PATH}/{self.package}/{self.name}"
         self.is_compiled = self._is_compiled()
         self.program_id = None
