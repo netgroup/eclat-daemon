@@ -3,10 +3,9 @@
 # (time.eclat)
 #
 
-from programs.hike_default import hike_pass
-from programs.stamp import stamp, l234_addr_swap, l2_get_iif
+from programs.hike_default import hike_pass, l2xcon
+from programs.stamp import stamp, l234_addr_swap, udp_checksum
 from loaders.basic import ip6_sc
-from programs.mynet import l2_redirect, l2xcon
 
 #TODO swap eth and IPv6 src and dst, decrement TTL, l2redirect on same interface
 # send all IPv6 packets to our chain
@@ -17,6 +16,7 @@ def stamp():
     u64 : res = stamp()
     if res == 0:
         l234_addr_swap()
+        udp_checksum()
         l2xcon()
 
     hike_pass()
