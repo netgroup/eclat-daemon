@@ -31,10 +31,29 @@ TG_DEV1=enp6s0f1
 #build the hike vm bpf.c files if needed
 scripts/initial_setup.sh
 
+echo "Initial setup done (make HIKe)"
+
+# Kill tmux previous session
+tmux kill-session -t $TMUX 2>/dev/null
+
+tmux new-session -d -s $TMUX -n MAIN bash -c "python eclatd.py"
+
+while :
+do
+  OUTPUT=$(tmux capture-pane -pJ -S-100 -t $TMUX:MAIN | grep 'Server started.')
+  sleep 2
+  if [[ $OUTPUT ]] ; then
+    break
+  fi
+  echo "making sure that the eCLAT daemon is running..."
+done
+
 #clones the packages repositories if needed
-python eclatd.py &
-sleep 3
+#python eclatd.py &
+#sleep 3
 python eclat.py --fetch $ECLAT_SCRIPT --define DEVNAME $SUT_DEV0 --package test
+
+echo "Cloned the packages if needed"
 python eclat.py -q
 
 # Kill tmux previous session
