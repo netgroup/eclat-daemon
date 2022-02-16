@@ -28,13 +28,14 @@ def ebpf_system_init():
     mkdir(settings.BPF_FS_PROGS_PATH)
     mkdir(settings.BPF_FS_MAPS_PATH)
 
-    mkdir(settings.BUILD_LOADERS_DIR)
-    mkdir(settings.BUILD_PROGRAMS_DIR)
-    mkdir(settings.BUILD_CHAINS_DIR)
+    mkdir(settings.COMPONENTS_DIR)
+    # mkdir(settings.BUILD_LOADERS_DIR)
+    # mkdir(settings.BUILD_PROGRAMS_DIR)
+    # mkdir(settings.BUILD_CHAINS_DIR)
 
-    mkdir(settings.LOADERS_DIR)
-    mkdir(settings.PROGRAMS_DIR)
-    mkdir(settings.CHAINS_DIR)
+    # mkdir(settings.LOADERS_DIR)
+    # mkdir(settings.PROGRAMS_DIR)
+    # mkdir(settings.CHAINS_DIR)
 
 
 def hike_system_init():
@@ -52,13 +53,14 @@ def hike_system_init():
     # make -f hike_v3/external/Makefile -j24 prog PROG=components/loaders/init_hike.bpf.c HIKE_DIR=hike_v3/src/
     if not os.path.exists("/sys/fs/bpf/progs/system"):
         bpf_source_file = os.path.join(
-            settings.PROGRAMS_DIR, 'system/init_hike.bpf.c')  # TODO
-
-        make_ebpf_hike_program(bpf_source_file)
+            settings.HIKE_SOURCE_PATH, 'hikevm.bpf.c')  # TODO
+        bpf_obj_file = os.path.join(
+            settings.HIKE_SOURCE_PATH, '.output', 'hikevm.bpf.o')
+        make_ebpf_hike_program(bpf_source_file, build_dir=".output")
 
         pinned_maps = {}
         bpftool_prog_load("init_hike", "system", pinned_maps,
-                          load_system_maps=False)
+                          load_system_maps=False, obj_file=bpf_obj_file)
         print("Init program loaded")
 
 
@@ -106,7 +108,10 @@ def make_hike_chain(file_path):
     $ make -f path-to/hike_vm/external/Makefile -j24 chain CHAIN=chain.hike.c HIKE_DIR=path-to/hike_vm/src/
     """
     makefile = f"{settings.HIKE_PATH}/external/Makefile"
-    cmd = f"make -f {makefile} chain CHAIN={file_path} HIKE_DIR={settings.HIKE_SOURCE_PATH} HIKE_CFLAGS='-D__HIKE_CFLAGS_EXTMAKE'"
+    src_dir, chain_name = os.path.split(file_path)
+    #cmd = f"make -f {makefile} chain CHAIN={file_path} HIKE_DIR={settings.HIKE_SOURCE_PATH} HIKE_CFLAGS='-D__HIKE_CFLAGS_EXTMAKE'"
+    cmd = f"make -f {makefile} chain HIKE_DIR={settings.HIKE_SOURCE_PATH} HIKE_CFLAGS='-D__HIKE_CFLAGS_EXTMAKE' SRC_DIR={src_dir} CHAIN={chain_name} BUILD={src_dir}/build"
+
     print(f"Exec: {cmd}")
     ret = os.system(cmd)
     if ret != 0:
@@ -114,13 +119,17 @@ def make_hike_chain(file_path):
             f"Hike Chain compilation failed\nOffending command is {cmd}")
 
 
-def make_ebpf_hike_program(file_path):
+def make_ebpf_hike_program(file_path, build_dir=None):
     """
         Compile the eBPF HIKe program specified in the file_path
         $ make -f path-to/hike_vm/external/Makefile -j24 prog PROG=prog.bpf.c HIKE_DIR=path-to/hike_vm/src/
     """
     makefile = f"{settings.HIKE_PATH}/external/Makefile"
-    cmd = f"make -f {makefile} prog PROG={file_path} HIKE_DIR={settings.HIKE_SOURCE_PATH}"
+    #cmd = f"make -f {makefile} prog PROG={file_path} HIKE_DIR={settings.HIKE_SOURCE_PATH}"
+    src_dir, prog_name = os.path.split(file_path)
+    build_dir = "build" if not build_dir else build_dir
+    cmd = f"make -f {makefile} prog HIKE_DIR={settings.HIKE_SOURCE_PATH} HIKE_CFLAGS='-D__HIKE_CFLAGS_EXTMAKE' SRC_DIR={src_dir} PROG={prog_name} BUILD={src_dir}/{build_dir}"
+
     print(f"Exec: {cmd}")
     ret = os.system(cmd)
     if ret != 0:
@@ -140,9 +149,9 @@ def hikecc(name, package):
     # Load HIKe Chains calling the loader script we just built :-o
     /bin/bash data/binaries/minimal_chain.hike.load.sh
     """
-    obj_file_path = f"{settings.BUILD_CHAINS_DIR}/{package}/{name}.hike.o"
+    obj_file_path = f"{settings.COMPONENTS_DIR}/{package}/build/{name}.hike.o"
     map_name = f"{settings.BPF_FS_MAPS_SYSTEM_PATH}/hvm_chain_map"
-    loader_file_path = f"{settings.BUILD_CHAINS_DIR}/{package}/{name}.hike.load.sh"
+    loader_file_path = f"{settings.COMPONENTS_DIR}/{package}/{name}.hike.load.sh"
     HIKE_CC = f"{settings.HIKE_PATH}/hike-tools/hikecc.sh"
 
     cmd = f"/bin/bash {HIKE_CC} {obj_file_path} {map_name} {loader_file_path}"
@@ -189,7 +198,7 @@ def bpftool_prog_load(name, package,
         program_object = obj_file
     else:
         # if is_loader == False else settings.BUILD_LOADERS_DIR
-        program_object_prefix = settings.BUILD_PROGRAMS_DIR
+        program_object_prefix = settings.COMPONENTS_DIR
         program_object = f"{program_object_prefix}/{package}/{name}.bpf.o"
 
     program_fs_path = f"{settings.BPF_FS_PROGS_PATH}/{package}/{name}"
@@ -211,7 +220,8 @@ def bpftool_prog_load(name, package,
     print(f"Exec: {cmd}")
     ret = os.system(cmd)
     if ret != 0:
-        raise Exception(f"Program {program_object} load failed.")
+        raise Exception(
+            f"Program {program_object} load failed.\nOffending command is {cmd}")
 
 
 # bpftool net attach ATTACH_TYPE PROG dev NAME [ overwrite ]

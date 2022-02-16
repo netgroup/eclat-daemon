@@ -15,8 +15,8 @@ class HikeChain:
         self.code = code
         self.globals = globals
         ###
-        self.src_file_path = f"{settings.CHAINS_DIR}/{self.package}/{name}.hike.c"
-        self.obj_file_path = f"{settings.BUILD_CHAINS_DIR}/{self.package}/{name}.hike.o"
+        self.src_file_path = f"{settings.COMPONENTS_DIR}/{self.package}/{name}.hike.c"
+        self.obj_file_path = f"{settings.COMPONENTS_DIR}/{self.package}/build/{name}.hike.o"
         self.is_compiled = self._is_compiled()
         self.is_linked = self._is_linked()
 

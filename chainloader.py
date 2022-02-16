@@ -18,10 +18,14 @@ class ChainLoader:
         self.configuration = configuration
         ###
         self.maps_info = []
-        self.src_file_path = f"{settings.LOADERS_DIR}/{self.package}/{name}.bpf.c"
-        self.obj_file_path = f"{settings.BUILD_LOADERS_DIR}/{self.package}/{name}.bpf.o"
-        # TODO Andrea
-        self.json_file_path = f"{settings.BUILD_LOADERS_DIR}/{self.package}/{name}.bpf.json"
+        if self.package == 'hike_default':
+            self.src_file_path = f"{settings.HIKE_SOURCE_PATH}/{name}.bpf.c"
+            self.obj_file_path = f"{settings.HIKE_SOURCE_PATH}/.output/{name}.bpf.o"
+            self.json_file_path = f"{settings.HIKE_SOURCE_PATH}/.output/{name}.bpf.json"
+        else:
+            self.src_file_path = f"{settings.COMPONENTS_DIR}/{self.package}/{name}.bpf.c"
+            self.obj_file_path = f"{settings.COMPONENTS_DIR}/{self.package}/build/{name}.bpf.o"
+            self.json_file_path = f"{settings.COMPONENTS_DIR}/{self.package}/build/{name}.bpf.json"
         self.is_compiled = self._is_compiled()
 
     def _is_compiled(self):
@@ -65,7 +69,7 @@ class ChainLoader:
         import requests
         import tarfile
         # if there is not a folder, download the package
-        if not os.path.isdir(f"{settings.LOADERS_DIR}/{self.package}"):
+        if not os.path.isdir(f"{settings.COMPONENTS_DIR}/{self.package}") and self.package != 'hike_default':
             file_name = f"{self.package}.tar.gz"
             url = f"{settings.LOADERS_REPOSITORY_URL}/{file_name}"
             r = requests.get(url, allow_redirects=True)
@@ -82,7 +86,10 @@ class ChainLoader:
             raise Exception(
                 f"Compilation failed. File {self.src_file_path} does not exist.")
         if not self.is_compiled:
-            cal.make_ebpf_hike_program(self.src_file_path)
+            build_dir = None
+            if self.package == 'hike_default':
+                build_dir = '.output'
+            cal.make_ebpf_hike_program(self.src_file_path, build_dir)
             self.is_compiled = True
         else:
             print(f"Chain loader {self.name} is already compiled")

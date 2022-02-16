@@ -23,9 +23,9 @@ class HikeProgram:
             self.obj_file_path = f"{settings.HIKE_SOURCE_PATH}/.output/{name}.bpf.o"
             self.json_file_path = f"{settings.HIKE_SOURCE_PATH}/.output/{name}.bpf.json"
         else:
-            self.src_file_path = f"{settings.PROGRAMS_DIR}/{self.package}/{name}.bpf.c"
-            self.obj_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{name}.bpf.o"
-            self.json_file_path = f"{settings.BUILD_PROGRAMS_DIR}/{self.package}/{name}.bpf.json"
+            self.src_file_path = f"{settings.COMPONENTS_DIR}/{self.package}/{name}.bpf.c"
+            self.obj_file_path = f"{settings.COMPONENTS_DIR}/{self.package}/build/{name}.bpf.o"
+            self.json_file_path = f"{settings.COMPONENTS_DIR}/{self.package}/build/{name}.bpf.json"
 
         self.program_path = f"{settings.BPF_FS_PROGS_PATH}/{self.package}/{self.name}"
         self.is_compiled = self._is_compiled()
@@ -51,7 +51,7 @@ class HikeProgram:
         import requests
 
         # if there is not a folder, download the package
-        if not os.path.isdir(f"{settings.PROGRAMS_DIR}/{self.package}") and self.package != 'hike_default':
+        if not os.path.isdir(f"{settings.COMPONENTS_DIR}/{self.package}") and self.package != 'hike_default':
             url = f"{settings.PROGRAMS_REPOSITORY_URL}"
             r = requests.get(url, allow_redirects=True)
             data = r.json()['data']
@@ -62,30 +62,20 @@ class HikeProgram:
                     print(d)
                     is_found = True
                     cal.clone_repo(
-                        d['git_url'], f"{settings.PROGRAMS_DIR}/{self.package}", d['tag'])
+                        d['git_url'], f"{settings.COMPONENTS_DIR}/{self.package}", d['tag'])
 
             if not is_found:
                 raise Exception(
                     f"package {self.package} not found in the repository")
 
-            #import tarfile
-            # requests.get()
-            #file_name = f"{self.package}.tar.gz"
-            #url = f"{settings.PROGRAMS_REPOSITORY_URL}/{file_name}"
-            #r = requests.get(url, allow_redirects=True)
-            #file_path = f"{settings.PROGRAMS_DIR}/{file_name}"
-            #open(file_path, 'wb').write(r.content)
-            #tar = tarfile.open(file_path, "r:gz")
-            # this should create the /package_name/ folder
-            # tar.extractall(settings.PROGRAMS_DIR)
-            # tar.close()
-            # os.remove(file_path)
-
     def compile(self):
         if not os.path.exists(self.src_file_path):
             raise Exception(
                 f"Compilation failed. File {self.src_file_path} does not exist.")
-        cal.make_ebpf_hike_program(self.src_file_path)
+        build_dir = None
+        if self.package == 'hike_default':
+            build_dir = '.output'
+        cal.make_ebpf_hike_program(self.src_file_path, build_dir)
         self.is_compiled = True
         # else:
         #    print(f"Hike program {self.name} is already compiled")

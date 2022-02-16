@@ -6,11 +6,11 @@
 #from programs.mynet import hike_drop, hike_pass, monitor, show_pkt_info
 from programs.hike_default import hike_drop, hike_pass, monitor
 from programs.info import show_pkt_info
-from loaders.basic import ip6_sc
+from loaders.hike_default import ip6_simple_classifier
 
 # send all IPv6 packets to our chain
-ip6_sc[ipv6_sc_map] = { (0): (basic_example) }
-ip6_sc.attach('DEVNAME', 'xdp')
+ip6_simple_classifier[ipv6_simple_classifier_map] = { (0): (basic_example) }
+ip6_simple_classifier.attach('DEVNAME', 'xdp')
 
 def basic_example():
 
