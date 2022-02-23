@@ -13,7 +13,7 @@ venv.bak/
 parser.out
 build/
 components/
-!components/programs/system
+!components/.gitignore
 hike_v3/
 /scripts/temp_credentials/*
 !/scripts/temp_credentials/config

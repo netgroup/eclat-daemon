@@ -4,6 +4,7 @@ Eclat CLI
 import grpc
 import argparse
 import json
+import sys
 
 # import the generated classes
 import eclat_pb2
@@ -139,8 +140,12 @@ def main():
         ret = quit()
     else:
         parser.error('No command specified.')
-    print(ret)
-    return ret
+
+    print (ret)
+    if ret.status == 'OK':
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
