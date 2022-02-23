@@ -67,19 +67,22 @@ class ChainLoader:
         Download a package in the appropriate directory
         """
         import requests
-        import tarfile
-        # if there is not a folder, download the package
         if not os.path.isdir(f"{settings.COMPONENTS_DIR}/{self.package}") and self.package != 'hike_default':
-            file_name = f"{self.package}.tar.gz"
-            url = f"{settings.LOADERS_REPOSITORY_URL}/{file_name}"
+            url = f"{settings.PROGRAMS_REPOSITORY_URL}"
             r = requests.get(url, allow_redirects=True)
-            file_path = f"{settings.LOADERS_DIR}/{file_name}"
-            open(file_path, 'wb').write(r.content)
-            tar = tarfile.open(file_path, "r:gz")
-            # this should create the /package_name/ folder
-            tar.extractall(settings.LOADERS_DIR)
-            tar.close()
-            os.remove(file_path)
+            data = r.json()['data']
+            is_found = False
+            for d in data:
+                if d['name'] == self.package:
+                    print('*******PACKAGE******', self.package)
+                    print(d)
+                    is_found = True
+                    cal.clone_repo(
+                        d['git_url'], f"{settings.COMPONENTS_DIR}/{self.package}", d['tag'])
+
+            if not is_found:
+                raise Exception(
+                    f"package {self.package} not found in the repository")
 
     def compile(self):
         if not os.path.exists(self.src_file_path):
