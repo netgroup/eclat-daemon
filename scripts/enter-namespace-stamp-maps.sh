@@ -21,6 +21,10 @@ read -r -d '' sut_env <<-EOF
 		pinned /sys/fs/bpf/progs/rawpass/xdp_pass	\
                 dev enp6s0f1
 
+	# compile C program to calculate delta time
+	cd develop
+	gcc t2.c -o t2
+	cd ..
     # Python scripts to populate maps
 	python stamp_xcon_map.py
     python stamp_maps.py
