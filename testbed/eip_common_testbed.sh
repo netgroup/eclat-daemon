@@ -1,3 +1,4 @@
+# this script is included in other testbed startup scripts
 #
 # topology:
 #
@@ -12,7 +13,6 @@
 
 
 TMUX=ebpf
-ECLAT_SCRIPT=test/eclat_scripts/eip_timestamps.eclat
 
 # Kill tmux previous session
 tmux kill-session -t $TMUX 2>/dev/null
@@ -211,6 +211,9 @@ do
   echo "making sure that the eCLAT daemon is running..."
 done
 tmux send-keys -t $TMUX:R3 "scripts/run-eclat.sh $ECLAT_SCRIPT i32" C-m
+
+if [[ "$R1_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
+tmux send-keys -t $TMUX:R1   "$R1_COMMAND" $CM
 
 tmux select-window -t $TMUX:R1
 tmux set-option -g mouse on

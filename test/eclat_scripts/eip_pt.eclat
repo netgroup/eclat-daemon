@@ -1,6 +1,6 @@
-# eip_timestamps
+# eip_pt
 # 
-# (eip_timestamps.eclat)
+# (eip_pt.eclat)
 #
 
 from programs.hike_default import hike_pass
@@ -8,10 +8,10 @@ from programs.eip import hello
 from loaders.hike_default import ip6_simple_classifier
 
 # send all IPv6 packets to our chain
-ip6_simple_classifier[ipv6_simple_classifier_map] = { (0): (eip_timestamps) }
+ip6_simple_classifier[ipv6_simple_classifier_map] = { (0): (eip_pt) }
 ip6_simple_classifier.attach('DEVNAME', 'xdp')
 
-def eip_timestamps():
+def eip_pt():
     hello()
     hike_pass()
     return 0
