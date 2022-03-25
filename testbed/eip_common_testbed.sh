@@ -214,6 +214,10 @@ tmux send-keys -t $TMUX:R3 "scripts/run-eclat.sh $ECLAT_SCRIPT i32" C-m
 
 if [[ "$R1_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
 tmux send-keys -t $TMUX:R1   "$R1_COMMAND" $CM
+if [[ "$MAIN_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
+tmux send-keys -t $TMUX:MAIN   "$MAIN_COMMAND" $CM
+if [[ "$R4_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
+tmux send-keys -t $TMUX:R4   "$R4_COMMAND" $CM
 
 tmux select-window -t $TMUX:R1
 tmux set-option -g mouse on

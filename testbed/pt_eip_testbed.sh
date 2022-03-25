@@ -19,5 +19,9 @@ ECLAT_SCRIPT=test/eclat_scripts/eip_pt.eclat
 
 R1_COMMAND="tcpreplay -i i12 hike_v3/testbed/pkts/ipv6-hbh-eip-pt.pcap"
 R1_EXEC=NO
+MAIN_COMMAND="scripts/enter-namespace-eip-pt-maps.sh"
+MAIN_EXEC=NO
+R4_COMMAND="tcpdump -ni i43 -w develop/trace-eip.pcap"
+R4_EXEC=NO
 
 source testbed/eip_common_testbed.sh
