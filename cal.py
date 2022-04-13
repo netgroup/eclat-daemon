@@ -211,7 +211,7 @@ def bpftool_prog_load(name, package,
         return
 
     cmd = f"bpftool prog load {program_object} {program_fs_path} type {attach_type} "
-    for k, v in pinned_maps:
+    for k, v in pinned_maps.items():
         cmd += f"map name {k} pinned {v} "
     if load_system_maps:
         for system_map_name in settings.SYSTEM_MAPS_NAMES:
