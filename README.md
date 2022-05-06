@@ -1,3 +1,5 @@
+[![Inline docs](https://img.shields.io/readthedocs/hike-eclat)](https://hike-eclat.readthedocs.io/en/latest/index.html)
+
 ## Prerequisites
 
 Python 3.5 or higher
