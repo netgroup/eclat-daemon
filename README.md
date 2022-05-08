@@ -47,10 +47,3 @@ python -m unittest test.test_grpc
 python -m unittest test.test_parser
 python -m unittest test.test_controller
 ```
-
-## Developing
-If you want to push changes to a repository, you might want to set the git origin to SSH. You can do this using the following command:
-```
-scripts/git-origin-ssh.sh
-```
-It can be run for any package downloaded in the components folder, make sure to give the correct relative path, executing it from the folder with your repository.
