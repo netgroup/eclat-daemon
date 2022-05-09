@@ -51,6 +51,7 @@ done
 #clones the packages repositories if needed
 #python eclatd.py &
 #sleep 3
+
 python eclat.py --fetch $ECLAT_SCRIPT --define DEVNAME $SUT_DEV0 --package test
 
 if [ $? -ne 0 ] ; then
@@ -216,6 +217,7 @@ tmux new-window -t $TMUX -n DEBUG bash
 tmux new-window -t $TMUX -n TG1 ip netns exec tg bash -c "${tg_env}"
 tmux new-window -t $TMUX -n TG2 ip netns exec tg bash 
 tmux new-window -t $TMUX -n SUT ip netns exec sut bash -c "${sut_env}"
+tmux new-window -t $TMUX -n SUT2 ip netns exec sut bash 
 tmux new-window -t $TMUX -n SUTDA ip netns exec sut bash -c "python eclatd.py"
 tmux new-window -t $TMUX -n CLT ip netns exec clt bash -c "${clt_env}"
 
@@ -292,6 +294,9 @@ tmux send-keys -t $TMUX:MAIN   "$MAIN_COMMAND" $CM
 
 if [[ "$SUT_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
 tmux send-keys -t $TMUX:SUT   "$SUT_COMMAND" $CM
+
+if [[ "$SUT2_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
+tmux send-keys -t $TMUX:SUT2   "$SUT2_COMMAND" $CM
 
 tmux select-window -t $TMUX:TG2
 tmux set-option -g mouse on
