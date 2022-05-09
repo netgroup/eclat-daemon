@@ -17,11 +17,11 @@ from programs.meter import ip6_sd_tbmon, ip6_dst_tbmon
 from programs.sampler import ip6_sd_dec2zero
 
 
-from loaders.basic import ip6_sc
+from loaders.hike_default import ip6_simple_classifier
 
 # send all IPv6 packets to our chain
-ip6_sc[ipv6_sc_map] = { (0): (ddos_tb_2_lev) }
-ip6_sc.attach('DEVNAME', 'xdp')
+ip6_simple_classifier[ipv6_simple_classifier_map] = { (0): (ddos_tb_2_lev) }
+ip6_simple_classifier.attach('DEVNAME', 'xdp')
 
 def ddos_tb_2_lev():
     PASS=0; DROP=1; REDIRECT=2
