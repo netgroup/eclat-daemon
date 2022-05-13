@@ -18,3 +18,4 @@ components/
 hike_v3/
 /scripts/temp_credentials/*
 !/scripts/temp_credentials/config
+scapy/
