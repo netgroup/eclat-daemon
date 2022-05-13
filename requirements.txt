@@ -3,4 +3,3 @@ grpcio-tools==1.41.0
 sly==0.4
 integer==1.0.3
 requests==2.27.1
-scapy==2.4.5
