@@ -50,6 +50,6 @@ python -m unittest test.test_controller
 
 ## dokerized eCLAT 
 
-A docker container which provides the eCLAT development and testing environment is available [here](https://github.com/netgroup/eclat-docker)
+A [docker container](https://github.com/netgroup/eclat-docker) provides an eCLAT development and testing environment.
 
 
