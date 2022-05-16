@@ -27,7 +27,7 @@ read -r -d '' sut_env <<-EOF
 	cd ..
     # Python scripts to populate maps
 	python stamp_xcon_map.py
-    python stamp_maps.py
+    python stamp_maps.py --prog stamp_mono --l23
 EOF
 
 nsenter -t $(ps ax | grep e[c]latd | grep -v '\.eclat'  | awk '{ print $1 }') -m -n -- bash -c "${sut_env}"
