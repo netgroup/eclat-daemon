@@ -49,6 +49,7 @@ def parse():
     parser.add_argument("--prog", metavar="prog", default=PROGRAM, help="program name")
     parser.add_argument("--map", metavar="map", default=MAP, help="map name")
     parser.add_argument("--l23", action='store_true', help="layer 2 and 3: addresses and segment list")
+    parser.add_argument("--counter", action='store_true', help="delta is instead a counter initialised to 0")
     return parser.parse_args()
 
 args = parse()
@@ -111,6 +112,11 @@ if args.l23:
 map_path = f"{BASE_PATH}/{args.pkg}/{args.prog}/{args.map}"
 if not os.path.exists(map_path):
       print(f"path to {map_path} does not exist")
+elif args.counter:
+      print("counter mode")
+      cal.cal_map_update(map_path, ht.u8(0), 0)
+      map_as_array = json.loads(cal.bpftool_map_dump(map_path))
+      print(f"updated map:\n{map_as_array}")
 elif not os.path.exists(TIME_EXEC):
       print(f"path to {TIME_EXEC} does not exist")
 else:
