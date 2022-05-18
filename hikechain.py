@@ -61,6 +61,7 @@ class HikeChain:
 
         with open(self.src_file_path, "w") as f:
             f.write(self.code)
+        cal.format_c(self.src_file_path)
         print(f"Linked!\n{self.code}")
 
     def compile(self):

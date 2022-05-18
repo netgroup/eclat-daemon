@@ -102,6 +102,20 @@ def mount_tracefs(mount_point):
         raise OSError(f"Can not mount trace fs on {mount_point}")
 
 
+def format_c(file_path):
+    """
+    Format a source/header file with clang-format
+
+    clang-format -i nome-file.c
+    clang-format -i nome-file.h
+    """
+    cmd = f"clang-format -i {file_path}"
+    print(f"Exec: {cmd}")
+    ret = os.system(cmd)
+    if ret:
+        raise OSError(f"Can not format {file_path}")
+
+
 def make_hike_chain(file_path):
     """
     Run makefile to create an HIKe chain.
