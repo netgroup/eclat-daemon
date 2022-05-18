@@ -103,6 +103,40 @@ def mychain():
         tokens = lexer.tokenize(prog)
         p = parser.parse(tokens)
 
+    def test_bitwise(self):
+        lexer = EclatLexer()
+        parser = EclatParser()
+        prog = """
+def mychain():
+    #types
+    s8 : p = 12
+    s16 : p = 12
+    s32 : p = 12
+    s64 : p = 12
+    u8 : p = 12
+    u16 : p = 12
+    u32 : p = 12
+    u64 : p = 12
+    # unary operations
+    p = -p
+    p = ~p
+    # bitwise 
+    p = p & p
+    p = p | p
+    p = p ^ p
+        """
+        tokens = lexer.tokenize(prog)
+        for tok in tokens:
+            print(tok)
+        tokens = lexer.tokenize(prog)
+        p = parser.parse(tokens)
+        chain_code = p['chains']['mychain'].to_c('test_package')
+        self.assertIn('p = -p', chain_code)
+        self.assertIn('p = ~p', chain_code)
+        self.assertIn('p = p & p', chain_code)
+        self.assertIn('p = p | p', chain_code)
+        self.assertIn('p = p ^ p', chain_code)
+
     def test_if(self):
         lexer = EclatLexer()
         parser = EclatParser()

@@ -9,7 +9,7 @@ class Chain():
         self.arguments = arguments
 
     def __repr__(self):
-        return f"Chain {self.name}"
+        return f"AST Chain {self.name}"
 
     def to_c(self, package):
         list_of_arguments = [a.to_c(for_chain=True)
@@ -197,12 +197,13 @@ class UnaryExpression(Expression):
         self.operator_map = {
             '~': '~',
             'not': '!',
+            '-': '-'
         }
 
     def to_c(self):
         value = self.value.to_c() if hasattr(self.value, 'to_c') else self.value
         operator = self.operator_map[self.operator]
-        return self.handle_brackets(f"{operator} {value}")
+        return self.handle_brackets(f"{operator}{value}")
 
 
 class BinaryExpression(Expression):
@@ -226,6 +227,9 @@ class BinaryExpression(Expression):
             '!=': '!=',
             'and': '&&',
             'or': '||',
+            '&': '&',
+            '|': '|',
+            '^': '^',
         }
 
     def to_c(self):

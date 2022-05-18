@@ -141,11 +141,7 @@ def main():
     else:
         parser.error('No command specified.')
 
-<<<<<<< HEAD
     print(f"status: {ret.status}")
-=======
-    print (ret)
->>>>>>> a1682e27e20372ff3a760c94248b1565266ccb5e
     if ret.status == 'OK':
         sys.exit(0)
     else:

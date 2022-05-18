@@ -198,11 +198,14 @@ class EclatParser(Parser):
         'expression NEQ expression',
         'expression AND expression',
         'expression OR expression',
+        'expression AMP expression',
+        'expression PIPE expression',
+        'expression HAT expression'
        )
     def expression(self, p):
         return BinaryExpression(p.expression0, p[1], p.expression1)
 
-    @_('NOT expression')
+    @_('NOT expression', 'MINUS expression', 'TILDE expression')
     def expression(self, p):
         return UnaryExpression(p[0], p.expression)
 

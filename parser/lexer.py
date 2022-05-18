@@ -127,6 +127,10 @@ class EclatLexer(IndentedLexer):
         MULT,
         DIV,
         MOD,
+        TILDE,
+        AMP,
+        PIPE,
+        HAT,
         RETURN,
         NEWLINE,
         COMMA,
@@ -175,6 +179,10 @@ class EclatLexer(IndentedLexer):
     MOD = r'%'
     COMMA = r','
     DOT = r'\.'
+    TILDE = r'\~'
+    AMP = r'\&'
+    PIPE = r'\|'
+    HAT = r'\^'
 
     U8 = r'u8'
     U16 = r'u16'
