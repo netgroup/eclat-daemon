@@ -183,7 +183,7 @@ class EclatLexer(IndentedLexer):
     S8 = r's8'
     S16 = r's16'
     S32 = r's32'
-    S64 = r's64',
+    S64 = r's64'
     HEX = r'0[xX][0-9a-fA-F]+(?!\w)'
     FLOAT = r'-?\d+\.\d+'
     INTEGER = r'-?\d+'
