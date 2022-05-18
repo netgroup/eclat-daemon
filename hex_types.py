@@ -51,13 +51,25 @@ class sGeneric(uGeneric):
     else:
       raise OverflowError
 
+class u256(uGeneric):
+  def __init__(self, data):
+    super().__init__(256, data) 
+
 class u128(uGeneric):
   def __init__(self, data):
-    super().__init__(128, data) 
+    super().__init__(128, data)
+
+class u96(uGeneric):
+  def __init__(self, data):
+    super().__init__(96, data) 
 
 class u64(uGeneric):
   def __init__(self, data):
     super().__init__(64, data) 
+
+class u48(uGeneric):
+  def __init__(self, data):
+    super().__init__(48, data) 
 
 class u32(uGeneric):
   def __init__(self, data):
@@ -92,7 +104,6 @@ class s8(sGeneric):
     super().__init__(8, data) 
 
 def to_hex (data):
-  #print (type(data))
   hex_list = []
   if type(data) == type([]):
     for e in data:

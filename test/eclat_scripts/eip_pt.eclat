@@ -1,0 +1,19 @@
+# eip_pt
+# 
+# (eip_pt.eclat)
+#
+
+from programs.hike_default import hike_pass
+from programs.eip import mcd, hello
+from loaders.hike_default import ip6_simple_classifier
+
+# send all IPv6 packets to our chain
+ip6_simple_classifier[ipv6_simple_classifier_map] = { (0): (eip_pt) }
+ip6_simple_classifier.attach('DEVNAME', 'xdp')
+
+def eip_pt():
+    u64 : res = mcd()
+    if res == 0:
+        hello()
+    hike_pass()
+    return 0

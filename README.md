@@ -1,3 +1,5 @@
+[![Inline docs](https://img.shields.io/readthedocs/hike-eclat)](https://hike-eclat.readthedocs.io/en/latest/index.html)
+
 ## Prerequisites
 
 Python 3.5 or higher
@@ -45,3 +47,9 @@ python -m unittest test.test_grpc
 python -m unittest test.test_parser
 python -m unittest test.test_controller
 ```
+
+## dokerized eCLAT 
+
+A [docker container](https://github.com/netgroup/eclat-docker) provides an eCLAT development and testing environment.
+
+

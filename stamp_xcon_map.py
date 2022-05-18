@@ -11,7 +11,7 @@ OUT_INTF_INDEX = 5
 IN_INTF_INDEX = 4
 
 BASE_PATH =  '/sys/fs/bpf/maps'
-PACKAGE = 'mynet'
+PACKAGE = 'hike_default'
 PROGRAM = 'l2xcon'
 MAP = 'l2xcon_map'
 map_path = f"{BASE_PATH}/{PACKAGE}/{PROGRAM}/{MAP}"

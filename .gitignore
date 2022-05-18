@@ -2,6 +2,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 .vscode
+.idea
 .env
 .venv
 env/
@@ -17,3 +18,4 @@ components/
 hike_v3/
 /scripts/temp_credentials/*
 !/scripts/temp_credentials/config
+scapy/
