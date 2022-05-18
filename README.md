@@ -1,5 +1,12 @@
 [![Inline docs](https://img.shields.io/readthedocs/hike-eclat)](https://hike-eclat.readthedocs.io/en/latest/index.html)
 
+## Test and development environment (dokerized eCLAT )
+
+A [docker container](https://github.com/netgroup/eclat-docker) provides the development and testing environment for eCLAT.
+Please download, build and execute the container following the instructions [here](https://github.com/netgroup/eclat-docker) and then execute the test experiments discussed [here](https://hike-eclat.readthedocs.io/en/latest/experiments.html).
+
+In the following subsections you find some instructions for manually downloading and installing eCLAT, all these steps are automatically performed in the docker container.
+
 ## Prerequisites
 
 Python 3.5 or higher
@@ -29,17 +36,6 @@ pip install -r requirements.txt
 python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. eclat.proto
 ```
 
-## Run
-
-```shell
-python eclatd.py #start the daemon
-python eclat.py --load test/eclat_scripts/ddos.eclat --package test #load a test script
-python eclat.py --load test/eclat_scripts/ddos2.eclat --define DEVNAME enp6s0f0 --package test
-
-python eclat.py --dumpmap /sys/fs/bpf/maps/system/hvm_chain_map
-python eclat.py --lookup /sys/fs/bpf/maps/system/hvm_chain_map 64
-```
-
 ## Unit tests
 
 ```shell
@@ -48,8 +44,20 @@ python -m unittest test.test_parser
 python -m unittest test.test_controller
 ```
 
-## dokerized eCLAT 
+## Run
 
-A [docker container](https://github.com/netgroup/eclat-docker) provides an eCLAT development and testing environment.
+### start the eCLAT daemon in a terminal
 
+```shell
+python eclatd.py #start the daemon
+```
+
+### run the eCLAT client in a different terminal
+
+```shell
+python eclat.py --load test/eclat_scripts/basic_example.eclat --define DEVNAME eth0 --package test
+
+python eclat.py --dumpmap /sys/fs/bpf/maps/system/hvm_chain_map
+python eclat.py --lookup /sys/fs/bpf/maps/system/hvm_chain_map 64
+```
 
