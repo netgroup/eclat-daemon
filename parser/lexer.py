@@ -111,6 +111,8 @@ class EclatLexer(IndentedLexer):
         RCPAR,
         COLON,
         SEMICOLON,
+        LSHIFT,
+        RSHIFT,
         DOT,
         AND,
         OR,
@@ -169,6 +171,8 @@ class EclatLexer(IndentedLexer):
     NEQ = r'!='
     LTE = r'<='
     GTE = r'>='
+    LSHIFT = r'<<'
+    RSHIFT = r'>>'
     LT = r'<'
     GT = r'>'
     ASSIGN = r'='

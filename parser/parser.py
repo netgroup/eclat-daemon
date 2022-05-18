@@ -18,11 +18,10 @@ class EclatParser(Parser):
         #          'NEWLINE', 'WHILE', ]),
         # ('left', 'AND', 'OR', ),
         # ('left', 'NOT', ),
-        ('left', 'EQ', 'NEQ', 'GTE', 'GT', 'LT', 'LTE', ),
+        ('left', 'RSHIFT', 'LSHIFT', 'EQ', 'NEQ', 'GTE', 'GT', 'LT', 'LTE', ),
         # ('left', ['PIPE', ]),
         # ('left', ['^', ]),
         # ('left', ['&', ]),
-        # ('left', ['>>', '<<', ]),
         ('left', 'PLUS', 'MINUS', ),
         ('left', 'MULT', 'DIV', ),
 
@@ -190,6 +189,8 @@ class EclatParser(Parser):
         'expression MULT expression',
         'expression DIV expression',
         'expression MOD expression',
+        'expression RSHIFT expression',
+        'expression LSHIFT expression',
         'expression GTE expression',
         'expression LTE expression',
         'expression GT expression',
@@ -200,7 +201,7 @@ class EclatParser(Parser):
         'expression OR expression',
         'expression AMP expression',
         'expression PIPE expression',
-        'expression HAT expression'
+        'expression HAT expression',
        )
     def expression(self, p):
         return BinaryExpression(p.expression0, p[1], p.expression1)

@@ -124,6 +124,10 @@ def mychain():
     p = p & p
     p = p | p
     p = p ^ p
+    # bit shifting
+    p = p << 3
+    p = p >> 4
+    p = p >> w
         """
         tokens = lexer.tokenize(prog)
         for tok in tokens:
@@ -136,6 +140,8 @@ def mychain():
         self.assertIn('p = p & p', chain_code)
         self.assertIn('p = p | p', chain_code)
         self.assertIn('p = p ^ p', chain_code)
+        self.assertIn('p = p << 3', chain_code)
+        self.assertIn('p = p >> 4', chain_code)
 
     def test_if(self):
         lexer = EclatLexer()
