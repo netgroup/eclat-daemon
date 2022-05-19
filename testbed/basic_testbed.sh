@@ -34,7 +34,7 @@ CLT_EXEC=YES
 TG1_COMMAND="tcpreplay -i enp6s0f0 hike_v3/testbed/pkts/pkt_ipv6_udp.pcap"
 TG1_EXEC=NO
 
-TG2_COMMAND="ping -i 0.5 fc01::3"
+TG2_COMMAND="ping -i 5 fc01::3"
 TG2_EXEC=NO
 
 source testbed/common_testbed.sh
