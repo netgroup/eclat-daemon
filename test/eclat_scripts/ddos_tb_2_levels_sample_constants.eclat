@@ -1,8 +1,8 @@
 # ddos_tb_2_levels with packet samples redirected to collector
-# 
+#
 # (ddos_tb_2_levels_sample_constants.eclat)
 #
-# first token bucket monitor per ip6 dst 
+# first token bucket monitor per ip6 dst
 # the out-profile packets are processed by a second token bucket per src,dst
 # the out-profile (src,dst) are blacklisted
 # for a time interval (e.g. 10 s) which is defined in ip6_hset.h: HIKE_IPV6_HSET_EXP_TIMEOUT_NS
@@ -29,7 +29,7 @@ def ddos_tb_2_lev():
     BLACKLISTED = 0
     REDIRECT_IF_INDEX = 6
     IN_PROFILE = 0
-    
+
     # (src,dest) in blacklist ?
     u64 : res = ip6_hset_srcdst(LOOKUP)
     if res == BLACKLISTED:
@@ -43,7 +43,7 @@ def ddos_tb_2_lev():
         monitor(DROP)
         hike_drop()
         return 0
-    
+
     # check the rate per (dst)
     res = ip6_dst_tbmon()
     if res != IN_PROFILE:
@@ -55,7 +55,7 @@ def ddos_tb_2_lev():
             monitor(DROP)
             hike_drop()
             return 0
-            
+
     monitor(PASS)
     hike_pass()
     return 0
