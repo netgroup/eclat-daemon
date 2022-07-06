@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # this script needs to be executed from the eclat-daemon folder
-# by calling: 
+# by calling:
 # testbed/time_testbed.sh
 
 #                     +------------------+      +------------------+
@@ -20,7 +20,7 @@
 #                                               |    COLLECTOR   |
 #                                               +----------------+
 
-ECLAT_SCRIPT=test/eclat_scripts/time.eclat
+ECLAT_SCRIPT=test/eclat_scripts/stamp.eclat
 
 DEBUG_COMMAND="scripts/enter-namespace-debug-no-vm.sh"
 DEBUG_EXEC=YES
