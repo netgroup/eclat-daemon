@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # this script needs to be executed from the eclat-daemon folder
-# by calling: 
+# by calling:
 # testbed/basic_testbed.sh
 
 #                     +------------------+      +------------------+

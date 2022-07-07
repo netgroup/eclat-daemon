@@ -1,7 +1,9 @@
-# basic example
-# 
-# (basic_example.eclat)
+# route basic example
 #
+# (route_basic_example.eclat)
+#
+# routes an IPv6 packet with a lookup in the kernel routing table
+# using the ip6_kroute HIKe program
 
 #from programs.mynet import hike_drop, hike_pass, monitor, show_pkt_info
 from programs.hike_default import hike_drop, hike_pass, monitor, ip6_kroute
@@ -9,10 +11,10 @@ from programs.info import show_pkt_info
 from loaders.hike_default import ip6_simple_classifier
 
 # send all IPv6 packets to our chain
-ip6_simple_classifier[ipv6_simple_classifier_map] = { (0): (basic_example) }
+ip6_simple_classifier[ipv6_simple_classifier_map] = { (0): (route_basic_example) }
 ip6_simple_classifier.attach('DEVNAME', 'xdp')
 
-def basic_example():
+def route_basic_example():
 
     LAYER_2=1; NET_LAYER=2; TRANSP_LAYER=4
 
