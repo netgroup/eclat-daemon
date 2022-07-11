@@ -55,13 +55,13 @@ class ProcessMap:
 
         if package == 'system' :
             self.map_path = f"{BASE_PATH}/system/{self.map_name}"
-        else:     
+        else:
             self.map_path = f"{BASE_PATH}/{self.package}/{self.program}/{self.map_name}" 
 
     def read(self):
-         
+
         self.map_as_array = []
-        
+
         if os.path.exists(self.map_path):
             try :
                 self.map_as_array = json.loads(cal.bpftool_map_dump(self.map_path))
@@ -77,7 +77,7 @@ class ProcessMap:
 if __name__ == "__main__":
 
     pm = ProcessMap('pcpu_sd_tbmon','meter','ip6_sd_tbmon')
-    
+
     result = pm.read()
     if result == 0 :
         #print (json.dumps(pm.map_as_array))
@@ -94,14 +94,14 @@ if __name__ == "__main__":
         for element in output_rows:
             print (element)
 
-        #experiment to add an entry to the map    
+        #experiment to add an entry to the map
         #ipa = ipaddress.IPv6Address('::74')
         #ipb = ipaddress.IPv6Address('cafe::')
         #v = [ht.u64(100),ht.u64(100),ht.u64(1000),ht.u64(1000),ht.u64(100),ht.u64(100)]
         #cal.cal_map_update(pm.map_path, [ipa,ipb], v)
 
     pm = ProcessMap('map_pcpu_lse','hike_default','lse')
-    
+
     result = pm.read()
     if result == 0 :
         #print (pm.map_as_array)
@@ -111,7 +111,7 @@ if __name__ == "__main__":
                 print (out_ip6_sd(src_ip6, dst_ip6) + 
                     f" cts: {out_ns(v['value']['cts_ns'])} timeout: {out_ns(v['value']['timeout_ns'])}")
 
-                    
+
     pm = ProcessMap('ipv6_hset_sd_map','hike_default','ip6_hset_srcdst')
     result = pm.read()
     if result == 0 :
@@ -130,7 +130,7 @@ if __name__ == "__main__":
             (num_val_array,str_details) = process_pcpu_values_u64(my_obj['values'])
 
             print (f"{my_obj['key']}".rjust(3)+" : "+f"{sum(num_val_array)}".rjust(8)+" "+str_details)
-    
+
         #experiment to update a key value pair
         #print (pm.map_path)
         #cal.bpftool_map_update(pm.map_path, ["01","00","00", "00"], ["01", "00", "00", "00","00", "00","00", "00"], map_reference_type="pinned", value_type="hex")
@@ -177,3 +177,27 @@ if __name__ == "__main__":
             (src_ip6,dst_ip6) = get_ip6_sd_from_key(my_obj['key'])
             (num_val_array,str_details) = process_pcpu_values_struct_count(my_obj['values'])
             print (out_ip6_sd(src_ip6, dst_ip6)+f"{sum(num_val_array)}".rjust(8)+str_details)
+
+    pm = ProcessMap('sid_list_1','devel_encap','show_pkt_info')
+    result = pm.read()
+    if result == 0 :
+        for my_obj in pm.map_as_array :
+            print (my_obj)
+
+    pm = ProcessMap('sid_list_2','devel_encap','show_pkt_info')
+    result = pm.read()
+    if result == 0 :
+        for my_obj in pm.map_as_array :
+            print (my_obj)
+
+    pm = ProcessMap('sid_list_3','devel_encap','show_pkt_info')
+    result = pm.read()
+    if result == 0 :
+        for my_obj in pm.map_as_array :
+            print (my_obj)
+
+    pm = ProcessMap('sid_list_4','devel_encap','show_pkt_info')
+    result = pm.read()
+    if result == 0 :
+        for my_obj in pm.map_as_array :
+            print (my_obj)
