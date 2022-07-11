@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# DEPRECATED AND REPLACED BY copy_hike_packages.py
+# DEPRECATED 
 
 cd components/programs
 cd meter

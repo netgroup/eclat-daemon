@@ -2,6 +2,7 @@ import json
 import settings
 import os
 
+# Cleans up all the object files in the folders of the components
 
 class Clean:
 
