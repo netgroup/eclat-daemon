@@ -12,7 +12,6 @@ from loaders.hike_default import ip6_simple_classifier
 ip6_simple_classifier[ipv6_simple_classifier_map] = { (0): (develop_example) }
 ip6_simple_classifier.attach('DEVNAME', 'xdp')
 
-my_id.attach()
 
 def develop_example():
 
