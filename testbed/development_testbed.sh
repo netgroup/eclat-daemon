@@ -1,4 +1,6 @@
-# this script is included in other testbed startup scripts
+# used to setup an environment for development
+# by default, it executes the eclat daemon, but it does not execute the client
+# beforehand, it fetches the packages included in $ECLAT_SCRIPT
 #
 # topology:
 #
@@ -18,14 +20,35 @@
 #                                               |    COLLECTOR   |
 #                                               +----------------+
 
-TMUX=ebpf
-IPP=ip
-
 SUT_DEV0=enp6s0f0
 SUT_DEV1=enp6s0f1
 
 TG_DEV0=enp6s0f0
 TG_DEV1=enp6s0f1
+
+ECLAT_SCRIPT=test/eclat_scripts/develop_example.eclat
+
+DEBUG_COMMAND="scripts/enter-namespace-debug-no-vm.sh"
+DEBUG_EXEC=YES
+
+MAPS_COMMAND="scripts/enter-namespace-watchmap.sh"
+MAPS_EXEC=YES
+
+CLT_COMMAND="tcpdump -i veth0"
+CLT_EXEC=NO
+
+TG1_COMMAND="tcpreplay -i enp6s0f0 hike_v3/testbed/pkts/pkt_ipv6_udp.pcap"
+TG1_EXEC=NO
+
+TG2_COMMAND="ping -i 5 fc01::3"
+TG2_EXEC=NO
+
+SUT_COMMAND="scripts/run-eclat.sh $ECLAT_SCRIPT $SUT_DEV0"
+SUT_EXEC=NO
+
+TMUX=ebpf
+IPP=ip
+
 
 
 #build the hike vm bpf.c files if needed
@@ -35,6 +58,7 @@ echo "Initial setup done (make HIKe)"
 
 # Kill tmux previous session
 tmux kill-session -t $TMUX 2>/dev/null
+
 
 tmux new-session -d -s $TMUX -n MAIN bash -c "python eclatd.py"
 
@@ -65,6 +89,7 @@ python eclat.py -q
 
 # Kill tmux previous session
 tmux kill-session -t $TMUX 2>/dev/null
+
 
 # Clean up previous network namespaces
 ip -all netns delete
@@ -190,7 +215,7 @@ read -r -d '' clt_env <<-EOF
 	# (where maps are available), you need to use nsenter with -m and -t
 	# that points to the pid of the parent process (launching bash).
 
-	mount -t bpf bpf /sys/fs/bpf/             
+	mount -t bpf bpf /sys/fs/bpf/
 	mount -t tracefs nodev /sys/kernel/tracing
 
 	mkdir -p /sys/fs/bpf/{progs,maps}
@@ -233,44 +258,16 @@ do
   echo "making sure that the eCLAT daemon is running..."
 done
 
-tmux send-keys -t $TMUX:SUT "scripts/run-eclat.sh $ECLAT_SCRIPT $SUT_DEV0" C-m
+
+#tmux send-keys -t $TMUX:SUT "scripts/run-eclat.sh $ECLAT_SCRIPT $SUT_DEV0" C-m
 
 
-while :
-do
-  OUTPUT=$(tmux capture-pane -pJ -S -100 -t $TMUX:SUT | grep -E 'status: OK|status: "OK"|Offending command is|Compilation failed|debug_error_string')
-  sleep 2
-  #tmux send-keys -t $TMUX:TG2 $OUTPUT
-  if [[ $OUTPUT ]] ; then
-    break
-  fi
-  echo "registering HIKe eBPF Programs and eCLAT Chains..."
-done
+#tmux send-keys -t $TMUX:SUT   "clear" C-m
 
-if grep -q "Offending command is" <<< "$OUTPUT"; then
-	echo "ERROR !!!"
-	echo "$OUTPUT"
-	exit 1
-fi
+#sleep 2
 
-if grep -q "Compilation failed" <<< "$OUTPUT"; then
-	echo "ERROR !!!"
-	echo "$OUTPUT"
-	exit 1
-fi
-
-if grep -q "debug_error_string" <<< "$OUTPUT"; then
-	echo "ERROR !!!"
-	echo "$OUTPUT"
-	exit 1
-fi
-
-tmux send-keys -t $TMUX:SUT   "clear" C-m
-
-sleep 2
-
-#the following is needed to enable raw-pass for l2-redirect in the SUT 
-tmux send-keys -t $TMUX:MAIN  "scripts/enter-namespace-xdp-raw-pass.sh" C-m
+#the following is needed to enable raw-pass for l2-redirect in the SUT
+#tmux send-keys -t $TMUX:MAIN  "scripts/enter-namespace-xdp-raw-pass.sh" C-m
 
 sleep 1
 
@@ -288,6 +285,7 @@ tmux send-keys -t $TMUX:TG1   "$TG1_COMMAND" $CM
 
 if [[ "$TG2_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
 tmux send-keys -t $TMUX:TG2   "$TG2_COMMAND" $CM
+
 
 if [[ "$MAIN_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
 tmux send-keys -t $TMUX:MAIN   "$MAIN_COMMAND" $CM
