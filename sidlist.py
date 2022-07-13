@@ -14,8 +14,6 @@ print(my_sidlist.to_hex())
 
 my_sidlist.set(['cafe::1','cafe::2','cafe::2'])
 
-
-
 """
 
 import math
