@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# DEPRECATED 
+# DEPRECATED
 
 cd components/programs
 cd meter
@@ -39,9 +39,9 @@ echo components/programs/stamp
 git status
 cd ..
 cd ../..
-cd hike_v3
+cd hike
 echo
-echo hike_v3
+echo hike
 git status
 cd ..
 echo

@@ -18,8 +18,8 @@ cp -r develop/temp-util/basic/ components/loaders/basic
 #clone again
 
 git clone https://github.com/netgroup/hike-public
-mv hike-public hike_v3
-cd hike_v3
+mv hike-public hike
+cd hike
 git checkout hike4eclat
 git submodule update --init --recursive
 

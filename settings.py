@@ -20,7 +20,7 @@ SYSTEM_MAPS_NAMES = ["hvm_cdata_map",
 PROGRAMS_REGISTER_MAP = f"{BPF_FS_MAPS_SYSTEM_PATH}/hvm_hprog_map"
 HIKE_CHAIN_MAPS = f"{BPF_FS_MAPS_SYSTEM_PATH}/hike_chain_map"
 
-HIKE_PATH = "hike_v3"
+HIKE_PATH = "hike"
 HIKE_SOURCE_PATH = f"{HIKE_PATH}/src"
 HIKE_CONTRIB_SOURCE_PATH = f"{HIKE_PATH}/contrib-src"
 

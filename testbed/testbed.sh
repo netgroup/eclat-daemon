@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # this script needs to be executed from the eclat-daemon folder
-# by calling: 
+# by calling:
 # testbed/testbed.sh [script.eclat] [TG1_COMMAND] [TG2_COMMAND]
 # [script.eclat] defaults to test/eclat_scripts/basic_example.eclat
-# [TG1_COMMAND] defaults to "tcpreplay -i enp6s0f0 hike_v3/testbed/pkts/pkt_ipv6_udp.pcap"
+# [TG1_COMMAND] defaults to "tcpreplay -i enp6s0f0 hike/testbed/pkts/pkt_ipv6_udp.pcap"
 # [TG2_COMMAND] defaults to "ping -i 0.5 fc01::3"
 
 #                     +------------------+      +------------------+
@@ -42,13 +42,13 @@ CLT_EXEC=YES
 if [[ $2 ]] ; then
 	TG1_COMMAND="$2"
 else 
-	TG1_COMMAND="tcpreplay -i enp6s0f0 hike_v3/testbed/pkts/pkt_ipv6_udp.pcap"
+	TG1_COMMAND="tcpreplay -i enp6s0f0 hike/testbed/pkts/pkt_ipv6_udp.pcap"
 fi
 TG1_EXEC=NO
 
 if [[ $3 ]] ; then
 	TG2_COMMAND="$3"
-else 
+else
 	TG2_COMMAND="ping -i 0.5 fc01::3"
 fi
 
