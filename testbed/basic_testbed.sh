@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # this script needs to be executed from the eclat-daemon folder
-# by calling: 
+# by calling:
 # testbed/basic_testbed.sh
 
 #                     +------------------+      +------------------+
@@ -31,7 +31,7 @@ MAPS_EXEC=YES
 CLT_COMMAND="tcpdump -i veth0"
 CLT_EXEC=YES
 
-TG1_COMMAND="tcpreplay -i enp6s0f0 hike_v3/testbed/pkts/pkt_ipv6_udp.pcap"
+TG1_COMMAND="tcpreplay -i enp6s0f0 hike/testbed/pkts/pkt_ipv6_udp.pcap"
 TG1_EXEC=NO
 
 TG2_COMMAND="ping -i 5 fc01::3"

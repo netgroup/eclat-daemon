@@ -15,6 +15,7 @@ parser.out
 build/
 components/
 !components/.gitignore
+hike/
 hike_v3/
 /scripts/temp_credentials/*
 !/scripts/temp_credentials/config

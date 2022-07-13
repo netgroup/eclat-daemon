@@ -50,7 +50,7 @@ def hike_system_init():
 
     # load a "dummy" classifier to load the maps
 
-    # make -f hike_v3/external/Makefile -j24 prog PROG=components/loaders/init_hike.bpf.c HIKE_DIR=hike_v3/src/
+    # make -f hike/external/Makefile -j24 prog PROG=components/loaders/init_hike.bpf.c HIKE_DIR=hike/src/
     if not os.path.exists("/sys/fs/bpf/progs/system"):
         bpf_source_file = os.path.join(
             settings.HIKE_SOURCE_PATH, 'hikevm.bpf.c')  # TODO
