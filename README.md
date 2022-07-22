@@ -1,13 +1,13 @@
 [![Inline docs](https://img.shields.io/readthedocs/hike-eclat)](https://hike-eclat.readthedocs.io/en/latest/index.html)
 
-## Test and development environment (dokerized eCLAT )
+## Install
 
 A [docker container](https://github.com/netgroup/eclat-docker) provides the development and testing environment for eCLAT.
 Please download, build and execute the container following the instructions [here](https://github.com/netgroup/eclat-docker) and then execute the test experiments discussed [here](https://hike-eclat.readthedocs.io/en/latest/experiments.html).
 
 In the following subsections you find some instructions for manually downloading and installing eCLAT, all these steps are automatically performed in the docker container.
 
-## Prerequisites
+### Prerequisites
 
 Python 3.5 or higher
 pip version 9.0.1 or higher
@@ -26,7 +26,7 @@ $ source venv/bin/activate
 $ python -m pip install --upgrade pip
 ```
 
-## Install
+### Install
 
 ```shell
 git clone https://github.com/netgroup/eclat-daemon.git
@@ -36,10 +36,10 @@ pip install -r requirements.txt
 python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. eclat.proto
 ```
 
-## Unit tests
+### Unit tests
 
 ```shell
-python -m unittest test.test_grpc
+python -m unittest test.test_grpc #needs eclatd running
 python -m unittest test.test_parser
 python -m unittest test.test_controller
 ```
