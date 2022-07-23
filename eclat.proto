@@ -12,10 +12,18 @@ message EclatLoadResponse {
 
 message EclatFetchRequest {
     string script = 1;
-    string package = 2;
 }
 
 message EclatFetchResponse {
+    string status = 1;
+    string message = 2;
+}
+
+message EclatFetchPackageRequest {
+    string package = 1;
+}
+
+message EclatFetchPackageResponse {
     string status = 1;
     string message = 2;
 }

@@ -3,7 +3,9 @@ import struct
 import settings
 import os
 import cal
+from package_manager import PackageManager
 from parser.json_parser import parse_info, flatten, get_type_fmt
+from test.package_manager import PackageManager
 
 
 class HikeProgram:
@@ -45,28 +47,8 @@ class HikeProgram:
         return maps_info
 
     def pull(self):
-        """
-        Download a package in the appropriate directory
-        """
-        import requests
-
-        # if there is not a folder, download the package
-        if not os.path.isdir(f"{settings.COMPONENTS_DIR}/{self.package}") and self.package != 'hike_default':
-            url = f"{settings.PROGRAMS_REPOSITORY_URL}"
-            r = requests.get(url, allow_redirects=True)
-            data = r.json()['data']
-            is_found = False
-            for d in data:
-                if d['name'] == self.package:
-                    print('*******PACKAGE******', self.package)
-                    print(d)
-                    is_found = True
-                    cal.clone_repo(
-                        d['git_url'], f"{settings.COMPONENTS_DIR}/{self.package}", d['tag'])
-
-            if not is_found:
-                raise Exception(
-                    f"package {self.package} not found in the repository")
+        pm = PackageManager()
+        pm.pull(self.package)
 
     def compile(self):
         if not os.path.exists(self.src_file_path):

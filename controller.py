@@ -2,6 +2,7 @@ import cal
 from chainloader import ChainLoader
 from hikechain import HikeChain
 from hikeprogram import HikeProgram
+from package_manager import PackageManager
 from parser.parser import EclatParser
 from parser.lexer import EclatLexer
 
@@ -58,10 +59,11 @@ class EclatController:
             "id": id})
         return id
 
-    def fetch_configuration(self, eclat_script, script_package):
+    def fetch_configuration(self, eclat_script):
         """
-        Download the necessary packages for an eclat script without loading anything.
+        Download the packages requested by an eclat script (without loading anything).
         """
+        pm = PackageManager()
         # Parse the config
         tokens = EclatLexer().tokenize(eclat_script)
         parser = EclatParser()
@@ -71,24 +73,18 @@ class EclatController:
         for package, names in parser.imports['programs'].items():
             for name in names:
                 if package != 'hike':  # reserved for system programs
-                    hp = HikeProgram(name, package)
-                    hp.pull()
+                    pm.pull(package)
 
         # set up chain loaders
         for package, names in parser.imports['loaders'].items():
-            assert(len(names) == 1)  # currently we support just one loader
-            name = names[0]
-            # get loader configuration information
-            loader_info = None
-            for li in parser.loaders:
-                if li['name'] == name and li['package'] == package:
-                    loader_info = li
-            assert(loader_info)  # we need one loader configuration
-
-            hl = ChainLoader(name, package)
-            hl.pull()
-
+            pm.pull(package)
         return True
+
+    def fetch_package(self, package):
+        """Download all the packages requested by the script
+        """
+        pm = PackageManager()
+        return pm.pull(package)
 
     def load_configuration(self, eclat_script, script_package):
         # Parse the config
