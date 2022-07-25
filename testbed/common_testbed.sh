@@ -52,16 +52,16 @@ done
 #python eclatd.py &
 #sleep 3
 
-python eclat.py --fetch $ECLAT_SCRIPT --define DEVNAME $SUT_DEV0 --package test
+python eclat.py fetch $ECLAT_SCRIPT --define DEVNAME $SUT_DEV0
 
 if [ $? -ne 0 ] ; then
   echo "Error cloning the packages"
-  python eclat.py -q
+  python eclat.py quit
   exit 1
 fi
 
 echo "Cloned the packages if needed"
-python eclat.py -q
+python eclat.py quit
 
 # Kill tmux previous session
 tmux kill-session -t $TMUX 2>/dev/null
@@ -190,7 +190,7 @@ read -r -d '' clt_env <<-EOF
 	# (where maps are available), you need to use nsenter with -m and -t
 	# that points to the pid of the parent process (launching bash).
 
-	mount -t bpf bpf /sys/fs/bpf/             
+	mount -t bpf bpf /sys/fs/bpf/
 	mount -t tracefs nodev /sys/kernel/tracing
 
 	mkdir -p /sys/fs/bpf/{progs,maps}
@@ -269,7 +269,7 @@ tmux send-keys -t $TMUX:SUT   "clear" C-m
 
 sleep 2
 
-#the following is needed to enable raw-pass for l2-redirect in the SUT 
+#the following is needed to enable raw-pass for l2-redirect in the SUT
 tmux send-keys -t $TMUX:MAIN  "scripts/enter-namespace-xdp-raw-pass.sh" C-m
 
 sleep 1

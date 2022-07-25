@@ -5,7 +5,7 @@ import os
 import cal
 from package_manager import PackageManager
 from parser.json_parser import parse_info, flatten, get_type_fmt
-from test.package_manager import PackageManager
+#from test.package_manager import PackageManager
 
 
 class HikeProgram:
