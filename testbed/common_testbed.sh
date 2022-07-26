@@ -52,7 +52,7 @@ done
 #python eclatd.py &
 #sleep 3
 
-python eclat.py fetch $ECLAT_SCRIPT --define DEVNAME $SUT_DEV0
+python eclat.py fetch $ECLAT_SCRIPT 
 
 if [ $? -ne 0 ] ; then
   echo "Error cloning the packages"

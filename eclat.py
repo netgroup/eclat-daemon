@@ -14,18 +14,19 @@ import eclat_pb2_grpc
 
 def preprocess(script, defines):
     """
-    Preprocess an eCLAT script, substituting some defines in the script
+    Preprocess an eCLAT script, replacing placeholders with defines
     """
     if not defines:
         return script
-    for var, value in defines:
-        script = script.replace(var, value)
-    print(script)
+    for placeholder, value in defines:
+        script = script.replace(placeholder, value)
+    # print(script)
     return script
 
 
-def run(scriptfile, package, defines=[]):
+def load(scriptfile, package, defines=[]):
     # open a gRPC channel
+    print(f"{defines}")
     channel = grpc.insecure_channel('localhost:50051')
 
     # create a stub (client)
@@ -46,7 +47,7 @@ def run(scriptfile, package, defines=[]):
     return response
 
 
-def fetch(scriptfile):
+def fetch(scriptfile, package):
     # open a gRPC channel
     # channel = grpc.insecure_channel('[::1]:50051')
     channel = grpc.insecure_channel('localhost:50051')
@@ -140,6 +141,8 @@ def main():
     fetch_p = subparsers.add_parser(
         'fetch', help="Download all the packages required by an eCLAT script")
     fetch_p.add_argument("name", help="eCLAT script file path")
+    fetch_p.add_argument(
+        '-p', '--package', default="defaultpkg", help="The name of the package of the eCLAT script", required=False)
 
     fetch_pkg_p = subparsers.add_parser(
         'fetch-pkg', help="Make eCLATd download a specific package")
@@ -157,10 +160,10 @@ def main():
 
     if args.cmd == 'load':
         defines = args.define if hasattr(args, 'define') else []
-        ret = run(scriptfile=args.name,
-                  package=args.package, defines=defines)
+        ret = load(scriptfile=args.name,
+                   package=args.package, defines=defines)
     elif args.cmd == 'fetch':
-        ret = fetch(scriptfile=args.name)
+        ret = fetch(scriptfile=args.name, package=args.package)
     elif args.cmd == 'fetch_pkg':
         ret = fetch_pkg(scriptfile=args.name)
         pass  # TODO

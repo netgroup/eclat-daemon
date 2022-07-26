@@ -12,6 +12,7 @@ message EclatLoadResponse {
 
 message EclatFetchRequest {
     string script = 1;
+    string package = 2;
 }
 
 message EclatFetchResponse {

@@ -7,7 +7,8 @@ import os
 class PackageManager:
     """This class download packages containing HikePrograms, HikeChains or ChainLoaders.
     """
-    def pull(package_name):
+
+    def pull(self, package_name):
         """
         Download a package in the appropriate directory
         """
