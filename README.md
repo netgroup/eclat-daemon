@@ -55,9 +55,8 @@ python eclatd.py #start the daemon
 ### run the eCLAT client in a different terminal
 
 ```shell
-python eclat.py --load test/eclat_scripts/basic_example.eclat --define DEVNAME eth0 --package test
+python eclat.py load test/eclat_scripts/basic_example.eclat --define DEVNAME eth0
 
-python eclat.py --dumpmap /sys/fs/bpf/maps/system/hvm_chain_map
-python eclat.py --lookup /sys/fs/bpf/maps/system/hvm_chain_map 64
+python eclat.py read-map /sys/fs/bpf/maps/system/hvm_chain_map
+python eclat.py read-map /sys/fs/bpf/maps/system/hvm_chain_map --lookup 64
 ```
-

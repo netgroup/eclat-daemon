@@ -4,6 +4,7 @@ import settings
 import os
 import struct
 import copy
+from package_manager import PackageManager
 from parser.json_parser import parse_info, flatten, get_type_fmt
 
 
@@ -63,26 +64,8 @@ class ChainLoader:
         return ret_map
 
     def pull(self):
-        """
-        Download a package in the appropriate directory
-        """
-        import requests
-        if not os.path.isdir(f"{settings.COMPONENTS_DIR}/{self.package}") and self.package != 'hike_default':
-            url = f"{settings.PROGRAMS_REPOSITORY_URL}"
-            r = requests.get(url, allow_redirects=True)
-            data = r.json()['data']
-            is_found = False
-            for d in data:
-                if d['name'] == self.package:
-                    print('*******PACKAGE******', self.package)
-                    print(d)
-                    is_found = True
-                    cal.clone_repo(
-                        d['git_url'], f"{settings.COMPONENTS_DIR}/{self.package}", d['tag'])
-
-            if not is_found:
-                raise Exception(
-                    f"package {self.package} not found in the repository")
+        pm = PackageManager()
+        pm.pull(self.package)
 
     def compile(self):
         if not os.path.exists(self.src_file_path):

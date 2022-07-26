@@ -5,4 +5,4 @@
 # all packages are automatically cloned from git if not present
 
 #python clean.py
-python eclat.py --load $1 --define DEVNAME $2 --package test
+python eclat.py load $1 --define DEVNAME $2 
