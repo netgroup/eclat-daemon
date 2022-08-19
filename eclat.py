@@ -82,6 +82,8 @@ def fetch_pkg(package):
 
     # make the call
     response = stub.FetchPackageConfiguration(req)
+    # MAYBE IT SHOULD BE:
+    # response = stub.FetchPackage(req)
 
     print(response.status)
     print(response.message)
@@ -164,8 +166,8 @@ def main():
                    package=args.package, defines=defines)
     elif args.cmd == 'fetch':
         ret = fetch(scriptfile=args.name, package=args.package)
-    elif args.cmd == 'fetch_pkg':
-        ret = fetch_pkg(scriptfile=args.name)
+    elif args.cmd == 'fetch-pkg':
+        ret = fetch_pkg(package=args.name)
         pass  # TODO
     elif args.cmd == 'read-map':
         if args.lookup:
@@ -228,7 +230,7 @@ def main():
             parser.error('Missing package name. Use --package argument')
         ret = fetch(scriptfile=args['fetch'],
                     package=args['package'], defines=args['define'])
-    elif args['fetch_pkg'] is not None:
+    elif args['fetch-pkg'] is not None:
         print(args)
     elif args['lookup'] is not None:
         ret = get_map_value(*args['lookup'][0])
