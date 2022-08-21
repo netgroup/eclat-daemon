@@ -30,16 +30,17 @@ do
 done
 
 #clones the packages repositories if needed
-python eclat.py --fetch $ECLAT_SCRIPT --define DEVNAME i12 --package test
+#python eclat.py --fetch $ECLAT_SCRIPT --define DEVNAME i12 --package test
+python eclat.py fetch $ECLAT_SCRIPT
 
 if [ $? -ne 0 ] ; then
   echo "Error cloning the packages"
-  python eclat.py -q
+  python eclat.py quit
   exit 1
 fi
 
 echo "Cloned the packages if needed"
-python eclat.py -q
+python eclat.py quit
 
 # Kill tmux previous session
 tmux kill-session -t $TMUX 2>/dev/null
