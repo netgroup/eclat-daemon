@@ -20,6 +20,15 @@ message EclatFetchResponse {
     string message = 2;
 }
 
+message EclatFetchPackageRequest {
+    string package = 1;
+}
+
+message EclatFetchPackageResponse {
+    string status = 1;
+    string message = 2;
+}
+
 message EclatQuitRequest {
 }
 
