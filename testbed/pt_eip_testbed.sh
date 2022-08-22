@@ -2,7 +2,7 @@
 
 # this script needs to be executed from the eclat-daemon folder
 # by calling:
-# components/eip/testbed/pt_eip_testbed.sh
+# testbed/pt_eip_testbed.sh
 #
 # topology:
 #
@@ -15,7 +15,7 @@
 #      +------------------+      +------------------+      +------------------+      +------------------+
 #
 
-ECLAT_SCRIPT=components/eip/eclat_scripts/eip_pt.eclat
+ECLAT_SCRIPT=test/eclat_scripts/eip_pt.eclat
 
 R1_COMMAND="tcpreplay -i i12 components/eip/pcaps/eip_cpt.pcap"
 R1_EXEC=NO
