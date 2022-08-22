@@ -193,9 +193,21 @@ do
   if [[ $OUTPUT ]] ; then
     break
   fi
-  echo "making sure that the eCLAT daemon is running..."
+  echo "making sure that the eCLAT daemon is running in R2..."
 done
 tmux send-keys -t $TMUX:R2 "scripts/run-eclat.sh $ECLAT_SCRIPT i21" C-m
+
+while :
+do
+  OUTPUT=$(tmux capture-pane -pJ -S-100 -t $TMUX:R2 | grep 'status: OK')
+  sleep 2
+  if [[ $OUTPUT ]] ; then
+    break
+  fi
+  echo "waiting for the completion of client start script in R2..."
+done
+
+
 tmux send-keys -t $TMUX:DEBUG "scripts/enter-namespace-debug-no-vm.sh" C-m
 
 tmux new-window -t $TMUX -n R3 ip netns exec r3 bash -c "${r3_env}"
@@ -209,8 +221,10 @@ do
   if [[ $OUTPUT ]] ; then
     break
   fi
-  echo "making sure that the eCLAT daemon is running..."
+  echo "making sure that the eCLAT daemon is running in R3..."
 done
+
+
 tmux send-keys -t $TMUX:R3 "scripts/run-eclat.sh $ECLAT_SCRIPT i32" C-m
 
 if [[ "$R1_EXEC" == "YES" ]] ; then CM="C-m" ; else CM="" ; fi
