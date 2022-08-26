@@ -24,6 +24,11 @@ class EclatStub(object):
                 request_serializer=eclat__pb2.EclatFetchRequest.SerializeToString,
                 response_deserializer=eclat__pb2.EclatFetchResponse.FromString,
                 )
+        self.FetchPackageConfiguration = channel.unary_unary(
+                '/Eclat/FetchPackageConfiguration',
+                request_serializer=eclat__pb2.EclatFetchPackageRequest.SerializeToString,
+                response_deserializer=eclat__pb2.EclatFetchPackageResponse.FromString,
+                )
         self.DumpMap = channel.unary_unary(
                 '/Eclat/DumpMap',
                 request_serializer=eclat__pb2.EclatDumpMapRequest.SerializeToString,
@@ -51,6 +56,12 @@ class EclatServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def FetchConfiguration(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def FetchPackageConfiguration(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -86,6 +97,11 @@ def add_EclatServicer_to_server(servicer, server):
                     servicer.FetchConfiguration,
                     request_deserializer=eclat__pb2.EclatFetchRequest.FromString,
                     response_serializer=eclat__pb2.EclatFetchResponse.SerializeToString,
+            ),
+            'FetchPackageConfiguration': grpc.unary_unary_rpc_method_handler(
+                    servicer.FetchPackageConfiguration,
+                    request_deserializer=eclat__pb2.EclatFetchPackageRequest.FromString,
+                    response_serializer=eclat__pb2.EclatFetchPackageResponse.SerializeToString,
             ),
             'DumpMap': grpc.unary_unary_rpc_method_handler(
                     servicer.DumpMap,
@@ -143,6 +159,23 @@ class Eclat(object):
         return grpc.experimental.unary_unary(request, target, '/Eclat/FetchConfiguration',
             eclat__pb2.EclatFetchRequest.SerializeToString,
             eclat__pb2.EclatFetchResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def FetchPackageConfiguration(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Eclat/FetchPackageConfiguration',
+            eclat__pb2.EclatFetchPackageRequest.SerializeToString,
+            eclat__pb2.EclatFetchPackageResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
