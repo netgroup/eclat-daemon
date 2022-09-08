@@ -42,8 +42,9 @@ def load(scriptfile, package, defines=[]):
     # make the call
     response = stub.LoadConfiguration(req)
 
-    print(response.status)
-    print(response.message)
+    # print the outcome
+    print(f"{response.status}: {response.message}")
+    
     return response
 
 

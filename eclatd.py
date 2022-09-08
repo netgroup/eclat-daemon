@@ -57,7 +57,10 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
             ret = self.controller.fetch_package(
                 request.package)
             response.status = "OK"
-            response.message = f"Package {request.package} downloaded succesfully"
+            if ret:
+                response.message = f"Package {request.package} downloaded succesfully"
+            else:
+                response.message = f"Package {request.package} was already downloaded "
         except Exception as e:
             logging.exception("Exception occurred in FetchPackageConfiguration")
             response.status = "FAIL"
