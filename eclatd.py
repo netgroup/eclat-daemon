@@ -23,38 +23,32 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
         self.controller = controller
 
     def LoadConfiguration(self, request, context):
-        print(request.script)
-        print("PACKAGE:", request.package)
+        logger.info(f"LoadConfiguration for package {request.package}")
+        logger.info(request.script)
         response = eclat_pb2.EclatLoadResponse()
         try:
             ret = self.controller.load_configuration(
                 request.script, request.package)
-        except Exception as e:
-            print(traceback.format_exc())
-            ret = False
-            raise e
-
-        if ret:
             response.status = "OK"
             response.message = "test ret message for message " + request.script
-        else:
+        except Exception as e:
+            logging.exception("Exception occurred in LoadConfiguration")
             response.status = "FAIL"
+            response.message = str(e)
         return response
 
     def FetchConfiguration(self, request, context):
+        logger.info("FetchConfiguration")
         response = eclat_pb2.EclatFetchResponse()
         try:
             ret = self.controller.fetch_configuration(
                 request.script)
-        except Exception as e:
-            print(traceback.format_exc())
-            ret = False
-            raise e
-        if ret:
             response.status = "OK"
             response.message = "test ret message for message " + request.script
-        else:
+        except Exception as e:
+            logging.exception("Exception occurred in FetchConfiguration")
             response.status = "FAIL"
+            response.message = str(e)
         return response
 
     def FetchPackageConfiguration(self, request, context):
@@ -62,27 +56,24 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
         try:
             ret = self.controller.fetch_package(
                 request.package)
-        except Exception as e:
-            print(traceback.format_exc())
-            ret = False
-            raise e
-        if ret:
             response.status = "OK"
             response.message = f"Package {request.package} downloaded succesfully"
-        else:
+        except Exception as e:
+            logging.exception("Exception occurred in FetchPackageConfiguration")
             response.status = "FAIL"
+            response.message = str(e)
         return response
 
     def Quit(self, request, context):
         response = eclat_pb2.EclatQuitResponse()
         try:
             ret = server.stop(5)
-            response.message = "OK"
+            response.status = "OK"
+            response.message = ret
         except Exception as e:
-            print(traceback.format_exc())
-            ret = False
-            raise e
-        response.status = "OK" if ret else "FAIL"
+            logging.exception("Exception occurred in Quit")
+            response.status = "FAIL"
+            response.message = str(e)
         return response
 
     def DumpMap(self, request, context):
@@ -90,25 +81,27 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
         try:
             ret = self.controller.dump_map(
                 request.mapname)
+            response.status = "OK"
             response.message = ret
         except Exception as e:
-            print(traceback.format_exc())
-            ret = False
-            raise e
-        response.status = "OK" if ret else "FAIL"
+            logging.exception("Exception occurred in DumpMap")
+            response.status = "FAIL"
+            response.message = str(e)
         return response
+
+
 
     def GetMapValue(self, request, context):
         response = eclat_pb2.EclatGetMapValueResponse()
         try:
             ret = self.controller.get_map_value(
                 request.mapname, request.key)
+            response.status = "OK"
             response.message = ret
         except Exception as e:
-            print(traceback.format_exc())
-            ret = False
-            raise e
-        response.status = "OK" if ret else "FAIL"
+            logging.exception("Exception occurred in GetMapValue")
+            response.status = "FAIL"
+            response.message = str(e)
         return response
 
 
