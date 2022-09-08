@@ -38,7 +38,7 @@ LOG_CONFIG = {
             "formatter":"std_out",
             "class":"logging.FileHandler",
             "level":"DEBUG",
-            "filename":"eclatd.log"
+            "filename":"log/eclatd.log"
         }
     },
     "formatters":{

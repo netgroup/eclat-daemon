@@ -44,7 +44,7 @@ def load(scriptfile, package, defines=[]):
 
     # print the outcome
     print(f"{response.status}: {response.message}")
-    
+
     return response
 
 
@@ -165,7 +165,6 @@ def main():
 
     # implementing the commands
     args = parser.parse_args()
-    print(args)
 
     if args.cmd == 'load':
         defines = args.define if hasattr(args, 'define') else []
@@ -186,7 +185,6 @@ def main():
     else:
         parser.error('No command specified.')
 
-    print(f"status: {ret.status}")
     if ret.status == 'OK':
         sys.exit(0)
     else:

@@ -4,7 +4,7 @@ import cal
 import os
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 class PackageManager:
     """
@@ -34,10 +34,11 @@ class PackageManager:
             if d['name'] == package_name:
                 logger.info(
                     f'Found {package_name} in the package list. Start cloning...')
-                logger.info(d)
+                logger.info(f"Package information retrieved: {str(d)}")
                 is_found = True
                 cal.clone_repo(
                     d['git_url'], f"{settings.COMPONENTS_DIR}/{package_name}", d['tag'])
+                logger.info(f"Package {package_name} cloned successfully")
 
         if not is_found:
             raise Exception(
