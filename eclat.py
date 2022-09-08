@@ -64,8 +64,8 @@ def fetch(scriptfile, package):
     # make the call
     response = stub.FetchConfiguration(req)
 
-    print(response.status)
-    print(response.message)
+    # print the outcome
+    print(f"{response.status}: {response.message}")
     return response
 
 
@@ -81,12 +81,10 @@ def fetch_pkg(package):
     req = eclat_pb2.EclatFetchPackageRequest(package=package)
 
     # make the call
-    response = stub.FetchPackageConfiguration(req)
-    # MAYBE IT SHOULD BE:
-    # response = stub.FetchPackage(req)
+    response = stub.FetchPackage(req)
 
-    print(response.status)
-    print(response.message)
+    # print the outcome
+    print(f"{response.status}: {response.message}")
     return response
 
 
@@ -95,8 +93,10 @@ def quit():
     stub = eclat_pb2_grpc.EclatStub(channel)
     req = eclat_pb2.EclatQuitRequest()
     response = stub.Quit(req)
-    print(response.status)
-    print(response.message)
+    
+    # print the outcome
+    print(f"{response.status}: {response.message}")
+
     return response
 
 
@@ -105,8 +105,10 @@ def get_map_value(mapname, key):
     stub = eclat_pb2_grpc.EclatStub(channel)
     req = eclat_pb2.EclatGetMapValueRequest(mapname=mapname, key=key)
     response = stub.GetMapValue(req)
-    print(response.status)
-    print(response.message)
+    
+    # print the outcome
+    print(f"{response.status}: {response.message}")
+
     return response
 
 
@@ -116,8 +118,10 @@ def dump_map(mapname):
     stub = eclat_pb2_grpc.EclatStub(channel)
     req = eclat_pb2.EclatDumpMapRequest(mapname=mapname)
     response = stub.DumpMap(req)
-    print(response.status)
-    print(response.message)
+    
+    # print the outcome
+    print(f"{response.status}: {response.message}")
+
     return json.loads(response.message)
 
 
@@ -156,7 +160,9 @@ def main():
     readmap_p.add_argument("name", help="map name (path)")
     readmap_p.add_argument("-l", "--lookup", nargs=1,
                            help="Get the map value corresponding to a given key", required=False)
-    #########
+    ######
+
+    # implementing the commands
     args = parser.parse_args()
     print(args)
 
@@ -175,68 +181,6 @@ def main():
         else:
             ret = dump_map(args.name)
     elif args.cmd == 'quit':
-        ret = quit()
-    else:
-        parser.error('No command specified.')
-
-    print(f"status: {ret.status}")
-    if ret.status == 'OK':
-        sys.exit(0)
-    else:
-        sys.exit(1)
-
-    # if args.load:
-    #    ret = run(scriptfile=args['load'], package=args['package'], defines=args['define'])
-
-    args = vars(parser.parse_args())
-    print(args)
-    ret = False
-    sys.exit(0)
-
-    # eclat --load example.eclat
-    parser.add_argument(
-        '-l', '--load', help="Load an eclat script", required=False)
-    # eclat --fetch example.eclat
-    parser.add_argument(
-        '-f', '--fetch', help="Download all the packages required by an eCLAT script", required=False)
-    # eclat --fetch-pkg mypackage
-    parser.add_argument(
-        '-k', '--fetch-pkg', help="Download a specific package", nargs=1, action="append", required=False)
-    # eclat --quit
-    parser.add_argument(
-        '-q', '--quit', action="store_true", help="Close eCLATd", required=False)
-    # specify package name (only for load)
-    parser.add_argument(
-        '-p', '--package', help="Package name of the eclat script", required=False)
-    # preprocessor
-    parser.add_argument(
-        '-D', '--define', nargs=2, action="append", help="Define constant for eCLAT preprocessor", required=False)
-    # eclat.py --lookup /sys/fs/bpf/maps/system/hvm_chain_map 64
-    parser.add_argument(
-        '-m', '--lookup', nargs=2, action="append", help="Get the map value corresponding to a given key", required=False)
-    # eclat.py --dumpmap /sys/fs/bpf/maps/system/hvm_chain_map
-    parser.add_argument(
-        '-M', '--dumpmap', action="append", help="Dump the content of a given map", required=False)
-
-    if args['load'] is not None:
-        # load a script
-        if not "package" in args:
-            parser.error('Missing package name. Use --package argument')
-        ret = run(scriptfile=args['load'],
-                  package=args['package'], defines=args['define'])
-    elif args['fetch'] is not None:
-        # fetch the packages related to a script
-        if not "package" in args:
-            parser.error('Missing package name. Use --package argument')
-        ret = fetch(scriptfile=args['fetch'],
-                    package=args['package'], defines=args['define'])
-    elif args['fetch-pkg'] is not None:
-        print(args)
-    elif args['lookup'] is not None:
-        ret = get_map_value(*args['lookup'][0])
-    elif args['dumpmap'] is not None:
-        ret = dump_map(*args['dumpmap'])
-    elif args['quit'] is not None:
         ret = quit()
     else:
         parser.error('No command specified.')

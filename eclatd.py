@@ -51,7 +51,7 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
             response.message = str(e)
         return response
 
-    def FetchPackageConfiguration(self, request, context):
+    def FetchPackage(self, request, context):
         response = eclat_pb2.EclatFetchPackageResponse()
         try:
             ret = self.controller.fetch_package(
