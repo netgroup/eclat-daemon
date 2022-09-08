@@ -6,7 +6,12 @@
 # This script executes a HIKe program that can extract some information
 # from the packet and display it in a log. For example, it can display
 # transport ports for UDP or TCP packets.
-
+#                                               To be Natted in the host
+#                                                         | Host 192.168.77.1
+#                                                         |
+#                                                     HOSTBRIDGE
+#                                                         | Host 192.168.77.2
+#                                                         |
 #                     +------------------+      +------------------+
 #                     |        TG        |      |       SUT        |
 #                     |                  |      |                  |
