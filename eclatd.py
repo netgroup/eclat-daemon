@@ -1,13 +1,19 @@
 import grpc
 from concurrent import futures
-import time
+import logging
+from logging import config
 import traceback
+import settings
 
 # import the generated classes
 import eclat_pb2
 import eclat_pb2_grpc
 
 from controller import EclatController
+
+# configure the logger
+config.dictConfig(settings.LOG_CONFIG)
+logger = logging.getLogger(__name__)
 
 controller = EclatController()
 
@@ -106,6 +112,8 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
         return response
 
 
+# configure logging
+
 # create a gRPC server
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
 
@@ -116,5 +124,5 @@ eclat_pb2_grpc.add_EclatServicer_to_server(
 # listen on port 50051
 server.add_insecure_port('[::]:50051')
 server.start()
-print('Server started. Listening on port 50051.')
+logger.info('Server started. Listening on port 50051')
 server.wait_for_termination()

@@ -19,3 +19,4 @@ hike/
 /scripts/temp_credentials/*
 !/scripts/temp_credentials/config
 scapy/
+eclatd.log
