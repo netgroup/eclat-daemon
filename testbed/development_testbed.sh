@@ -1,6 +1,8 @@
-# used to setup an environment for development
+# used to setup a testbed environment for development
 # by default, it executes the eclat daemon, but it does not execute the client
 # beforehand, it fetches the packages included in $ECLAT_SCRIPT
+# it does not rely on common_testbed.sh
+#
 #
 # topology:
 #
@@ -76,7 +78,7 @@ done
 #python eclatd.py &
 #sleep 3
 
-python eclat.py fetch $ECLAT_SCRIPT 
+python eclat.py fetch $ECLAT_SCRIPT
 
 if [ $? -ne 0 ] ; then
   echo "Error cloning the packages"
@@ -240,9 +242,9 @@ tmux new-session -d -s $TMUX -n MAIN bash
 tmux new-window -t $TMUX -n MAPS bash
 tmux new-window -t $TMUX -n DEBUG bash
 tmux new-window -t $TMUX -n TG1 ip netns exec tg bash -c "${tg_env}"
-tmux new-window -t $TMUX -n TG2 ip netns exec tg bash 
+tmux new-window -t $TMUX -n TG2 ip netns exec tg bash
 tmux new-window -t $TMUX -n SUT ip netns exec sut bash -c "${sut_env}"
-tmux new-window -t $TMUX -n SUT2 ip netns exec sut bash 
+tmux new-window -t $TMUX -n SUT2 ip netns exec sut bash
 tmux new-window -t $TMUX -n SUTDA ip netns exec sut bash -c "python eclatd.py"
 tmux new-window -t $TMUX -n CLT ip netns exec clt bash -c "${clt_env}"
 

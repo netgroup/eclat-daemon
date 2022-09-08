@@ -3,6 +3,9 @@
 # this script needs to be executed from the eclat-daemon folder
 # by calling:
 # testbed/basic_testbed.sh
+# This script executes a HIKe program that can extract some information
+# from the packet and display it in a log. For example, it can display
+# transport ports for UDP or TCP packets.
 
 #                     +------------------+      +------------------+
 #                     |        TG        |      |       SUT        |

@@ -59,6 +59,7 @@ message EclatGetMapValueResponse {
 service Eclat {
     rpc LoadConfiguration(EclatLoadRequest) returns (EclatLoadResponse) {}
     rpc FetchConfiguration(EclatFetchRequest) returns (EclatFetchResponse) {}
+    rpc FetchPackageConfiguration(EclatFetchPackageRequest) returns (EclatFetchPackageResponse) {}
     rpc DumpMap(EclatDumpMapRequest) returns (EclatDumpMapResponse) {}
     rpc GetMapValue(EclatGetMapValueRequest) returns (EclatGetMapValueResponse) {}
     rpc Quit(EclatQuitRequest) returns (EclatQuitResponse) {}
