@@ -17,12 +17,8 @@ class PackageManager:
         Download a package in the appropriate directory.
         Return True if downloaded, false if already exists, and throw exception in case of errors.
         """
-        # if there is not a folder, download the package
-        if package_name == 'hike_default':
-            raise Exception("Attempt to fetch the hike_default package. This is a system package which is already installed.")
-
-        if os.path.isdir(f"{settings.COMPONENTS_DIR}/{package_name}"):
-            logger.info(f"Attempting to download package '{package_name}' which is already downloaded")
+        # if is a system package or if the package has been already downloaded, do nothing.
+        if package_name == 'hike_default' or os.path.isdir(f"{settings.COMPONENTS_DIR}/{package_name}"):
             return False
 
 
