@@ -72,7 +72,7 @@ class EclatServicer(eclat_pb2_grpc.EclatServicer):
         try:
             ret = server.stop(5)
             response.status = "OK"
-            response.message = ret
+            response.message = ""
         except Exception as e:
             logging.exception("Exception occurred in Quit")
             response.status = "FAIL"

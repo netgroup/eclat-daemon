@@ -186,8 +186,10 @@ def main():
         parser.error('No command specified.')
 
     if ret.status == 'OK':
+        print("status: OK")
         sys.exit(0)
     else:
+        print("status: ERROR")
         sys.exit(1)
 
 
