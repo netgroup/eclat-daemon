@@ -1,12 +1,4 @@
 COMPONENTS_DIR = 'components'
-#LOADERS_DIR = f"{COMPONENTS_DIR}/loaders"
-#PROGRAMS_DIR = f"{COMPONENTS_DIR}/programs"
-#CHAINS_DIR = f"{COMPONENTS_DIR}/chains"
-
-#BUILD_DIR = 'build'
-#BUILD_LOADERS_DIR = f"{BUILD_DIR}/{COMPONENTS_DIR}/loaders"
-#BUILD_PROGRAMS_DIR = f"{BUILD_DIR}/{COMPONENTS_DIR}/programs"
-#BUILD_CHAINS_DIR = f"{BUILD_DIR}/{COMPONENTS_DIR}/chains"
 
 BPF_FS_PATH = "/sys/fs/bpf"
 TRACE_FS_PATH = "/sys/kernel/tracing"
@@ -30,7 +22,29 @@ PROGRAMS_REPOSITORY_URL = f"{REPOSITORY_URL}"
 LOADERS_REPOSITORY_URL = f"{REPOSITORY_URL}"
 CHAINS_REPOSITORY_URL = f"{REPOSITORY_URL}"
 
-
-#PROGRAMS_REPOSITORY_URL = f"{REPOSITORY_URL}/programs"
-#LOADERS_REPOSITORY_URL = f"{REPOSITORY_URL}/loaders"
-#CHAINS_REPOSITORY_URL = f"{REPOSITORY_URL}/chains"
+LOG_CONFIG = {
+    "version":1,
+    "root":{
+        "handlers" : ["console", "file"],
+        "level": "DEBUG"
+    },
+    "handlers":{
+        "console":{
+            "formatter": "std_out",
+            "class": "logging.StreamHandler",
+            "level": "DEBUG"
+        },
+        "file":{
+            "formatter":"std_out",
+            "class":"logging.FileHandler",
+            "level":"DEBUG",
+            "filename":"log/eclatd.log"
+        }
+    },
+    "formatters":{
+        "std_out": {
+            "format": "%(asctime)s : %(levelname)s : %(lineno)d : %(message)s",
+            "datefmt":"%d-%m-%Y %I:%M:%S"
+        }
+    },
+}

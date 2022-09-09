@@ -10,6 +10,7 @@ class EclatStub(object):
 
     def __init__(self, channel):
         """Constructor.
+
         Args:
             channel: A grpc.Channel.
         """
@@ -23,8 +24,8 @@ class EclatStub(object):
                 request_serializer=eclat__pb2.EclatFetchRequest.SerializeToString,
                 response_deserializer=eclat__pb2.EclatFetchResponse.FromString,
                 )
-        self.FetchPackageConfiguration = channel.unary_unary(
-                '/Eclat/FetchPackageConfiguration',
+        self.FetchPackage = channel.unary_unary(
+                '/Eclat/FetchPackage',
                 request_serializer=eclat__pb2.EclatFetchPackageRequest.SerializeToString,
                 response_deserializer=eclat__pb2.EclatFetchPackageResponse.FromString,
                 )
@@ -60,7 +61,7 @@ class EclatServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def FetchPackageConfiguration(self, request, context):
+    def FetchPackage(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -97,8 +98,8 @@ def add_EclatServicer_to_server(servicer, server):
                     request_deserializer=eclat__pb2.EclatFetchRequest.FromString,
                     response_serializer=eclat__pb2.EclatFetchResponse.SerializeToString,
             ),
-            'FetchPackageConfiguration': grpc.unary_unary_rpc_method_handler(
-                    servicer.FetchPackageConfiguration,
+            'FetchPackage': grpc.unary_unary_rpc_method_handler(
+                    servicer.FetchPackage,
                     request_deserializer=eclat__pb2.EclatFetchPackageRequest.FromString,
                     response_serializer=eclat__pb2.EclatFetchPackageResponse.SerializeToString,
             ),
@@ -162,7 +163,7 @@ class Eclat(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def FetchPackageConfiguration(request,
+    def FetchPackage(request,
             target,
             options=(),
             channel_credentials=None,
@@ -172,7 +173,7 @@ class Eclat(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Eclat/FetchPackageConfiguration',
+        return grpc.experimental.unary_unary(request, target, '/Eclat/FetchPackage',
             eclat__pb2.EclatFetchPackageRequest.SerializeToString,
             eclat__pb2.EclatFetchPackageResponse.FromString,
             options, channel_credentials,
