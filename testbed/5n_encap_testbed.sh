@@ -36,6 +36,7 @@
 #
 
 TMUX=ebpf
+KENCAP=true
 
 # Kill tmux previous session
 tmux kill-session -t $TMUX 2>/dev/null
@@ -147,8 +148,11 @@ ip -netns $NODE -4 neigh add 10.12.0.1 lladdr 00:00:00:00:01:02 dev i21
 
 ip -netns $NODE -6 route add default via fc23::2 dev i23
 
-ip -netns $NODE -6 route add fd45::/64 encap seg6 mode encap segs fc00::4:d46 dev i23
-ip -netns $NODE -4 route add 10.45.0.0/24 encap seg6 mode encap segs fc00::3:e,fc00::4:d46 dev i23
+if [ $KENCAP = true ]
+then
+  ip -netns $NODE -6 route add fd45::/64 encap seg6 mode encap segs fc00::4:d46 dev i23
+  ip -netns $NODE -4 route add 10.45.0.0/24 encap seg6 mode encap segs fc00::3:e,fc00::4:d46 dev i23
+fi
 
 ip -netns $NODE -6 route add fc00::2:d46 encap seg6local action End.DT46 vrftable $TID dev i21
 
@@ -216,8 +220,11 @@ ip -netns $NODE -6 neigh add fd45::2 lladdr 00:00:00:00:05:04 dev i45
 
 ip -netns $NODE -6 route add default via fc34::1 dev i43
 
-ip -netns $NODE -6 route add fd12::/64 encap seg6 mode encap segs fc00::2:d46 dev i43
-ip -netns $NODE -4 route add 10.12.0.0/24 encap seg6 mode encap segs fc00::3:e,fc00::2:d46 dev i43
+if [ $KENCAP = true ]
+then
+  ip -netns $NODE -6 route add fd12::/64 encap seg6 mode encap segs fc00::2:d46 dev i43
+  ip -netns $NODE -4 route add 10.12.0.0/24 encap seg6 mode encap segs fc00::3:e,fc00::2:d46 dev i43
+fi
 
 ip -netns $NODE -6 route add fc00::4:d46 encap seg6local action End.DT46 vrftable $TID dev i45
 
