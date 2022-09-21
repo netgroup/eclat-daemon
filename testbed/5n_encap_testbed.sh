@@ -30,13 +30,20 @@
 # h5 i54 fd45::2/64 mac 00:00:00:00:05:04 IPv4 10.45.0.2/24
 #
 # SIDs:
+# fc00::2:d4     Decap (v4) and table lookup on node R2
+# fc00::2:d6     Decap (v6) and table lookup on node R2
 # fc00::2:dt46   Decap (v4v6) and table lookup on node R2
 # fc00::3:e      Endpoint function on node R3
 # fc00::4:dt46   Decap (v4v6) and table lookup on node R4
+# fc00::4:d4     Decap (v4) and table lookup on node R4
+# fc00::4:d6     Decap (v6) and table lookup on node R4
 #
+
+#set -x
 
 TMUX=ebpf
 KENCAP=true
+LEGACY=false
 
 # Kill tmux previous session
 tmux kill-session -t $TMUX 2>/dev/null
@@ -133,10 +140,15 @@ ip -netns $NODE link set dev lo up
 ip -netns $NODE link set dev i21 up
 ip -netns $NODE link set dev i23 up
 
-ip netns exec $NODE sh -c "echo 1 > /proc/sys/net/vrf/strict_mode"
-ip -netns $NODE link add vrf-$TID type vrf table $TID
-ip -netns $NODE link set vrf-$TID up
-ip -netns $NODE link set i21 master vrf-$TID
+if [ $LEGACY = true ]; then
+  ip -netns $NODE -4 route add default dev i21 table $TID
+  ip -netns $NODE -6 route add fd12::/64 dev i21 table $TID
+else
+  ip netns exec $NODE sh -c "echo 1 > /proc/sys/net/vrf/strict_mode"
+  ip -netns $NODE link add vrf-$TID type vrf table $TID
+  ip -netns $NODE link set vrf-$TID up
+  ip -netns $NODE link set i21 master vrf-$TID
+fi
 
 ip -netns $NODE addr add fd12::2/64 dev i21
 ip -netns $NODE addr add 10.12.0.2/24 dev i21
@@ -148,16 +160,27 @@ ip -netns $NODE -4 neigh add 10.12.0.1 lladdr 00:00:00:00:01:02 dev i21
 
 ip -netns $NODE -6 route add default via fc23::2 dev i23
 
-if [ $KENCAP = true ]
-then
-  ip -netns $NODE -6 route add fd45::/64 encap seg6 mode encap segs fc00::4:d46 dev i23
-  ip -netns $NODE -4 route add 10.45.0.0/24 encap seg6 mode encap segs fc00::3:e,fc00::4:d46 dev i23
+if [ $KENCAP = true ]; then
+  if [ $LEGACY = true ]; then
+    ip -netns $NODE -6 route add fd45::/64 encap seg6 mode encap segs fc00::4:d6 dev i23
+    ip -netns $NODE -4 route add 10.45.0.0/24 encap seg6 mode encap segs fc00::3:e,fc00::4:d4 dev i23
+  else
+    ip -netns $NODE -6 route add fd45::/64 encap seg6 mode encap segs fc00::4:d46 dev i23
+    ip -netns $NODE -4 route add 10.45.0.0/24 encap seg6 mode encap segs fc00::3:e,fc00::4:d46 dev i23
+  fi
 fi
 
-ip -netns $NODE -6 route add fc00::2:d46 encap seg6local action End.DT46 vrftable $TID dev i21
+if [ $LEGACY = true ]; then
+  ip -netns $NODE -6 route add fc00::2:d6 encap seg6local action End.DT6 table $TID dev i21
+  ip -netns $NODE -6 route add fc00::2:d4 encap seg6local action End.DX4 nh4 192.0.0.8 dev i21
+  ip -netns $NODE rule add to 192.0.0.8 lookup $TID
+else
+  ip -netns $NODE -6 route add fc00::2:d46 encap seg6local action End.DT46 vrftable $TID dev i21
+fi
 
 read -r -d '' ${NODE}_env <<-EOF
 	echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+        echo 1 > /proc/sys/net/ipv4/ip_forward
 
 	/bin/bash
 EOF
@@ -206,10 +229,15 @@ ip -netns $NODE link set dev lo up
 ip -netns $NODE link set dev i43 up
 ip -netns $NODE link set dev i45 up
 
-ip netns exec $NODE sh -c "echo 1 > /proc/sys/net/vrf/strict_mode"
-ip -netns $NODE link add vrf-$TID type vrf table $TID
-ip -netns $NODE link set vrf-$TID up
-ip -netns $NODE link set i45 master vrf-$TID
+if [ $LEGACY = true ]; then
+  ip -netns $NODE -4 route add default dev i45 table $TID
+  ip -netns $NODE -6 route add fd45::/64 dev i45 table $TID
+else
+  ip netns exec $NODE sh -c "echo 1 > /proc/sys/net/vrf/strict_mode"
+  ip -netns $NODE link add vrf-$TID type vrf table $TID
+  ip -netns $NODE link set vrf-$TID up
+  ip -netns $NODE link set i45 master vrf-$TID
+fi
 
 ip -netns $NODE addr add fc34::2/64 dev i43
 ip -netns $NODE addr add fd45::1/64 dev i45
@@ -220,16 +248,27 @@ ip -netns $NODE -6 neigh add fd45::2 lladdr 00:00:00:00:05:04 dev i45
 
 ip -netns $NODE -6 route add default via fc34::1 dev i43
 
-if [ $KENCAP = true ]
-then
-  ip -netns $NODE -6 route add fd12::/64 encap seg6 mode encap segs fc00::2:d46 dev i43
-  ip -netns $NODE -4 route add 10.12.0.0/24 encap seg6 mode encap segs fc00::3:e,fc00::2:d46 dev i43
+if [ $KENCAP = true ]; then
+  if [ $LEGACY = true ]; then
+    ip -netns $NODE -6 route add fd12::/64 encap seg6 mode encap segs fc00::2:d6 dev i43
+    ip -netns $NODE -4 route add 10.12.0.0/24 encap seg6 mode encap segs fc00::3:e,fc00::2:d4 dev i43
+  else
+    ip -netns $NODE -6 route add fd12::/64 encap seg6 mode encap segs fc00::2:d46 dev i43
+    ip -netns $NODE -4 route add 10.12.0.0/24 encap seg6 mode encap segs fc00::3:e,fc00::2:d46 dev i43
+  fi
 fi
 
-ip -netns $NODE -6 route add fc00::4:d46 encap seg6local action End.DT46 vrftable $TID dev i45
+if [ $LEGACY = true ]; then
+  ip -netns $NODE -6 route add fc00::4:d6 encap seg6local action End.DT6 table $TID dev i45
+  ip -netns $NODE -6 route add fc00::4:d4 encap seg6local action End.DX4 nh4 192.0.0.8 dev i45
+  ip -netns $NODE -4 rule add to 192.0.0.8 lookup $TID
+else
+  ip -netns $NODE -6 route add fc00::4:d46 encap seg6local action End.DT46 vrftable $TID dev i45
+fi
 
 read -r -d '' ${NODE}_env <<-EOF
         echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+        echo 1 > /proc/sys/net/ipv4/ip_forward
 
         /bin/bash
 EOF
