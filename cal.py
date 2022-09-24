@@ -265,7 +265,7 @@ def bpftool_net_attach(attach_type, dev_name, pinned_file):
 
 # bpftool map update id <id> key <key> value <new_value>
 # bpftool map update pinned <path> key <key> value <new_value>
-def bpftool_map_update(map_reference, key, value, map_reference_type="pinned", value_type="pinned"):
+def bpftool_map_update(map_reference, key, value, map_reference_type="pinned", value_type="pinned", dump_only=False):
     """Update a eBPF map
 
     :param map_reference: ID of the map or sys/fs path if reference refers to a pinned map
@@ -288,8 +288,12 @@ def bpftool_map_update(map_reference, key, value, map_reference_type="pinned", v
         raise Exception(
             "bpftool_map_update: Instruction not implemented (invalid map_reference_type).")
 
-    print(f"Exec: {cmd}")
-    ret = os.system(cmd)
+    if dump_only == True:
+        print(f"{cmd}")
+        ret = 0
+    else:
+        print(f"Exec: {cmd}")
+        ret = os.system(cmd)
 
     if ret != 0:
         raise Exception(f"Map update {map_reference} failed.")
@@ -305,6 +309,14 @@ def cal_map_update(map_reference, key, value):
     #print (value_list)
     bpftool_map_update(map_reference, key_list, value_list,
                        map_reference_type="pinned", value_type="hex")
+
+def cal_map_dump_only(map_reference, key, value):
+    key_list = to_hex(key)
+    value_list = to_hex(value)
+    #print (key_list)
+    #print (value_list)
+    bpftool_map_update(map_reference, key_list, value_list,
+                       map_reference_type="pinned", value_type="hex", dump_only=True)
 
 
 def bpftool_map_dump(map_reference, map_reference_type="pinned"):
