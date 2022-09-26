@@ -128,3 +128,54 @@ def ipv6_int128_from_int8(input_list):
         i = i - 1
     #print (ipv6_int128)
     return ipv6_int128
+
+
+"""
+converts a srh header to an hex_list
+"""
+class srh_hdr:
+  def __init__(self, nsegs):
+    self.srhlen = 8 + 16 * nsegs
+    self.nxthdr = u8(59)
+    self.hdrlen = u8((self.srhlen >> 3) - 1)
+    self.type = u8(4)
+    self.segleft = u8(nsegs - 1)
+    self.lastentry = u8(nsegs - 1)
+    self.flags = u8(0)
+    self.tag = u16(0)
+
+  def set_nxthdr(self, data):
+    self.nxthdr = u8(data)
+  def get_nxthdr(self):
+    return self.nxthdr
+  def set_hdrlen(self, data):
+    self.hdrlen = u8(data)
+  def get_hdrlen(self):
+    return self.hdrlen
+  def set_segleft(self, data):
+    self.segleft = u8(data)
+  def get_segleft(self):
+    return self.segleft
+  def set_lastentry(self, data):
+    self.lastentry = u8(data)
+  def get_flags(self):
+    return self.lastentry
+  def set_flags(self, data):
+    self.flags = u8(data)
+  def get_flags(self):
+    return self.flags
+  def set_tag(self, data):
+    self.tag = u16(data)
+  def get_tag(self):
+    return self.tag
+
+  def to_hex(self):
+    hex_list = []
+    hex_list.append(self.nxthdr.toHex())
+    hex_list.append(self.hdrlen.toHex())
+    hex_list.append(self.type.toHex())
+    hex_list.append(self.segleft.toHex())
+    hex_list.append(self.lastentry.toHex())
+    hex_list.append(self.flags.toHex())
+    hex_list.append(self.tag.toHex())
+    return hex_list
