@@ -7,9 +7,9 @@ cd /sys/fs/bpf/maps/
 rm -rf *
 
 cd /opt/eclat-daemon/components/
-rm -rf stamp/ test/
+rm -rf stamp/build test/
 
-cd /opt/eclat-daemon/hike/src/.output/
+cd /opt/eclat-daemon/hike_v3/src/.output/
 rm -rf *
 
 bpftool net detach xdp dev enp6s0f0
