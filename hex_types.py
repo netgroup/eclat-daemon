@@ -57,7 +57,7 @@ class u256(uGeneric):
 
 class u128(uGeneric):
   def __init__(self, data):
-    super().__init__(128, data)
+    super().__init__(128, data) 
 
 class u96(uGeneric):
   def __init__(self, data):
@@ -104,6 +104,7 @@ class s8(sGeneric):
     super().__init__(8, data) 
 
 def to_hex (data):
+  #print (type(data))
   hex_list = []
   if type(data) == type([]):
     for e in data:
