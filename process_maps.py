@@ -201,3 +201,29 @@ if __name__ == "__main__":
     if result == 0 :
         for my_obj in pm.map_as_array :
             print (my_obj)
+
+
+    ###################
+
+    pm = ProcessMap('chaddr','routingpaolo','paolo_chaddr')
+    result = pm.read()
+    if result == 0 :
+        for my_obj in pm.map_as_array :
+            print (my_obj)
+
+    #experiment to add an entry to the map
+    ip6 = ipaddress.IPv6Address('2001:db8:555:666:777:888::')
+    cal.cal_map_update(pm.map_path, ht.u16(2), ip6)
+
+    pm = ProcessMap('usid_params','routingpaolo','paolo_adv_usid')
+    result = pm.read()
+    if result == 0 :
+        for my_obj in pm.map_as_array :
+            print (my_obj)
+
+    #experiment to update a key value pair
+    #print (pm.map_path)
+    cal.bpftool_map_update(pm.map_path, ["01", "00", "00", "00"], ["04", "00", "00", "00"], map_reference_type="pinned", value_type="hex")
+    cal.cal_map_update(pm.map_path, ht.u32(2), ht.u32(2))
+
+
