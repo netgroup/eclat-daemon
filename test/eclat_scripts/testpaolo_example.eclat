@@ -1,0 +1,37 @@
+# route basic example
+#
+# (route_basic_example.eclat)
+#
+# routes an IPv6 packet with a lookup in the kernel routing table
+# using the ip6_kroute HIKe program
+
+#from programs.mynet import hike_drop, hike_pass, monitor, show_pkt_info
+from programs.hike_default import hike_drop, hike_pass, monitor
+from programs.info import show_pkt_info
+from programs.routingpaolo import paolo_kroute, paolo_chaddr, paolo_adv_usid
+from programs.eip import hello
+from loaders.hike_default import ip6_simple_classifier
+
+# send all IPv6 packets to our chain
+ip6_simple_classifier[ipv6_simple_classifier_map] = { (0): (testpaolo) }
+ip6_simple_classifier.attach('DEVNAME', 'xdp')
+
+#paolo_adv_usid[usid_params] = { (2): (2) }
+
+def testpaolo():
+
+    LAYER_2=1; NET_LAYER=2; TRANSP_LAYER=4
+
+    u64 : myvar = 2023
+    show_pkt_info(TRANSP_LAYER, myvar)
+
+    hello()
+
+    paolo_chaddr()
+
+    paolo_adv_usid()
+
+    paolo_kroute()
+
+#    hike_pass()
+    return 0
